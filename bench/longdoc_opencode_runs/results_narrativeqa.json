@@ -1,0 +1,326 @@
+[
+  {
+    "cond": "off",
+    "qid": "q00",
+    "config": "narrativeqa",
+    "question": "What is Saltram's living situation?",
+    "gold": [
+      "He is a guest in the home of the Mulvilles."
+    ],
+    "pred": "He is an inmate at the Mulvilles' house in Wimbledon, living there as a dependent guest (his wife has left him).",
+    "em": 0,
+    "f1": 0.4,
+    "contains": 0,
+    "duration_s": 20.7,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 112772,
+      "cached_tokens": 64704,
+      "cache_write_tokens": 0,
+      "completion_tokens": 585,
+      "calls": 4,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 48068
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q00",
+    "config": "narrativeqa",
+    "question": "What is Saltram's living situation?",
+    "gold": [
+      "He is a guest in the home of the Mulvilles."
+    ],
+    "pred": "Saltram had lived for many years at Wimbledon.",
+    "em": 0,
+    "f1": 0.0,
+    "contains": 0,
+    "duration_s": 23.4,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 50607,
+      "cached_tokens": 45312,
+      "cache_write_tokens": 0,
+      "completion_tokens": 1586,
+      "calls": 3,
+      "compressed_calls": 1,
+      "images": 6,
+      "fresh_tokens": 5295
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "qid": "q01",
+    "config": "narrativeqa",
+    "question": "Why does Ann not return Mary's feelings of affection?",
+    "gold": [
+      "Because she is in unrequited love with someone else"
+    ],
+    "pred": "Ann's heart was entirely engrossed by one object (her lost love), and friendship could not serve as a substitute; she only felt gratitude toward Mary.",
+    "em": 0,
+    "f1": 0.121,
+    "contains": 0,
+    "duration_s": 16.1,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 111861,
+      "cached_tokens": 81088,
+      "cache_write_tokens": 0,
+      "completion_tokens": 294,
+      "calls": 4,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 30773
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q01",
+    "config": "narrativeqa",
+    "question": "Why does Ann not return Mary's feelings of affection?",
+    "gold": [
+      "Because she is in unrequited love with someone else"
+    ],
+    "pred": "Ann's nature was less sensibly formed; she had never experienced deep attachment and lacked the capacity for the same depth of feeling that Mary possessed.",
+    "em": 0,
+    "f1": 0.062,
+    "contains": 0,
+    "duration_s": 24.3,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 50837,
+      "cached_tokens": 43392,
+      "cache_write_tokens": 0,
+      "completion_tokens": 1725,
+      "calls": 3,
+      "compressed_calls": 1,
+      "images": 7,
+      "fresh_tokens": 7445
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "qid": "q02",
+    "config": "narrativeqa",
+    "question": "Where does the witch live?",
+    "gold": [
+      "The Atlas Mountains"
+    ],
+    "pred": "On Atlas' mountain, within a cavern, by a secret fountain",
+    "em": 0,
+    "f1": 0.2,
+    "contains": 0,
+    "duration_s": 10.9,
+    "doc_chars": 33711,
+    "usage": {
+      "prompt_tokens": 57591,
+      "cached_tokens": 42880,
+      "cache_write_tokens": 0,
+      "completion_tokens": 135,
+      "calls": 3,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 14711
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q02",
+    "config": "narrativeqa",
+    "question": "Where does the witch live?",
+    "gold": [
+      "The Atlas Mountains"
+    ],
+    "pred": "In a cavern on Atlas' mountain (by a secret fountain)",
+    "em": 0,
+    "f1": 0.2,
+    "contains": 0,
+    "duration_s": 53.2,
+    "doc_chars": 33711,
+    "usage": {
+      "prompt_tokens": 134123,
+      "cached_tokens": 125312,
+      "cache_write_tokens": 0,
+      "completion_tokens": 2772,
+      "calls": 6,
+      "compressed_calls": 4,
+      "images": 27,
+      "fresh_tokens": 8811
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "qid": "q03",
+    "config": "narrativeqa",
+    "question": "What was the purpose of Crito's visit?",
+    "gold": [
+      "To smuggle Socrates out of prison and into a life of exile."
+    ],
+    "pred": "To persuade Socrates to escape from prison",
+    "em": 0,
+    "f1": 0.333,
+    "contains": 0,
+    "duration_s": 12.8,
+    "doc_chars": 35668,
+    "usage": {
+      "prompt_tokens": 56647,
+      "cached_tokens": 42880,
+      "cache_write_tokens": 0,
+      "completion_tokens": 243,
+      "calls": 3,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 13767
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q03",
+    "config": "narrativeqa",
+    "question": "What was the purpose of Crito's visit?",
+    "gold": [
+      "To smuggle Socrates out of prison and into a life of exile."
+    ],
+    "pred": "To inform Socrates that the ship from Delos had arrived\u2014meaning his execution would take place the next day\u2014and to urge him to escape from prison.",
+    "em": 0,
+    "f1": 0.176,
+    "contains": 0,
+    "duration_s": 36.9,
+    "doc_chars": 35668,
+    "usage": {
+      "prompt_tokens": 49226,
+      "cached_tokens": 43392,
+      "cache_write_tokens": 0,
+      "completion_tokens": 1701,
+      "calls": 3,
+      "compressed_calls": 1,
+      "images": 5,
+      "fresh_tokens": 5834
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "qid": "q04",
+    "config": "narrativeqa",
+    "question": "Why didn't Baron Henry just kill Otto instead of cutting his hand off?",
+    "gold": [
+      "Otto was so young."
+    ],
+    "pred": "Baron Henry swore an oath that no Vuelph who left his hands would ever be able to strike again like his father had killed Baron Frederick, so he cut off Otto's right hand to fulfill that oath rather than killing him.",
+    "em": 0,
+    "f1": 0.045,
+    "contains": 0,
+    "duration_s": 30.1,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 226086,
+      "cached_tokens": 190464,
+      "cache_write_tokens": 0,
+      "completion_tokens": 2727,
+      "calls": 6,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 35622
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q04",
+    "config": "narrativeqa",
+    "question": "Why didn't Baron Henry just kill Otto instead of cutting his hand off?",
+    "gold": [
+      "Otto was so young."
+    ],
+    "pred": "Baron Henry wanted Otto alive as a hostage/leverage against Baron Conrad, so he cut off his hand rather than killing him.",
+    "em": 0,
+    "f1": 0.167,
+    "contains": 0,
+    "duration_s": 92.6,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 116427,
+      "cached_tokens": 103808,
+      "cache_write_tokens": 0,
+      "completion_tokens": 3102,
+      "calls": 5,
+      "compressed_calls": 3,
+      "images": 31,
+      "fresh_tokens": 12619
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "qid": "q05",
+    "config": "narrativeqa",
+    "question": "How long had Mortimer Trefinnis' sister been dead when the doctor examined the body?",
+    "gold": [
+      "Six hours."
+    ],
+    "pred": "at least six hours",
+    "em": 0,
+    "f1": 0.667,
+    "contains": 1,
+    "duration_s": 15.3,
+    "doc_chars": 55745,
+    "usage": {
+      "prompt_tokens": 100898,
+      "cached_tokens": 81664,
+      "cache_write_tokens": 0,
+      "completion_tokens": 348,
+      "calls": 4,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 19234
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q05",
+    "config": "narrativeqa",
+    "question": "How long had Mortimer Trefinnis' sister been dead when the doctor examined the body?",
+    "gold": [
+      "Six hours."
+    ],
+    "pred": "at least six hours",
+    "em": 0,
+    "f1": 0.667,
+    "contains": 1,
+    "duration_s": 35.8,
+    "doc_chars": 55745,
+    "usage": {
+      "prompt_tokens": 83896,
+      "cached_tokens": 71104,
+      "cache_write_tokens": 0,
+      "completion_tokens": 2363,
+      "calls": 4,
+      "compressed_calls": 2,
+      "images": 21,
+      "fresh_tokens": 12792
+    },
+    "cost_usd": null,
+    "is_error": false
+  }
+]

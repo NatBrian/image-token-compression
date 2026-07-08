@@ -39,6 +39,17 @@ Whether the lighter package costs less money depends on how your provider prices
 
 The takeaway: **the one case where imaging can raise the bill is Anthropic-style caching on a re-send-heavy workload.** It is a property of that provider's price list, not a defect in imgctx. On a provider that does not charge a cache-write premium, the same token cut just lowers the bill.
 
+**Measured confirmation on the OpenCode path (all four benchmarks).** The zen/`mimo-v2.5-free` endpoint reports its own cache detail, and across the same four benchmarks as the Anthropic study it returned `cache_write_tokens = 0` on every single call, both with and without imgctx. There is literally no cache-write class to inflate, so imaging's input-token cut becomes a straight cost cut in every regime:
+
+| benchmark | task shape | input tokens Δ | cache-write | simulated cost Δ |
+| --- | --- | ---: | ---: | ---: |
+| SWE-bench Lite | re-read, agentic | -53.8% | 0 | -49.5% |
+| HotpotQA | re-read, short | -32.9% | 0 | -32.1% |
+| narrativeqa | read once | -27.1% | 0 | -35.0% |
+| gov_report | read once | -39.4% | 0 | -41.6% |
+
+The two re-read tasks (SWE-bench, HotpotQA) cost **+26.5%** and **+44.0%** on Anthropic; on OpenCode they cut cost instead. The provider's own accounting is the proof: the Anthropic re-send loss is that one provider's write premium, not something imgctx does everywhere. (Dollars are a labelled simulation because the model is free; the token and cache numbers are real.) Full numbers: [OpenCode cost breakdown](../bench/OPENCODE_COST_BREAKDOWN.md).
+
 ## Why the Anthropic re-send case is special (in one paragraph)
 
 Anthropic's prompt cache is keyed on **exact bytes**. Rendering text to an image always produces new bytes, so it always counts as storing something new (a cache-write, the priciest input class). If your big context was going to be **re-sent many times**, Anthropic was already serving it from cache at the cheap 0.1x read rate, and imaging throws that discount away to pay the 2x write instead. If your big context is **unique and read once**, there was never a cheap cached copy to lose, so imaging simply makes the one unavoidable write smaller, and the bill goes **down**. Same tool, same provider, opposite result, decided entirely by how many times the context repeats. On Anthropic Sonnet we measured read-once work at **-13% to -18% real dollars**, and re-send-heavy agentic loops at **+26% to +44%**.

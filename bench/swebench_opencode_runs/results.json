@@ -1,0 +1,199 @@
+[
+  {
+    "cond": "off",
+    "instance_id": "psf__requests-1963",
+    "repo": "psf/requests",
+    "duration_s": 58.2,
+    "patch_chars": 0,
+    "produced_patch": false,
+    "usage": {
+      "prompt_tokens": 315552,
+      "cached_tokens": 298624,
+      "cache_write_tokens": 0,
+      "completion_tokens": 4350,
+      "calls": 12,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 16928
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "instance_id": "psf__requests-1963",
+    "repo": "psf/requests",
+    "duration_s": 275.1,
+    "patch_chars": 664,
+    "produced_patch": true,
+    "usage": {
+      "prompt_tokens": 320653,
+      "cached_tokens": 249216,
+      "cache_write_tokens": 0,
+      "completion_tokens": 5119,
+      "calls": 14,
+      "compressed_calls": 13,
+      "images": 120,
+      "fresh_tokens": 71437
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "instance_id": "pallets__flask-4045",
+    "repo": "pallets/flask",
+    "duration_s": 107.9,
+    "patch_chars": 525,
+    "produced_patch": true,
+    "usage": {
+      "prompt_tokens": 461389,
+      "cached_tokens": 386624,
+      "cache_write_tokens": 0,
+      "completion_tokens": 6447,
+      "calls": 18,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 74765
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "instance_id": "pallets__flask-4045",
+    "repo": "pallets/flask",
+    "duration_s": 127.2,
+    "patch_chars": 0,
+    "produced_patch": false,
+    "usage": {
+      "prompt_tokens": 197222,
+      "cached_tokens": 168512,
+      "cache_write_tokens": 0,
+      "completion_tokens": 2163,
+      "calls": 10,
+      "compressed_calls": 9,
+      "images": 94,
+      "fresh_tokens": 28710
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "instance_id": "pylint-dev__pylint-5859",
+    "repo": "pylint-dev/pylint",
+    "duration_s": 98.1,
+    "patch_chars": 1992,
+    "produced_patch": true,
+    "usage": {
+      "prompt_tokens": 341936,
+      "cached_tokens": 329856,
+      "cache_write_tokens": 0,
+      "completion_tokens": 6535,
+      "calls": 13,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 12080
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "instance_id": "pylint-dev__pylint-5859",
+    "harness_error": "TypeError:can't concat str to bytes",
+    "usage": {
+      "prompt_tokens": 673383,
+      "cached_tokens": 562048,
+      "cache_write_tokens": 0,
+      "completion_tokens": 6598,
+      "calls": 30,
+      "compressed_calls": 29,
+      "images": 284,
+      "fresh_tokens": 111335
+    },
+    "cost_usd": null,
+    "is_error": true
+  },
+  {
+    "cond": "off",
+    "instance_id": "pytest-dev__pytest-11143",
+    "repo": "pytest-dev/pytest",
+    "duration_s": 38.9,
+    "patch_chars": 553,
+    "produced_patch": true,
+    "usage": {
+      "prompt_tokens": 184027,
+      "cached_tokens": 174400,
+      "cache_write_tokens": 0,
+      "completion_tokens": 3694,
+      "calls": 8,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 9627
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "instance_id": "pytest-dev__pytest-11143",
+    "repo": "pytest-dev/pytest",
+    "duration_s": 37.7,
+    "patch_chars": 0,
+    "produced_patch": false,
+    "usage": {
+      "prompt_tokens": 90782,
+      "cached_tokens": 84288,
+      "cache_write_tokens": 0,
+      "completion_tokens": 2444,
+      "calls": 5,
+      "compressed_calls": 4,
+      "images": 20,
+      "fresh_tokens": 6494
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "instance_id": "psf__requests-2148",
+    "repo": "psf/requests",
+    "duration_s": 132.3,
+    "patch_chars": 0,
+    "produced_patch": false,
+    "usage": {
+      "prompt_tokens": 751135,
+      "cached_tokens": 729856,
+      "cache_write_tokens": 0,
+      "completion_tokens": 6876,
+      "calls": 24,
+      "compressed_calls": 0,
+      "images": 0,
+      "fresh_tokens": 21279
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "instance_id": "psf__requests-2148",
+    "repo": "psf/requests",
+    "duration_s": 303.2,
+    "patch_chars": 0,
+    "produced_patch": false,
+    "usage": {
+      "prompt_tokens": 182828,
+      "cached_tokens": 154944,
+      "cache_write_tokens": 0,
+      "completion_tokens": 35264,
+      "calls": 8,
+      "compressed_calls": 7,
+      "images": 67,
+      "fresh_tokens": 27884
+    },
+    "cost_usd": null,
+    "is_error": false
+  }
+]

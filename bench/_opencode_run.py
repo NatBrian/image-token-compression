@@ -1,0 +1,141 @@
+"""Shared OpenCode-path runner for the imgctx benchmarks (mimo-v2.5-free).
+
+Mirrors the single-port A/B pattern of bench.hotpot_experiment, but with two
+differences that keep parallel/sequential benchmark runs clean:
+
+  * The proxy is restarted per (condition, item) with IMGCTX_ENABLED toggled, so
+    OFF is pure passthrough and ON is imgctx, both logged by the same instrument to
+    a per-item events.jsonl (which carries the endpoint's full usage, including
+    prompt_tokens_details.cached_tokens / cache_write_tokens).
+  * Instead of rewriting the user's GLOBAL ~/.config/opencode/opencode.json, each
+    run points opencode at an isolated config file via the OPENCODE_CONFIG env var.
+    That leaves the user's real config untouched and lets different benchmarks use
+    different proxy ports without colliding.
+
+mimo-v2.5-free is FREE, so there is no provider-billed dollar figure; the harnesses
+record only real tokens (incl. cache split). Any dollar number is a SEPARATE,
+clearly-labelled simulation (see bench.opencode_cost_breakdown).
+"""
+from __future__ import annotations
+
+import json
+import os
+import re
+import signal
+import socket
+import subprocess
+import time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+VENV_PY = str(ROOT / ".venv" / "bin" / "python")
+MODEL = "opencode/mimo-v2.5-free"
+ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
+
+
+def port_open(port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(("127.0.0.1", port)) == 0
+
+
+def write_config(path: Path, port: int) -> Path:
+    """Isolated opencode config pointing the provider at our proxy, with headless
+    permissions so `opencode run` never blocks on a prompt. Returned via OPENCODE_CONFIG."""
+    cfg = {
+        "$schema": "https://opencode.ai/config.json",
+        "provider": {"opencode": {"options": {"baseURL": f"http://127.0.0.1:{port}/v1"}}},
+        "permission": {"edit": "allow", "bash": "allow", "webfetch": "allow"},
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(cfg, indent=2))
+    return path
+
+
+def start_proxy(enabled: bool, port: int, log_path: Path,
+                extra_env: dict | None = None) -> subprocess.Popen:
+    env = dict(os.environ)
+    env["IMGCTX_ENABLED"] = "1" if enabled else "0"
+    env["IMGCTX_PORT"] = str(port)
+    env["IMGCTX_LOG_PATH"] = str(log_path)
+    env["IMGCTX_LOG"] = "1"
+    if extra_env:
+        env.update(extra_env)
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    proc = subprocess.Popen(
+        [VENV_PY, "-m", "imgctx", "serve", "--port", str(port)],
+        env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for _ in range(80):
+        if port_open(port):
+            return proc
+        time.sleep(0.25)
+    raise RuntimeError(f"proxy did not come up on {port}")
+
+
+def stop_proxy(proc: subprocess.Popen, port: int) -> None:
+    proc.send_signal(signal.SIGTERM)
+    try:
+        proc.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+    for _ in range(40):
+        if not port_open(port):
+            return
+        time.sleep(0.25)
+
+
+def run_opencode(cwd: Path, prompt: str, config_path: Path,
+                 timeout: int = 300) -> str:
+    """Run one headless opencode turn against the isolated config. Returns stdout+stderr."""
+    env = dict(os.environ)
+    env["OPENCODE_CONFIG"] = str(config_path)
+    try:
+        res = subprocess.run(
+            ["opencode", "run", "--model", MODEL, prompt],
+            cwd=str(cwd), env=env, capture_output=True, text=True, timeout=timeout)
+        out = (res.stdout or "") + "\n" + (res.stderr or "")
+    except subprocess.TimeoutExpired as e:
+        out = (e.stdout or "") + "\n[TIMEOUT]"
+    return out
+
+
+def parse_final_answer(stdout: str) -> str:
+    clean = ANSI.sub("", stdout)
+    found = None
+    for line in clean.splitlines():
+        m = re.search(r"FINAL ANSWER:\s*(.+)", line)
+        if m:
+            found = m.group(1).strip()
+    if found:
+        return found.strip("`*_ ")
+    lines = [l.strip() for l in clean.splitlines() if l.strip()]
+    return lines[-1] if lines else ""
+
+
+def read_usage(log_path: Path) -> dict:
+    """Sum the real per-field usage across every call in a proxy event log, including
+    the cache split the zen/mimo endpoint reports."""
+    t = {"prompt_tokens": 0, "cached_tokens": 0, "cache_write_tokens": 0,
+         "completion_tokens": 0, "calls": 0, "compressed_calls": 0, "images": 0}
+    if not log_path.exists():
+        return t
+    for line in log_path.read_text().splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            ev = json.loads(line)
+        except Exception:
+            continue
+        t["calls"] += 1
+        tr = ev.get("transform") or {}
+        if tr.get("compressed"):
+            t["compressed_calls"] += 1
+            t["images"] += tr.get("image_count", 0) or 0
+        u = ev.get("usage") or {}
+        d = u.get("prompt_tokens_details") or {}
+        t["prompt_tokens"] += u.get("prompt_tokens", 0) or 0
+        t["cached_tokens"] += d.get("cached_tokens", 0) or 0
+        t["cache_write_tokens"] += d.get("cache_write_tokens", 0) or 0
+        t["completion_tokens"] += u.get("completion_tokens", 0) or 0
+    t["fresh_tokens"] = t["prompt_tokens"] - t["cached_tokens"] - t["cache_write_tokens"]
+    return t

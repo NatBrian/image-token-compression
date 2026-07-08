@@ -65,6 +65,21 @@ Agentic runs sometimes loop (the model re-reads and retries), and each looped st
 
 This counts input tokens only. Some providers bill image inputs on a separate schedule; on `mimo` the image cost is folded into `prompt_tokens`, so the measured token figure already includes it. Reproduce every number with `python -m bench.hotpot_experiment --n 10 && python -m bench.make_report && python docs/make_charts.py`.
 
+#### Cache split and simulated cost (all four benchmarks)
+
+The zen/`mimo` endpoint reports its own cache detail (`prompt_tokens_details.cached_tokens` and `cache_write_tokens`). Running the SAME four benchmarks as the Anthropic study through OpenCode/`mimo-v2.5-free` (matched OFF vs ON) shows the structural reason the OpenCode path is a clean win in every regime, including the two that LOST money on Anthropic:
+
+| benchmark | task shape | input tokens Δ | cache-write tokens | simulated cost Δ |
+| --- | --- | ---: | ---: | ---: |
+| SWE-bench Lite (n=4) | re-read, agentic | **-53.8%** | **0** | **-49.5%** |
+| HotpotQA (n=10) | re-read, short | **-32.9%** | **0** | **-32.1%** |
+| narrativeqa (n=6) | read once | **-27.1%** | **0** | **-35.0%** |
+| gov_report (n=4) | read once | **-39.4%** | **0** | **-41.6%** |
+
+**`cache_write_tokens` is 0 on every call, both arms, in all four benchmarks: this endpoint bills no cache-write premium.** That is the whole difference from Anthropic, where the 2x cache-write class is what imaging inflated and what raised the bill on the re-read tasks. With no such class here, the input-token cut flows straight to the bill in every regime, so SWE-bench and HotpotQA (which cost **+26.5%** and **+44.0%** on Anthropic) now show a cost *cut* on OpenCode.
+
+**On the dollar figures: `mimo-v2.5-free` is $0.00 in reality, so there is no real cost to report.** The percentages above are a clearly-labelled SIMULATION under a representative OpenAI-style rate table (fresh 1x, cache-write no premium, cache-read 0.5x), shown only to reveal the shape of the bill; the token and cache-split numbers are real. Full per-class tables, the rate table, and the honest caveat about output/loop variance: [OpenCode cost breakdown](bench/OPENCODE_COST_BREAKDOWN.md). Reproduce with `python -m bench.longdoc_opencode_experiment --n 6 --config narrativeqa`, `... --n 4 --config gov_report`, `python -m bench.swebench_opencode_experiment --n 5`, then `python -m bench.opencode_cost_breakdown`.
+
 ## When imaging pays (and when it does not)
 
 Imaging always cuts **tokens**. Whether it also cuts **dollars** comes down to a single question about your task: **is the big context a reusable prefix the model re-reads many times, or a unique payload it reads once?** Get that right and `imgctx` cuts both tokens and cost, even on a caching provider like Anthropic. The measured proof is below.
@@ -79,15 +94,15 @@ Some providers keep a **prompt cache**. The first time they see a chunk of text 
 
 That cache is what decides the outcome, so the whole question is: **how many times does the model re-read your big context?**
 
-### The losing shape: a big context that is re-read every turn
+### The losing shape: a big context re-read every turn, ON A WRITE-PREMIUM PROVIDER
 
-Long agentic coding loops are the caching provider's ideal case. The same system prompt, tool schemas, and growing history repeat on every turn, so after turn one the provider serves almost all of it at the ~0.1x **read** rate. Here is the trap, step by step:
+This shape only loses on a provider that charges a **cache-write premium**, which today means Anthropic. Long agentic coding loops are its ideal case: the same system prompt, tool schemas, and growing history repeat on every turn, so after turn one the provider serves almost all of it at the ~0.1x **read** rate. Here is the trap, step by step:
 
 1. **Without `imgctx`**, that repeated context is text the provider has already cached. You pay the cheap **read** price (~0.1x) for it every turn.
 2. **With `imgctx`**, the same context is now an **image**: far fewer tokens, but brand-new bytes the provider has never seen, so it is billed as a **write** (~1.25x to 2x) and cannot reuse the text cache.
 3. You traded a large number of **very cheap** tokens for a small number of **expensive** tokens. The token count drops, the price-per-token rises more, and the bill goes up.
 
-On this shape `imgctx` is competing against a price (0.1x) it cannot beat.
+On this shape, on Anthropic, `imgctx` is competing against a price (0.1x) it cannot beat. **But this is a property of the 2x write premium, not of the re-read shape itself.** Run the exact same re-read tasks through the OpenCode/`mimo-v2.5-free` endpoint, which reports `cache_write_tokens = 0` (no write premium), and they cut cost instead: SWE-bench **-49.5%** and HotpotQA **-32.1%** simulated cost, versus **+26.5%** and **+44.0%** on Anthropic. Same imgctx, same tasks, opposite sign, decided entirely by whether the provider charges for the write. Full four-benchmark table: [Cache split and simulated cost](#cache-split-and-simulated-cost-all-four-benchmarks).
 
 ### The winning shape: a big UNIQUE context read once
 
@@ -121,13 +136,13 @@ Cache-write and real cost move the same direction every time. On the re-read tas
 
 Point `imgctx` at unique, read-once bulk, and leave it off where a cheap cache is already doing the saving for you:
 
-| Use it here (cuts tokens **and** cost) | Skip it here (caching already wins) |
+| Use it here (cuts tokens **and** cost) | Skip it here (a write-premium cache already wins) |
 | --- | --- |
-| **Read-once large inputs** on any provider: long-document QA, summarization, classification, one-pass extraction, a big log/transcript pasted once. Measured on Anthropic Sonnet: **-13% to -18% real dollars** (LongBench). Nothing is cached to undercut, so the token cut is a straight dollar cut, and it can keep you **under the context-window limit** when the raw text would not fit. | **Re-read prefixes on a caching provider** (Anthropic / Claude Code long agentic loops). The repeated context is already ~0.1x; imaging turns cheap reads into pricier writes (measured **+26% to +44%**). |
-| Providers with **no prompt cache**, where every repeated token is billed at full rate every turn (for example the OpenCode/`mimo` path, where `imgctx` measured **-33% to -47%** end-to-end). | Cache-cheap models on repetitive turns, which also add a small image "read tax" on top of losing the cache discount. |
+| **Read-once large inputs** on any provider: long-document QA, summarization, classification, one-pass extraction, a big log/transcript pasted once. Measured on Anthropic Sonnet: **-13% to -18% real dollars** (LongBench). Nothing is cached to undercut, so the token cut is a straight dollar cut, and it can keep you **under the context-window limit** when the raw text would not fit. | **Re-read prefixes on a write-premium caching provider** (Anthropic / Claude Code long agentic loops). The repeated context is already ~0.1x; imaging turns cheap reads into pricier writes (measured **+26% to +44%**). This is the ONLY skip case, and it is specific to the 2x write premium. |
+| **Any regime on a provider with no cache-write premium** (OpenCode/`mimo`, OpenAI-style caching): read-once AND re-read both win, because there is no write class to inflate. Measured across all four benchmarks on OpenCode: **-27% to -54%** input tokens, cost falling with them, including the re-read tasks that lost on Anthropic. | Cache-cheap models on repetitive turns where a write premium applies, which also add a small image "read tax" on top of losing the cache discount. |
 | **Cheap-vision** models, where image tokens are priced low relative to text. | Short chat-style turns where the context is small to begin with; there is little to compress and the gate skips it anyway. |
 
-**Rule of thumb:** ask *"is the big context in this job read once, or re-read every turn?"* **Read once** (unique document, summarize, classify, extract) is a win on both tokens and dollars, even on Anthropic. **Re-read** on a caching provider is already cheap, so use `imgctx` only for the token-count / context-window benefit there, or leave it off (`IMGCTX_ENABLED=0`). Either way you are never worse off than an informed choice, because both arms are measurable from your provider's own `total_cost_usd`.
+**Rule of thumb:** first ask *"does my provider charge a cache-write premium?"* If **no** (OpenCode/`mimo`, OpenAI-style caching), imgctx cuts both tokens and cost in every regime, just turn it on. If **yes** (Anthropic), then ask *"is the big context read once, or re-read every turn?"* **Read once** (unique document, summarize, classify, extract) is a win on both tokens and dollars even there. **Re-read** every turn is the one case that already sits at ~0.1x, so use `imgctx` only for the token-count / context-window benefit, or leave it off (`IMGCTX_ENABLED=0`). Either way you are never worse off than an informed choice, because both arms are measurable from your provider's own reported cost.
 
 This is why `imgctx` is best thought of as a **targeting tool, not an always-on switch**: it turns bulky text into cheap image tokens, a clear win exactly when that text is not already cheap. Reproduce the read-once win with `python -m bench.longdoc_experiment --n 6 --config narrativeqa --model sonnet && python -m bench.longdoc_report`, and the re-read numbers with `python -m bench.swebench_experiment --n 5 --model sonnet` and `python -m bench.hotpot_claude_experiment --n 5 --model sonnet`, then `python docs/make_anthropic_chart.py`.
 

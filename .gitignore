@@ -70,6 +70,17 @@ bench/longdoc_runs/proxy_*events*.jsonl
 bench/longdoc_runs/results.json
 bench/longdoc_runs/data_*.json
 
+# Long-doc single-shot (OpenCode/mimo path). Track results_*.json; ignore heavy streams.
+bench/longdoc_opencode_runs/off/
+bench/longdoc_opencode_runs/on/
+bench/longdoc_opencode_runs/*.log
+
+# SWE-bench (OpenCode/mimo path). Track results.json + instances.json; ignore repos/streams.
+bench/swebench_opencode_runs/_repos_cache/
+bench/swebench_opencode_runs/off/
+bench/swebench_opencode_runs/on/
+bench/swebench_opencode_runs/*.log
+
 # SWE-bench (Claude Code path)
 bench/swebench_runs/_repos_cache/
 bench/swebench_runs/off/
