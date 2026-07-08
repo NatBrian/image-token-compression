@@ -68,6 +68,30 @@ class Settings:
     upstream_key: str = field(default_factory=lambda: os.environ.get("IMGCTX_UPSTREAM_KEY", ""))
     request_timeout: float = field(default_factory=lambda: _env_float("IMGCTX_TIMEOUT", 600.0))
 
+    # --- Anthropic Messages API (native Claude Code protocol) ---
+    # Requests to .../v1/messages are treated as Anthropic-native and forwarded here.
+    anthropic_upstream_base: str = field(
+        default_factory=lambda: os.environ.get(
+            "IMGCTX_ANTHROPIC_UPSTREAM", "https://api.anthropic.com"
+        ).rstrip("/")
+    )
+    # Claude Code strips its subscription credential from any non-canonical host, so
+    # to relay a subscription we re-inject the locally stored OAuth bearer. Read at
+    # forward time so token refreshes by Claude Code are picked up automatically.
+    anthropic_oauth_inject: bool = field(
+        default_factory=lambda: _env_bool("IMGCTX_ANTHROPIC_OAUTH_INJECT", True)
+    )
+    anthropic_credentials_path: str = field(
+        default_factory=lambda: os.environ.get(
+            "IMGCTX_ANTHROPIC_CREDENTIALS", str(Path.home() / ".claude" / ".credentials.json")
+        )
+    )
+    # Mark the static system+tools image cacheable (one ephemeral breakpoint) so the
+    # big fixed context is cache-read on turns 2+ instead of re-billed.
+    anthropic_cache_images: bool = field(
+        default_factory=lambda: _env_bool("IMGCTX_ANTHROPIC_CACHE_IMAGES", True)
+    )
+
     # --- master switches ---
     enabled: bool = field(default_factory=lambda: _env_bool("IMGCTX_ENABLED", True))
     # Which context regions to compress.
@@ -87,7 +111,7 @@ class Settings:
     # --- model allowlist ---
     # Base model ids (substring match) known to read rendered text. Empty => compress nothing.
     model_allowlist: list[str] = field(
-        default_factory=lambda: _env_list("IMGCTX_MODELS", ["mimo", "gemini", "gpt-4", "gpt-5", "qwen", "glm"])
+        default_factory=lambda: _env_list("IMGCTX_MODELS", ["mimo", "gemini", "gpt-4", "gpt-5", "qwen", "glm", "claude", "haiku", "sonnet", "opus"])
     )
 
     # --- thresholds ---
@@ -105,10 +129,12 @@ class Settings:
     pixels_per_token: float = field(default_factory=lambda: _env_float("IMGCTX_PIXELS_PER_TOKEN", 750.0))
     # Safety margin applied to image-token estimate (bias toward passthrough).
     image_cost_margin: float = field(default_factory=lambda: _env_float("IMGCTX_IMAGE_MARGIN", 1.15))
-    # Hard cap on images per single block (paging). Keeps us well under provider limits.
-    max_images_per_block: int = field(default_factory=lambda: _env_int("IMGCTX_MAX_IMAGES_PER_BLOCK", 8))
+    # Hard cap on images per single block (paging). A coding agent's tool schemas
+    # alone render to ~13 pages, so this must be generous while staying under the
+    # provider's per-request image limit (Anthropic allows up to 100).
+    max_images_per_block: int = field(default_factory=lambda: _env_int("IMGCTX_MAX_IMAGES_PER_BLOCK", 24))
     # Global cap on images per request.
-    max_images_per_request: int = field(default_factory=lambda: _env_int("IMGCTX_MAX_IMAGES", 40))
+    max_images_per_request: int = field(default_factory=lambda: _env_int("IMGCTX_MAX_IMAGES", 60))
 
     # --- rendering ---
     font_path: str = field(default_factory=lambda: os.environ.get("IMGCTX_FONT", DEFAULT_FONT))

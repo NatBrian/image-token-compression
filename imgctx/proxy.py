@@ -19,6 +19,7 @@ from starlette.routing import Route
 
 from .config import Settings, load_settings
 from .transform import transform_request
+from .anthropic import transform_anthropic_request
 
 _HOP_BY_HOP = {
     "host",
@@ -35,7 +36,14 @@ _HOP_BY_HOP = {
 _RESP_STRIP = {"content-length", "content-encoding", "transfer-encoding", "connection", "keep-alive"}
 
 
+def _is_messages_path(path: str) -> bool:
+    return path.rstrip("/").endswith("/v1/messages")
+
+
 def _upstream_url(path: str, settings: Settings) -> str:
+    # Anthropic-native Messages endpoint: forward verbatim to the Anthropic base.
+    if _is_messages_path(path):
+        return settings.anthropic_upstream_base + path
     base = settings.upstream_base
     # Recommended client baseURL is http://host:port/v1 -> strip the leading /v1
     # because upstream_base already carries the provider's version segment.
@@ -50,12 +58,34 @@ def _is_chat_path(path: str) -> bool:
     return path.endswith("/chat/completions")
 
 
-def _client_headers(request: Request, settings: Settings) -> dict:
+def _read_oauth_token(settings: Settings) -> str | None:
+    """Read Claude Code's subscription OAuth access token at forward time so token
+    refreshes are picked up. Returns None if unavailable."""
+    try:
+        d = json.loads(Path(settings.anthropic_credentials_path).expanduser().read_text())
+        tok = d.get("claudeAiOauth", {}).get("accessToken")
+        return tok if isinstance(tok, str) and tok else None
+    except Exception:
+        return None
+
+
+def _client_headers(request: Request, settings: Settings, is_anthropic: bool = False) -> dict:
     headers = {}
     for k, v in request.headers.items():
         if k.lower() in _HOP_BY_HOP:
             continue
         headers[k] = v
+    if is_anthropic:
+        # Claude Code strips its subscription credential from non-canonical hosts.
+        # Re-inject the locally stored OAuth bearer so api.anthropic.com accepts it.
+        if settings.anthropic_oauth_inject and not any(
+            h in {k.lower() for k in headers} for h in ("authorization", "x-api-key")
+        ):
+            tok = _read_oauth_token(settings)
+            if tok:
+                headers["authorization"] = f"Bearer {tok}"
+                headers.pop("x-api-key", None)
+        return headers
     if settings.upstream_key:
         headers["authorization"] = f"Bearer {settings.upstream_key}"
     return headers
@@ -98,8 +128,10 @@ def build_app(settings: Settings | None = None, client: httpx.AsyncClient | None
         method = request.method
         t0 = time.time()
 
-        # Only transform chat completions POSTs; everything else passes through.
-        transform_this = method == "POST" and _is_chat_path(path)
+        # Transform chat-completions (OpenAI) and messages (Anthropic) POSTs;
+        # everything else passes through byte-for-byte.
+        is_anthropic = _is_messages_path(path)
+        transform_this = method == "POST" and (_is_chat_path(path) or is_anthropic)
         out_body = raw
         stats = None
 
@@ -107,7 +139,10 @@ def build_app(settings: Settings | None = None, client: httpx.AsyncClient | None
             _capture(settings, f"req_{int(t0*1000)}_in.json", raw)
             try:
                 body = json.loads(raw)
-                new_body, stats = transform_request(body, settings)
+                if is_anthropic:
+                    new_body, stats = transform_anthropic_request(body, settings)
+                else:
+                    new_body, stats = transform_request(body, settings)
                 if stats.compressed:
                     out_body = json.dumps(new_body).encode("utf-8")
                 _capture(settings, f"req_{int(t0*1000)}_out.json", out_body)
@@ -116,7 +151,7 @@ def build_app(settings: Settings | None = None, client: httpx.AsyncClient | None
                 out_body = raw  # fail-open
 
         url = _upstream_url(path, settings) + (("?" + request.url.query) if request.url.query else "")
-        headers = _client_headers(request, settings)
+        headers = _client_headers(request, settings, is_anthropic=is_anthropic)
 
         try:
             upstream_req = client.build_request(method, url, headers=headers, content=out_body)
@@ -126,21 +161,34 @@ def build_app(settings: Settings | None = None, client: httpx.AsyncClient | None
             return JSONResponse({"error": f"imgctx upstream error: {e}"}, status_code=502)
 
         # Tee response text for usage logging without blocking the client stream.
-        collected = bytearray()
-        max_collect = 2_000_000
+        # Keep the HEAD (non-stream usage / message_start) and a rolling TAIL (the
+        # terminal message_delta carrying final output_tokens) so a long stream can't
+        # push the authoritative usage out of the buffer.
+        head = bytearray()
+        tail = bytearray()
+        max_head = 1_000_000
+        max_tail = 256_000
 
         async def body_iter():
             try:
-                async for chunk in upstream.aiter_raw():
-                    if len(collected) < max_collect:
-                        collected.extend(chunk[: max_collect - len(collected)])
+                # aiter_bytes yields DECOMPRESSED bytes (httpx auto-negotiates gzip).
+                # We strip content-encoding/length from the response headers, so the
+                # client must receive identity-coded bytes, not the raw compressed ones.
+                async for chunk in upstream.aiter_bytes():
+                    if len(head) < max_head:
+                        head.extend(chunk[: max_head - len(head)])
+                    tail.extend(chunk)
+                    if len(tail) > max_tail:
+                        del tail[:-max_tail]
                     yield chunk
             finally:
                 await upstream.aclose()
                 _finalize()
 
         def _finalize():
-            usage = _parse_usage(bytes(collected))
+            collected = bytes(head) + (b"\n" + bytes(tail) if tail else b"")
+            usage = (_parse_usage_anthropic(collected) if is_anthropic
+                     else _parse_usage(collected))
             event = {
                 "ts": t0,
                 "path": path,
@@ -197,3 +245,54 @@ def _parse_usage(data: bytes) -> dict | None:
     except Exception:
         return None
     return None
+
+
+def _parse_usage_anthropic(data: bytes) -> dict | None:
+    """Merge Anthropic usage across the response.
+
+    Non-stream: `usage` carries input/output/cache tokens together.
+    Stream: `message_start` carries input + cache tokens (output_tokens is a stub);
+    `message_delta` carries the final output_tokens. So we take input/cache from the
+    first usage that reports input_tokens and output from the last usage seen."""
+    if not data:
+        return None
+    text = data.decode("utf-8", errors="ignore")
+    # Try a plain JSON body first (a non-stream response may legitimately contain the
+    # substring "data:" in the model's text, so don't branch on that substring).
+    stripped = text.lstrip()
+    if stripped.startswith("{"):
+        try:
+            obj = json.loads(text)
+            if isinstance(obj, dict) and isinstance(obj.get("usage"), dict):
+                return obj["usage"]
+        except Exception:
+            pass
+    merged: dict = {}
+    last_output = None
+    for line in text.splitlines():
+        line = line.strip()
+        if not line.startswith("data:"):
+            continue
+        payload = line[len("data:"):].strip()
+        if not payload or payload == "[DONE]":
+            continue
+        try:
+            obj = json.loads(payload)
+        except Exception:
+            continue
+        if not isinstance(obj, dict):
+            continue
+        usage = obj.get("usage")
+        if not usage and isinstance(obj.get("message"), dict):
+            usage = obj["message"].get("usage")
+        if not isinstance(usage, dict):
+            continue
+        if usage.get("input_tokens") is not None and "input_tokens" not in merged:
+            for k in ("input_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"):
+                if usage.get(k) is not None:
+                    merged[k] = usage[k]
+        if usage.get("output_tokens") is not None:
+            last_output = usage["output_tokens"]
+    if last_output is not None:
+        merged["output_tokens"] = last_output
+    return merged or None

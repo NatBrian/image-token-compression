@@ -38,8 +38,28 @@ Thumbs.db
 bench/last_result.json
 bench/baseline_result.json
 
-# HotpotQA experiment raw per-question artifacts (kept on disk for inspection,
-# not committed). The summary reports and aggregated results.json ARE tracked.
+# Benchmark raw per-item artifacts (kept on disk for inspection, NOT committed).
+# For every benchmark the summary REPORT.md + aggregated results.json ARE tracked;
+# the heavy/transient run data (repo checkouts, per-item streams, patches, proxy
+# event logs, run-local backups) is ignored.
+
+# HotpotQA (OpenCode/mimo path)
 bench/hotpot_runs/off/
 bench/hotpot_runs/on/
 bench/hotpot_runs/*.log
+
+# HotpotQA (Claude Code path)
+bench/hotpot_claude_runs/off/
+bench/hotpot_claude_runs/on/
+bench/hotpot_claude_runs/_sonnet_streams/
+bench/hotpot_claude_runs/*.log
+bench/hotpot_claude_runs/proxy_*events*.jsonl
+bench/hotpot_claude_runs/results_*.json
+
+# SWE-bench (Claude Code path)
+bench/swebench_runs/_repos_cache/
+bench/swebench_runs/off/
+bench/swebench_runs/on/
+bench/swebench_runs/*.log
+bench/swebench_runs/proxy_*events*.jsonl
+bench/swebench_runs/results_*.json

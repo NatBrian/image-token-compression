@@ -2,7 +2,9 @@
 
 **A transparent proxy that renders bulky text context into images before it reaches a vision-capable LLM, cutting input tokens without changing your coding-agent CLI.**
 
-`imgctx` sits between an OpenAI-compatible CLI (for example [OpenCode][OpenCode]) and the model provider. It intercepts each request, renders the large text regions (system prompt, tool docs, tool output, old history) to compact PNG pages, and forwards them as image blocks. Tool definitions, tool-call linkage, and multi-turn structure are preserved, so the agent behaves exactly as before while paying for far fewer input tokens.
+`imgctx` sits between a coding-agent CLI and the model provider. It intercepts each request, renders the large text regions (system prompt, tool docs, tool output, old history) to compact PNG pages, and forwards them as image blocks. Tool definitions, tool-call linkage, and multi-turn structure are preserved, so the agent behaves exactly as before while sending far fewer input tokens. It speaks two request shapes: the **OpenAI-compatible** Chat Completions API (for example [OpenCode][OpenCode]) and the **native Anthropic Messages API** used by **Claude Code**.
+
+> **Fewer tokens is not always fewer dollars.** The token cut is real on every provider, but whether it lowers your bill depends on how the provider prices cache. On providers that already cache repeated text cheaply (Anthropic), imaging can cost *more* in real dollars, see [When imaging pays](#when-imaging-pays-and-when-it-does-not). Measure real cost before enabling it.
 
 ```
 your CLI  ->  imgctx proxy  ->  model provider
@@ -12,7 +14,9 @@ your CLI  ->  imgctx proxy  ->  model provider
 
 ## Why it matters
 
-An image's token cost is fixed by its pixel area, not by how many characters it contains. Dense content (code, JSON, logs, tool output) packs many characters into few image tokens. Agentic coding sessions re-send a large, mostly-static context on every step (system prompt, tool schemas, prior file reads), so that context dominates the bill. Rendering it to images cuts the dominant cost with no change to the CLI and no model fine-tuning.
+An image's token cost is fixed by its pixel area, not by how many characters it contains. Dense content (code, JSON, logs, tool output) packs many characters into few image tokens. Agentic coding sessions re-send a large, mostly-static context on every step (system prompt, tool schemas, prior file reads), so that context dominates the token count. Rendering it to images cuts that token count with no change to the CLI and no model fine-tuning.
+
+Whether the token cut becomes a **dollar** cut depends on the provider's pricing. Where repeated text is billed at full rate (no prompt cache), the saving is direct. Where the provider already caches repeated text cheaply (Anthropic), imaging can cost more in real dollars because it trades cheap cache-reads for cache-writes, quantified in [When imaging pays](#when-imaging-pays-and-when-it-does-not).
 
 ## Results
 
@@ -60,6 +64,51 @@ Agentic runs sometimes loop (the model re-reads and retries), and each looped st
 | $10.00                      | $180                      |
 
 This counts input tokens only. Some providers bill image inputs on a separate schedule; on `mimo` the image cost is folded into `prompt_tokens`, so the measured token figure already includes it. Reproduce every number with `python -m bench.hotpot_experiment --n 10 && python -m bench.make_report && python docs/make_charts.py`.
+
+## When imaging pays (and when it does not)
+
+Imaging always cuts **tokens**. Whether it also cuts **dollars** depends on one thing: does your provider already give you a cheap price on repeated text? This section is the honest, measured answer, so you can point `imgctx` at the jobs where it wins on both.
+
+### The one idea to understand: prompt caching
+
+Some providers keep a **prompt cache**. The first time they see a chunk of text they charge a one-time *write* price to store it; every later request that repeats that chunk is served from cache at a steep discount (a *read*). On Anthropic, a cache-read costs about **0.1x** the normal input rate, and a cache-write costs about **1.25x to 2x**.
+
+Agent coding sessions are the ideal case for that cache: the same system prompt, the same tool schemas, and the growing history repeat on every single turn. After turn one, the provider is already serving almost all of it at the ~0.1x read rate.
+
+### Why fewer tokens can still cost more (on a caching provider)
+
+Here is the trap, step by step:
+
+1. **Without `imgctx`**, that big repeated context is *text the provider has already cached*. You pay the cheap **read** price (~0.1x) for it every turn.
+2. **With `imgctx`**, the same context is now an **image**. The image is far fewer tokens, but it is *brand-new content the provider has never seen*, so it is billed as a **write** (~1.25x to 2x), and image bytes cannot reuse the text cache.
+3. So you traded a large number of **very cheap** tokens for a small number of **expensive** tokens. The token count drops, but the price-per-token rises more, and the bill goes up.
+
+In short: on a caching provider, `imgctx` is competing against a price (0.1x) that it simply cannot beat, and the act of imaging turns cheap reads into pricier writes.
+
+Measured through the **real Claude Code CLI** (`claude -p`, model `claude-sonnet-5`), each task run twice (compression OFF passthrough vs ON). **Dollars are Claude Code's own reported `total_cost_usd`**, not a price formula, and tokens are Claude's own reported usage:
+
+![Claude Code: input tokens fall but real dollars rise, on both benchmarks](docs/assets/anthropic_token_vs_cost.png)
+
+| benchmark (n=5)               | input tokens | real cost (`total_cost_usd`) |
+| ----------------------------- | -----------: | ---------------------------: |
+| SWE-bench Lite (long agentic) | **-24.7%**   | **+26.5%**                   |
+| HotpotQA (short read-a-doc QA)| **-35.1%**   | **+44.0%**                   |
+
+Tokens fall on both; dollars rise on both. Short one-or-two-turn tasks are hit hardest, because there are no later turns over which to spread the one-time image write (long agentic loops re-read the frozen prefix many times, which softens the hit but does not erase it). Every run stayed correct: 0 tool-call errors, 0 HTTP 400s. The economics turn negative, not the behavior.
+
+### So how should you use it
+
+Use `imgctx` where the token cut becomes a real dollar cut, and skip it where the provider is already doing the saving for you:
+
+| Use it here (cuts tokens **and** cost) | Skip it here (caching already wins) |
+| --- | --- |
+| Providers with **no prompt cache**, where every repeated token is billed at full rate every turn (for example the OpenCode/`mimo` path, where `imgctx` measured **-33% to -47%** end-to-end). | Providers with **aggressive prompt caching** (Anthropic / Claude Code) on repetitive agentic loops. The repeated context is already ~0.1x; imaging can only make it pricier. |
+| **Cheap-vision** models, where image tokens are priced low relative to text. | Cache-cheap models (Claude Opus/Haiku/Sonnet), which also add a small image "read tax" on top. |
+| **Send-once, large** inputs (a big document or log you pass a single time, not re-sent every turn). With nothing cached to undercut, imaging the giant paste is a straight win, and can keep you **under the context-window limit** when the raw text would not fit. | Short chat-style turns where the context is small to begin with, there is little to compress and the gate will skip it anyway. |
+
+**Rule of thumb:** ask *"does my provider bill repeated text cheaply?"* If **no**, `imgctx` saves both tokens and money. If **yes**, the provider already captured the cost saving, so use `imgctx` only for the token-count / context-window benefit, or leave it off (`IMGCTX_ENABLED=0`) and pay the cache-read price. Either way you are never worse off than an informed choice, because both arms are measurable from your provider's own `total_cost_usd`.
+
+This is why `imgctx` is best thought of as a **targeting tool, not an always-on switch**: it turns bulky text into cheap image tokens, which is a clear win exactly when text is not already cheap. Reproduce the Anthropic numbers with `python -m bench.swebench_experiment --n 5 --model sonnet` and `python -m bench.hotpot_claude_experiment --n 5 --model sonnet`, then `python -m bench.combined_report && python docs/make_anthropic_chart.py`.
 
 ## Demo
 
@@ -144,6 +193,18 @@ imgctx stats            # summarize tokens saved from ~/.imgctx/events.jsonl
 
 Any OpenAI-compatible CLI works the same way: set its base URL to `http://127.0.0.1:8787/v1` and set `IMGCTX_UPSTREAM_BASE` to the real endpoint.
 
+### Use it with Claude Code
+
+`imgctx` also speaks the native Anthropic Messages API, so Claude Code can route through it. Point Claude Code's base URL at the proxy:
+
+```bash
+ANTHROPIC_BASE_URL=http://127.0.0.1:8787 claude -p "fix the failing test in src/app.py"
+```
+
+The proxy forwards to `https://api.anthropic.com` and, for subscription auth, injects the OAuth token from `~/.claude/.credentials.json` (Claude Code strips its own credential from non-canonical hosts). For coding agents, keep the **system prompt as text** (`IMGCTX_SYSTEM=0`): it carries exact cwd/tool-use rules and is already cache-read cheaply, so imaging it is low-reward and can mis-orient the agent.
+
+**Before enabling it on Anthropic, read [When imaging pays](#when-imaging-pays-and-when-it-does-not) and measure your own `total_cost_usd`**, on cache-cheap Anthropic models the token cut does not translate to a dollar cut.
+
 ### Configuration
 
 All settings are environment variables:
@@ -163,6 +224,7 @@ All settings are environment variables:
 
 ## Known limitations
 
+- **Token savings do not always mean dollar savings (provider-dependent, by design).** On providers that already cache repeated text cheaply (Anthropic), imaging trades cheap cache-reads for pricier cache-writes and can raise the real bill even as tokens fall (measured: +26% to +44% on Claude Sonnet). This is not a bug, it is the honest economics of competing against a ~0.1x cache; the fix is *targeting*, not a code change. Use `imgctx` on providers with no cheap text cache, cheap-vision models, or send-once large inputs, where it cuts tokens and dollars together; on a caching provider, leave it off. Full explanation and a use-it-here/skip-it-here guide: [When imaging pays](#when-imaging-pays-and-when-it-does-not).
 - **Lossy for exact strings inside images.** Byte-exact recall (hashes, UUIDs, secrets) is unreliable and fails silently. Mitigated (kept as text plus a factsheet), not eliminated. Byte-critical content should stay text.
 - **Reader-model dependent.** Comprehension varies by model; keep the allowlist to models you have validated. Weaker readers can lose some accuracy on hard tasks.
 - **Latency.** Rendering adds time to large requests before they leave, and vision encoding adds server-side time.

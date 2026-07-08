@@ -1,0 +1,222 @@
+[
+  {
+    "cond": "off",
+    "qid": "q00",
+    "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+    "gold": "yes",
+    "pred": "Yes",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 12.1,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 17128,
+      "cache_read_input_tokens": 95696,
+      "output_tokens": 123
+    },
+    "cost_usd": 0.1502118,
+    "doc_chars": 4677,
+    "is_error": false,
+    "harness_error": null
+  },
+  {
+    "cond": "on",
+    "qid": "q00",
+    "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+    "gold": "yes",
+    "pred": "Yes",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 24.3,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 31220,
+      "cache_read_input_tokens": 40309,
+      "output_tokens": 122
+    },
+    "cost_usd": 0.21813269999999998,
+    "doc_chars": 4677,
+    "is_error": false,
+    "harness_error": null
+  },
+  {
+    "cond": "off",
+    "qid": "q01",
+    "question": "What government position was held by the woman who portrayed Corliss Archer in the film Kiss and Tell?",
+    "gold": "Chief of Protocol",
+    "pred": "Chief of Protocol of the United States",
+    "em": 0,
+    "f1": 0.667,
+    "contains": 1,
+    "duration_s": 9.1,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 17106,
+      "cache_read_input_tokens": 95705,
+      "output_tokens": 176
+    },
+    "cost_usd": 0.1508775,
+    "doc_chars": 5032,
+    "is_error": false,
+    "harness_error": null
+  },
+  {
+    "cond": "on",
+    "qid": "q01",
+    "question": "What government position was held by the woman who portrayed Corliss Archer in the film Kiss and Tell?",
+    "gold": "Chief of Protocol",
+    "pred": "Chief of Protocol of the United States",
+    "em": 0,
+    "f1": 0.667,
+    "contains": 1,
+    "duration_s": 27.2,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 31222,
+      "cache_read_input_tokens": 40318,
+      "output_tokens": 173
+    },
+    "cost_usd": 0.2189124,
+    "doc_chars": 5032,
+    "is_error": false,
+    "harness_error": null
+  },
+  {
+    "cond": "off",
+    "qid": "q02",
+    "question": "What science fantasy young adult series, told in first person, has a set of companion books narrating the stories of enslaved worlds and alien species?",
+    "gold": "Animorphs",
+    "pred": "Animorphs",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 8.0,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 17632,
+      "cache_read_input_tokens": 95714,
+      "output_tokens": 130
+    },
+    "cost_usd": 0.1533462,
+    "doc_chars": 6665,
+    "is_error": false,
+    "harness_error": null
+  },
+  {
+    "cond": "on",
+    "qid": "q02",
+    "question": "What science fantasy young adult series, told in first person, has a set of companion books narrating the stories of enslaved worlds and alien species?",
+    "gold": "Animorphs",
+    "pred": "Animorphs",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 26.4,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 30224,
+      "cache_read_input_tokens": 40327,
+      "output_tokens": 196
+    },
+    "cost_usd": 0.2132721,
+    "doc_chars": 6665,
+    "is_error": false,
+    "harness_error": null
+  },
+  {
+    "cond": "off",
+    "qid": "q03",
+    "question": "Are the Laleli Mosque and Esma Sultan Mansion located in the same neighborhood?",
+    "gold": "no",
+    "pred": "No",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 8.6,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 16905,
+      "cache_read_input_tokens": 95705,
+      "output_tokens": 155
+    },
+    "cost_usd": 0.1493565,
+    "doc_chars": 3573,
+    "is_error": false,
+    "harness_error": null
+  },
+  {
+    "cond": "on",
+    "qid": "q03",
+    "question": "Are the Laleli Mosque and Esma Sultan Mansion located in the same neighborhood?",
+    "gold": "no",
+    "pred": "No (Laleli in Laleli, Fatih; Esma Sultan Mansion in Ortak\u00f6y)",
+    "em": 0,
+    "f1": 0.182,
+    "contains": 1,
+    "duration_s": 23.7,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 31019,
+      "cache_read_input_tokens": 40318,
+      "output_tokens": 169
+    },
+    "cost_usd": 0.2176344,
+    "doc_chars": 3573,
+    "is_error": false,
+    "harness_error": null
+  },
+  {
+    "cond": "off",
+    "qid": "q04",
+    "question": "The director of the romantic comedy \"Big Stone Gap\" is based in what New York city?",
+    "gold": "Greenwich Village, New York City",
+    "pred": "Greenwich Village",
+    "em": 0,
+    "f1": 0.571,
+    "contains": 0,
+    "duration_s": 8.8,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 17307,
+      "cache_read_input_tokens": 95700,
+      "output_tokens": 119
+    },
+    "cost_usd": 0.151227,
+    "doc_chars": 5747,
+    "is_error": false,
+    "harness_error": null
+  },
+  {
+    "cond": "on",
+    "qid": "q04",
+    "question": "The director of the romantic comedy \"Big Stone Gap\" is based in what New York city?",
+    "gold": "Greenwich Village, New York City",
+    "pred": "Greenwich Village",
+    "em": 0,
+    "f1": 0.571,
+    "contains": 0,
+    "duration_s": 28.7,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 5630,
+      "cache_creation_input_tokens": 31402,
+      "cache_read_input_tokens": 40313,
+      "output_tokens": 147
+    },
+    "cost_usd": 0.21960090000000002,
+    "doc_chars": 5747,
+    "is_error": false,
+    "harness_error": null
+  }
+]
