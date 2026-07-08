@@ -116,7 +116,7 @@ Rendering is deterministic: the same text always produces the same PNG bytes, wh
 Requirements: Python 3.10+, `poppler-utils` (`pdftoppm`) on `PATH`, and an OpenAI-compatible upstream with a multimodal model.
 
 ```bash
-git clone https://github.com/your-username/image-token-compression
+git clone https://github.com/NatBrian/image-token-compression
 cd image-token-compression
 pip install -e .
 imgctx serve            # proxy on http://127.0.0.1:8787

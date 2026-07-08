@@ -29,7 +29,7 @@ bench = ["matplotlib>=3.8"]
 imgctx = "imgctx.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/your-username/image-token-compression"
+Homepage = "https://github.com/NatBrian/image-token-compression"
 
 [tool.setuptools]
 packages = ["imgctx"]
