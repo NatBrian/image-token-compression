@@ -44,6 +44,11 @@ PROXIES = {
     "on": {"port": 8797, "enabled": "1", "env": {"IMGCTX_SYSTEM": "0"}},
 }
 
+# Optional variant tag: when set, run dirs + results file + proxy logs are suffixed
+# so a fix-#1 rerun (only the read-once doc imaged, warm tool prefix left as text)
+# does NOT clobber the committed baseline. Set by --tools0.
+TAG = ""
+
 PROMPT_TEMPLATE = (
     "Read the file at this absolute path: {docs}\n"
     "Using ONLY the information in that file, answer the question as briefly as "
@@ -137,14 +142,14 @@ def parse_answer(events: list[dict]) -> str:
 def start_proxies() -> dict[str, subprocess.Popen]:
     procs: dict[str, subprocess.Popen] = {}
     for cond, cfg in PROXIES.items():
-        log = RUNS / f"proxy_{cond}_events.jsonl"
+        log = RUNS / f"proxy_{cond}{TAG}_events.jsonl"
         if log.exists():
             log.unlink()
         env = dict(os.environ)
         env.update({"IMGCTX_PORT": str(cfg["port"]), "IMGCTX_ENABLED": cfg["enabled"],
                     "IMGCTX_LOG_PATH": str(log)})
         env.update(cfg.get("env", {}))
-        out = open(RUNS / f"proxy_{cond}.log", "w")
+        out = open(RUNS / f"proxy_{cond}{TAG}.log", "w")
         procs[cond] = subprocess.Popen(
             [sys.executable, "-m", "imgctx", "serve"], env=env, cwd=str(ROOT),
             stdout=out, stderr=subprocess.STDOUT)
@@ -181,7 +186,7 @@ CLEAR_ENV = ["ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "LLM_API_KEY",
 
 
 def run_agent(row: dict, qid: str, cond: str, model: str, timeout: int) -> dict:
-    qdir = RUNS / cond / qid
+    qdir = RUNS / f"{cond}{TAG}" / qid
     if qdir.exists():
         shutil.rmtree(qdir)
     qdir.mkdir(parents=True)
@@ -268,7 +273,17 @@ def main() -> None:
     ap.add_argument("--n", type=int, default=5)
     ap.add_argument("--model", default="haiku")
     ap.add_argument("--timeout", type=int, default=240)
+    ap.add_argument("--tools0", action="store_true",
+                    help="Fix #1: also set IMGCTX_TOOLS=0 so ON images ONLY the "
+                         "read-once doc, leaving the reusable tool prefix as text. "
+                         "Writes to *_tools0 dirs + results_tools0.json so the "
+                         "committed baseline stays intact.")
     args = ap.parse_args()
+
+    global TAG
+    if args.tools0:
+        TAG = "_tools0"
+        PROXIES["on"]["env"]["IMGCTX_TOOLS"] = "0"
 
     RUNS.mkdir(parents=True, exist_ok=True)
     rows = load_questions(args.n)
@@ -294,11 +309,11 @@ def main() -> None:
                       f"em={r.get('em')} f1={r.get('f1')} ct={r.get('contains')} "
                       f"pred={str(r.get('pred'))[:40]!r} err={r.get('is_error')}", flush=True)
                 results.append(r)
-                (RUNS / "results.json").write_text(json.dumps(results, indent=2))
+                (RUNS / f"results{TAG}.json").write_text(json.dumps(results, indent=2))
     finally:
         stop_proxies(procs)
 
-    print(f"\nDONE. results -> {RUNS/'results.json'}", flush=True)
+    print(f"\nDONE. results -> {RUNS/f'results{TAG}.json'}", flush=True)
 
 
 if __name__ == "__main__":

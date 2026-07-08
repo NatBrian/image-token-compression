@@ -55,6 +55,11 @@ bench/hotpot_claude_runs/_sonnet_streams/
 bench/hotpot_claude_runs/*.log
 bench/hotpot_claude_runs/proxy_*events*.jsonl
 bench/hotpot_claude_runs/results_*.json
+# but DO track the IMGCTX_TOOLS=0 rerun's aggregate (backs the deep-dive Section 13
+# "measured flip" numbers); heavy per-item streams under off_tools0/on_tools0 stay out.
+!bench/hotpot_claude_runs/results_tools0.json
+bench/hotpot_claude_runs/off_tools0/
+bench/hotpot_claude_runs/on_tools0/
 
 # Long-doc single-shot (Claude Code path). Track LONGDOC_REPORT.md + results_*.json
 # + the cached data_*.json question sets; ignore heavy per-item streams/logs.

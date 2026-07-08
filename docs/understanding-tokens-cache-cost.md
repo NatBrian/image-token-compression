@@ -26,7 +26,7 @@ If you only read one thing, read this:
 10. ["Is cache-write secretly counting read tokens?"](#10-is-cache-write-secretly-counting-read-tokens)
 11. [Why must SWE-bench and HotpotQA "re-shelve the book"?](#11-why-must-swe-bench-and-hotpotqa-re-shelve-the-book)
 12. [Is the comparison cheating? Could OFF be using ON's cache?](#12-is-the-comparison-cheating)
-13. [The honesty caveat: config vs task shape](#13-the-honesty-caveat)
+13. [The honesty caveat, and the follow-up that confirms it](#13-the-honesty-caveat-and-the-follow-up-that-confirms-it)
 14. [The final rule: when imgctx saves both tokens and money](#14-the-final-rule)
 15. [Appendix: rates and how to reproduce](#15-appendix)
 
@@ -375,7 +375,7 @@ Both arms are measured in their **realistic** states (OFF warm because in real l
 
 ---
 
-## 13. The honesty caveat
+## 13. The honesty caveat, and the follow-up that confirms it
 
 The four benchmarks are **not a perfectly clean apples-to-apples** experiment, because the two families used slightly different `imgctx` settings:
 
@@ -384,7 +384,30 @@ The four benchmarks are **not a perfectly clean apples-to-apples** experiment, b
 | SWE-bench / HotpotQA | 0 (system left as text) | **1 (tools imaged)** | tools + tool output + history, so it **did** image part of the warm prefix |
 | narrativeqa / gov_report | 0 | **0 (tools left as text)** | only the unique document |
 
-So the result mixes **task shape** (re-read vs read-once) with **config** (did we image the warm prefix or not). The lesson is the same either way: *do not image content that is already cached cheaply; do image unique content.* But to isolate task shape alone, the clean follow-up is to re-run SWE-bench and HotpotQA with `IMGCTX_TOOLS=0` as well, so no benchmark images the warm prefix. Our per-call analysis predicts that would shrink or even reverse the loss on those two.
+So the headline result mixes **task shape** (re-read vs read-once) with **config** (did we image the warm prefix or not). To separate the two, we re-ran HotpotQA with `IMGCTX_TOOLS=0` as well, so it images **only the read-once document** and leaves the warm tool prefix as text, exactly like the read-once family. (SWE-bench was skipped to save spend; it is the same re-read regime, so the mechanism carries over.)
+
+### The measured flip (HotpotQA, n=5, claude-sonnet-5)
+
+| metric | before: `SYSTEM=0` (images the warm prefix too) | after: `SYSTEM=0 TOOLS=0` (images only the unique doc) |
+| --- | ---: | ---: |
+| cache-**write** tokens | **+80.2%** | **-34.6%** |
+| cache-read tokens | -57.9% | +9.9% |
+| real cost (`total_cost_usd`) | **+44.0%** | **-25.4%** |
+
+The cost sign flips with the config, and it follows the cache-write class exactly, precisely as Section 9 predicted. Imaging the warm prefix is what raised the bill; not imaging it removes that harm. **The lever was config (which region we imaged), not the task itself.**
+
+### But read this before you cite that -25% as a win
+
+The same rerun exposes why HotpotQA is a **poor yardstick for imgctx on Claude Code**, and honesty requires saying so:
+
+- The HotpotQA document is tiny (~1,300 tokens). Claude Code's own fixed system prompt and tool schemas are ~118,000 tokens on every call. So the compressible content is only about **1% of the request**, and imaging it removed ~700 tokens out of ~118,000. Input-side tokens moved **-0.2%**, essentially nothing.
+- If tokens barely moved, the -25% dollars did **not** come from compression. It came from cache bookkeeping between the paired ON and OFF runs: once ON keeps the prefix as text, its bytes match OFF's, so it reuses cache the OFF arm just wrote instead of writing its own. Proof it is bookkeeping and not signal: the OFF arm's own cache-write moved from 86,078 to 128,672 tokens between the two sessions for the **same** config and questions, purely from different account-level cache warmth.
+
+So the clean reading is: **the `TOOLS=0` rerun proves that imaging the warm prefix causes the loss, and not doing so removes it. It does not prove imgctx compresses HotpotQA, because through Claude Code there is almost nothing there to compress.** The genuine "both tokens and dollars fall" evidence is the long-document family (narrativeqa, gov_report), where the unique content is large relative to the fixed overhead.
+
+### The frame to carry away
+
+imgctx's product is **reducing input tokens**, and it does that on every provider. Whether that becomes a dollar cut is a **separate, provider-specific** question. The only case where imaging can raise a bill is a provider that charges a cache-write premium (Anthropic) on a workload that re-sends the same context many times. That is a property of one provider's price list, not a flaw in imgctx, and providers such as OpenAI (free cache-write) do not have it. The plain-language version of this separation is in [What imgctx saves, and what depends on your provider](input-tokens-vs-cost.md).
 
 ---
 
