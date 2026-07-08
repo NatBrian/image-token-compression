@@ -15,6 +15,20 @@ ON config: system prompt kept as text (`IMGCTX_SYSTEM=0`); tools + tool_results 
 | total cost (USD), real total_cost_usd, n=5 | $1.1988 | $1.5167 | **+26.5%** |
 | median input-token change / instance | | | **-16.7%** |
 
+### By token class (real per-field usage)
+
+Imaging only compresses **input**; the three input classes are priced very differently, so the class that moves is what moves the bill.
+
+| token class | OFF | ON | change |
+| --- | ---: | ---: | ---: |
+| fresh input (1x) | 28,324 | 28,332 | **+0.0%** |
+| cache WRITE (~1.25-2x) | 91,980 | 172,572 | **+87.6%** |
+| cache read (~0.1x) | 1,507,573 | 1,024,189 | **-32.1%** |
+| **input-side total (imaged)** | 1,627,877 | 1,225,093 | **-24.7%** |
+| output (not compressed) | 7,314 | 5,937 | -18.8% |
+
+The bill follows the **cache-WRITE** row, not the blended total: it is the priciest input class, so its direction (down = cheaper, up = pricier) decides the real-dollar sign.
+
 ## Per-call compression (imgctx-controlled, trajectory-independent)
 
 Every API call the proxy billed this run, aggregated. This isolates what compression does to a single request from how many turns the agent takes.

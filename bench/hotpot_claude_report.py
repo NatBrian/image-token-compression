@@ -17,6 +17,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from bench._usage_breakdown import breakdown_lines
+
 HERE = Path(__file__).resolve().parent
 RUNS = HERE / "hotpot_claude_runs"
 
@@ -70,6 +72,7 @@ def load_rows() -> dict[str, dict]:
             "pred": r.get("pred"), "gold": r.get("gold"),
             "cost": _real_cost(evt),                # real total_cost_usd or None
             "in": _in_side(u), "out": u.get("output_tokens", 0),
+            "usage": u,                             # full per-field usage (real)
             "turns": (evt or {}).get("num_turns"),
         }
     return by_q
@@ -124,6 +127,8 @@ def main() -> None:
             f"| contains gold | {cto}/{len(dpairs)} | {ctn}/{len(dpairs)} | |",
             "",
         ]
+        L += breakdown_lines([o["usage"] for o, _ in dpairs],
+                             [n["usage"] for _, n in dpairs])
     else:
         L += ["_No matched pair has a real total_cost_usd on disk, cannot report cost._", ""]
 

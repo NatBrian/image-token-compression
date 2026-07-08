@@ -4,7 +4,7 @@
 
 `imgctx` sits between a coding-agent CLI and the model provider. It intercepts each request, renders the large text regions (system prompt, tool docs, tool output, old history) to compact PNG pages, and forwards them as image blocks. Tool definitions, tool-call linkage, and multi-turn structure are preserved, so the agent behaves exactly as before while sending far fewer input tokens. It speaks two request shapes: the **OpenAI-compatible** Chat Completions API (for example [OpenCode][OpenCode]) and the **native Anthropic Messages API** used by **Claude Code**.
 
-> **Fewer tokens is not always fewer dollars.** The token cut is real on every provider, but whether it lowers your bill depends on how the provider prices cache. On providers that already cache repeated text cheaply (Anthropic), imaging can cost *more* in real dollars, see [When imaging pays](#when-imaging-pays-and-when-it-does-not). Measure real cost before enabling it.
+> **Fewer tokens is not always fewer dollars, so aim it at the right jobs.** The token cut is real on every provider. Whether it also cuts your bill depends on one thing: is the big context **read once** (a unique document you summarize, classify, or answer questions about) or **re-read every turn** (a long agentic loop)? Read-once jobs cut both tokens and dollars, even on Anthropic (measured **-13% to -18%** real cost). Re-read jobs on a caching provider are already cheap, so imaging can cost *more* there. Full measured breakdown: [When imaging pays](#when-imaging-pays-and-when-it-does-not).
 
 ```
 your CLI  ->  imgctx proxy  ->  model provider
@@ -16,7 +16,7 @@ your CLI  ->  imgctx proxy  ->  model provider
 
 An image's token cost is fixed by its pixel area, not by how many characters it contains. Dense content (code, JSON, logs, tool output) packs many characters into few image tokens. Agentic coding sessions re-send a large, mostly-static context on every step (system prompt, tool schemas, prior file reads), so that context dominates the token count. Rendering it to images cuts that token count with no change to the CLI and no model fine-tuning.
 
-Whether the token cut becomes a **dollar** cut depends on the provider's pricing. Where repeated text is billed at full rate (no prompt cache), the saving is direct. Where the provider already caches repeated text cheaply (Anthropic), imaging can cost more in real dollars because it trades cheap cache-reads for cache-writes, quantified in [When imaging pays](#when-imaging-pays-and-when-it-does-not).
+Whether the token cut becomes a **dollar** cut depends on how many times that big context is read. When it is a unique input read once (long-document QA, summarization, extraction), the provider must pay full price to *store* it (a cache-write, ~1.25x to 2x the input rate), so shrinking it to image tokens cuts dollars too, measured **-13% to -18%** in real cost on Anthropic Sonnet. When it is a prefix re-read every turn of a long agentic loop, that text is already served from cache at ~0.1x, so imaging busts that warm cache into fresh writes and can cost more. The deciding class is the cache-write, and both directions are quantified in [When imaging pays](#when-imaging-pays-and-when-it-does-not).
 
 ## Results
 
@@ -67,48 +67,71 @@ This counts input tokens only. Some providers bill image inputs on a separate sc
 
 ## When imaging pays (and when it does not)
 
-Imaging always cuts **tokens**. Whether it also cuts **dollars** depends on one thing: does your provider already give you a cheap price on repeated text? This section is the honest, measured answer, so you can point `imgctx` at the jobs where it wins on both.
+Imaging always cuts **tokens**. Whether it also cuts **dollars** comes down to a single question about your task: **is the big context a reusable prefix the model re-reads many times, or a unique payload it reads once?** Get that right and `imgctx` cuts both tokens and cost, even on a caching provider like Anthropic. The measured proof is below.
+
+> **In one minute (the whole thing, simply).** Think of the provider's prompt cache as a **library**: shelving a new page (a *cache-write*) is the priciest thing you can do (~2x), borrowing an already-shelved page (a *cache-read*) is the cheapest (~0.1x), a **20x gap**. imgctx renders text to an image, which is always **new bytes**, so it always costs a shelving (write). That write is a **waste** when it replaces something already on the shelf (a fixed prefix the model re-reads, so imaging it turns cheap borrows into pricey re-shelving, bill goes **up**), and a **saving** when it is just a thinner version of a page you had to shelve anyway (a unique document read once, bill goes **down**). "Fewer tokens" and "fewer dollars" disagree precisely because of that 20x read-vs-write gap. **The one rule: image content that is unique and read once; leave the re-read prefix as text.**
+>
+> Want the full, from-zero explanation with every benchmark number, the per-call cache traces, and a proof the A/B is not contaminated by shared cache? See **[Understanding Tokens, Prompt Caching, and Cost](docs/understanding-tokens-cache-cost.md)**.
 
 ### The one idea to understand: prompt caching
 
-Some providers keep a **prompt cache**. The first time they see a chunk of text they charge a one-time *write* price to store it; every later request that repeats that chunk is served from cache at a steep discount (a *read*). On Anthropic, a cache-read costs about **0.1x** the normal input rate, and a cache-write costs about **1.25x to 2x**.
+Some providers keep a **prompt cache**. The first time they see a chunk of text they charge a one-time *write* price to store it; every later request that repeats that chunk is served from cache at a steep discount (a *read*). On Anthropic, a cache-read costs about **0.1x** the normal input rate, a cache-write costs about **1.25x to 2x**, and a first-time chunk with no reuse is plain input at **1x**.
 
-Agent coding sessions are the ideal case for that cache: the same system prompt, the same tool schemas, and the growing history repeat on every single turn. After turn one, the provider is already serving almost all of it at the ~0.1x read rate.
+That cache is what decides the outcome, so the whole question is: **how many times does the model re-read your big context?**
 
-### Why fewer tokens can still cost more (on a caching provider)
+### The losing shape: a big context that is re-read every turn
 
-Here is the trap, step by step:
+Long agentic coding loops are the caching provider's ideal case. The same system prompt, tool schemas, and growing history repeat on every turn, so after turn one the provider serves almost all of it at the ~0.1x **read** rate. Here is the trap, step by step:
 
-1. **Without `imgctx`**, that big repeated context is *text the provider has already cached*. You pay the cheap **read** price (~0.1x) for it every turn.
-2. **With `imgctx`**, the same context is now an **image**. The image is far fewer tokens, but it is *brand-new content the provider has never seen*, so it is billed as a **write** (~1.25x to 2x), and image bytes cannot reuse the text cache.
-3. So you traded a large number of **very cheap** tokens for a small number of **expensive** tokens. The token count drops, but the price-per-token rises more, and the bill goes up.
+1. **Without `imgctx`**, that repeated context is text the provider has already cached. You pay the cheap **read** price (~0.1x) for it every turn.
+2. **With `imgctx`**, the same context is now an **image**: far fewer tokens, but brand-new bytes the provider has never seen, so it is billed as a **write** (~1.25x to 2x) and cannot reuse the text cache.
+3. You traded a large number of **very cheap** tokens for a small number of **expensive** tokens. The token count drops, the price-per-token rises more, and the bill goes up.
 
-In short: on a caching provider, `imgctx` is competing against a price (0.1x) that it simply cannot beat, and the act of imaging turns cheap reads into pricier writes.
+On this shape `imgctx` is competing against a price (0.1x) it cannot beat.
+
+### The winning shape: a big UNIQUE context read once
+
+Now flip it. Many real jobs send one large, unique document and read it a single time: long-document QA, summarization, classification, one-pass extraction, a big log or transcript you paste once. The document is brand-new, so **both** arms must cache-**write** it on first sight (you cannot cache-read something the provider has never seen). There is no warm cache for `imgctx` to bust, it just makes that unavoidable write **smaller**: fewer image tokens to store than the raw text. And the cache-write is the single most expensive input class (~1.25x to 2x), so shrinking it is exactly where the dollars are. This wins on a short trajectory, where the one-time write is a large slice of the bill and is not yet amortized away by many cheap re-reads (which is what saves the re-read shape and sinks imaging there).
+
+### Measured, both shapes, same model, same tool
 
 Measured through the **real Claude Code CLI** (`claude -p`, model `claude-sonnet-5`), each task run twice (compression OFF passthrough vs ON). **Dollars are Claude Code's own reported `total_cost_usd`**, not a price formula, and tokens are Claude's own reported usage:
 
-![Claude Code: input tokens fall but real dollars rise, on both benchmarks](docs/assets/anthropic_token_vs_cost.png)
+![Claude Code on claude-sonnet-5: tokens always fall; real dollars rise on re-read tasks and fall on read-once tasks](docs/assets/anthropic_token_vs_cost.png)
 
-| benchmark (n=5)               | input tokens | real cost (`total_cost_usd`) |
-| ----------------------------- | -----------: | ---------------------------: |
-| SWE-bench Lite (long agentic) | **-24.7%**   | **+26.5%**                   |
-| HotpotQA (short read-a-doc QA)| **-35.1%**   | **+44.0%**                   |
+| benchmark                                   | task shape          | input tokens | real cost (`total_cost_usd`) |
+| ------------------------------------------- | ------------------- | -----------: | ---------------------------: |
+| SWE-bench Lite (long agentic, n=5)          | re-read prefix      | **-24.7%**   | **+26.5%**                   |
+| HotpotQA (short read-a-doc QA, n=5)         | re-read prefix      | **-35.1%**   | **+44.0%**                   |
+| LongBench narrativeqa (unique doc, n=6)     | read once           | **-14.6%**   | **-17.6%**                   |
+| LongBench gov_report (unique report, n=4)   | read once           | **-13.2%**   | **-14.8%**                   |
 
-Tokens fall on both; dollars rise on both. Short one-or-two-turn tasks are hit hardest, because there are no later turns over which to spread the one-time image write (long agentic loops re-read the frozen prefix many times, which softens the hit but does not erase it). Every run stayed correct: 0 tool-call errors, 0 HTTP 400s. The economics turn negative, not the behavior.
+Same provider, same model, opposite dollar sign. The blended "input tokens" number actually understates the effect, because ~90% of that volume is cheap 0.1x cache-reads. The real lever is the **cache-write** class, and the whole result reduces to its direction:
+
+| benchmark        | task shape     | cache-WRITE tokens | real cost |
+| ---------------- | -------------- | -----------------: | --------: |
+| SWE-bench Lite   | re-read prefix | **+87.6%**         | +26.5%    |
+| HotpotQA         | re-read prefix | **+80.2%**         | +44.0%    |
+| narrativeqa      | read once      | **-27.2%**         | -17.6%    |
+| gov_report       | read once      | **-26.4%**         | -14.8%    |
+
+Cache-write and real cost move the same direction every time. On the re-read tasks imaging busts the warm text-cache that OFF reads at 0.1x, forcing new writes (+80% to +88%), so the bill rises even though total tokens fall. On the read-once tasks it shrinks the one write both arms must pay (-27%), so the bill falls. Fresh 1x input is ~0% in all four (Claude Code caches almost everything), so it is not the lever, the write is. Every run stayed correct: answer quality (F1 / summary) held within noise of the OFF baseline, 0 tool-call errors, 0 HTTP 400s. The economics flip with the task, the behavior does not.
 
 ### So how should you use it
 
-Use `imgctx` where the token cut becomes a real dollar cut, and skip it where the provider is already doing the saving for you:
+Point `imgctx` at unique, read-once bulk, and leave it off where a cheap cache is already doing the saving for you:
 
 | Use it here (cuts tokens **and** cost) | Skip it here (caching already wins) |
 | --- | --- |
-| Providers with **no prompt cache**, where every repeated token is billed at full rate every turn (for example the OpenCode/`mimo` path, where `imgctx` measured **-33% to -47%** end-to-end). | Providers with **aggressive prompt caching** (Anthropic / Claude Code) on repetitive agentic loops. The repeated context is already ~0.1x; imaging can only make it pricier. |
-| **Cheap-vision** models, where image tokens are priced low relative to text. | Cache-cheap models (Claude Opus/Haiku/Sonnet), which also add a small image "read tax" on top. |
-| **Send-once, large** inputs (a big document or log you pass a single time, not re-sent every turn). With nothing cached to undercut, imaging the giant paste is a straight win, and can keep you **under the context-window limit** when the raw text would not fit. | Short chat-style turns where the context is small to begin with, there is little to compress and the gate will skip it anyway. |
+| **Read-once large inputs** on any provider: long-document QA, summarization, classification, one-pass extraction, a big log/transcript pasted once. Measured on Anthropic Sonnet: **-13% to -18% real dollars** (LongBench). Nothing is cached to undercut, so the token cut is a straight dollar cut, and it can keep you **under the context-window limit** when the raw text would not fit. | **Re-read prefixes on a caching provider** (Anthropic / Claude Code long agentic loops). The repeated context is already ~0.1x; imaging turns cheap reads into pricier writes (measured **+26% to +44%**). |
+| Providers with **no prompt cache**, where every repeated token is billed at full rate every turn (for example the OpenCode/`mimo` path, where `imgctx` measured **-33% to -47%** end-to-end). | Cache-cheap models on repetitive turns, which also add a small image "read tax" on top of losing the cache discount. |
+| **Cheap-vision** models, where image tokens are priced low relative to text. | Short chat-style turns where the context is small to begin with; there is little to compress and the gate skips it anyway. |
 
-**Rule of thumb:** ask *"does my provider bill repeated text cheaply?"* If **no**, `imgctx` saves both tokens and money. If **yes**, the provider already captured the cost saving, so use `imgctx` only for the token-count / context-window benefit, or leave it off (`IMGCTX_ENABLED=0`) and pay the cache-read price. Either way you are never worse off than an informed choice, because both arms are measurable from your provider's own `total_cost_usd`.
+**Rule of thumb:** ask *"is the big context in this job read once, or re-read every turn?"* **Read once** (unique document, summarize, classify, extract) is a win on both tokens and dollars, even on Anthropic. **Re-read** on a caching provider is already cheap, so use `imgctx` only for the token-count / context-window benefit there, or leave it off (`IMGCTX_ENABLED=0`). Either way you are never worse off than an informed choice, because both arms are measurable from your provider's own `total_cost_usd`.
 
-This is why `imgctx` is best thought of as a **targeting tool, not an always-on switch**: it turns bulky text into cheap image tokens, which is a clear win exactly when text is not already cheap. Reproduce the Anthropic numbers with `python -m bench.swebench_experiment --n 5 --model sonnet` and `python -m bench.hotpot_claude_experiment --n 5 --model sonnet`, then `python -m bench.combined_report && python docs/make_anthropic_chart.py`.
+This is why `imgctx` is best thought of as a **targeting tool, not an always-on switch**: it turns bulky text into cheap image tokens, a clear win exactly when that text is not already cheap. Reproduce the read-once win with `python -m bench.longdoc_experiment --n 6 --config narrativeqa --model sonnet && python -m bench.longdoc_report`, and the re-read numbers with `python -m bench.swebench_experiment --n 5 --model sonnet` and `python -m bench.hotpot_claude_experiment --n 5 --model sonnet`, then `python docs/make_anthropic_chart.py`.
+
+**Go deeper:** [Understanding Tokens, Prompt Caching, and Cost](docs/understanding-tokens-cache-cost.md) explains all of this from zero, with the full per-token-class tables for every benchmark, the exact dollar decomposition (which reconciles to Claude's real bill to the cent), a call-by-call trace of why imaging re-shelves the warm cache, and a timeline proof that the ON vs OFF comparison is not contaminated by shared cache.
 
 ## Demo
 
@@ -203,7 +226,7 @@ ANTHROPIC_BASE_URL=http://127.0.0.1:8787 claude -p "fix the failing test in src/
 
 The proxy forwards to `https://api.anthropic.com` and, for subscription auth, injects the OAuth token from `~/.claude/.credentials.json` (Claude Code strips its own credential from non-canonical hosts). For coding agents, keep the **system prompt as text** (`IMGCTX_SYSTEM=0`): it carries exact cwd/tool-use rules and is already cache-read cheaply, so imaging it is low-reward and can mis-orient the agent.
 
-**Before enabling it on Anthropic, read [When imaging pays](#when-imaging-pays-and-when-it-does-not) and measure your own `total_cost_usd`**, on cache-cheap Anthropic models the token cut does not translate to a dollar cut.
+**Match it to the job (see [When imaging pays](#when-imaging-pays-and-when-it-does-not)):** on Anthropic it cuts real dollars for **read-once** work (long-document QA, summarization, extraction: measured **-13% to -18%**), but can raise cost on **re-read** long agentic loops where the context is already cache-read cheaply. Both arms are measurable from Claude Code's own `total_cost_usd`, so measure before committing.
 
 ### Configuration
 
@@ -224,7 +247,7 @@ All settings are environment variables:
 
 ## Known limitations
 
-- **Token savings do not always mean dollar savings (provider-dependent, by design).** On providers that already cache repeated text cheaply (Anthropic), imaging trades cheap cache-reads for pricier cache-writes and can raise the real bill even as tokens fall (measured: +26% to +44% on Claude Sonnet). This is not a bug, it is the honest economics of competing against a ~0.1x cache; the fix is *targeting*, not a code change. Use `imgctx` on providers with no cheap text cache, cheap-vision models, or send-once large inputs, where it cuts tokens and dollars together; on a caching provider, leave it off. Full explanation and a use-it-here/skip-it-here guide: [When imaging pays](#when-imaging-pays-and-when-it-does-not).
+- **Token savings mean dollar savings on read-once work, not on re-read loops (task-dependent, by design).** When the big context is a unique input read once (long-document QA, summarization, extraction), imaging cuts both tokens and real dollars, even on Anthropic (measured **-13% to -18%** on Claude Sonnet, LongBench). When it is a prefix re-read every turn of a long agentic loop on a caching provider, that text is already served at ~0.1x, so imaging trades cheap cache-reads for pricier cache-writes and can raise the bill even as tokens fall (measured **+26% to +44%** on the same model). This is not a bug, it is the honest economics of competing against a ~0.1x cache; the fix is *targeting*, not a code change. Full explanation and a use-it-here/skip-it-here guide: [When imaging pays](#when-imaging-pays-and-when-it-does-not), or the from-zero deep dive: [Understanding Tokens, Prompt Caching, and Cost](docs/understanding-tokens-cache-cost.md).
 - **Lossy for exact strings inside images.** Byte-exact recall (hashes, UUIDs, secrets) is unreliable and fails silently. Mitigated (kept as text plus a factsheet), not eliminated. Byte-critical content should stay text.
 - **Reader-model dependent.** Comprehension varies by model; keep the allowlist to models you have validated. Weaker readers can lose some accuracy on hard tasks.
 - **Latency.** Rendering adds time to large requests before they leave, and vision encoding adds server-side time.

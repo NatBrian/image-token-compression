@@ -56,6 +56,15 @@ bench/hotpot_claude_runs/*.log
 bench/hotpot_claude_runs/proxy_*events*.jsonl
 bench/hotpot_claude_runs/results_*.json
 
+# Long-doc single-shot (Claude Code path). Track LONGDOC_REPORT.md + results_*.json
+# + the cached data_*.json question sets; ignore heavy per-item streams/logs.
+bench/longdoc_runs/off/
+bench/longdoc_runs/on/
+bench/longdoc_runs/*.log
+bench/longdoc_runs/proxy_*events*.jsonl
+bench/longdoc_runs/results.json
+bench/longdoc_runs/data_*.json
+
 # SWE-bench (Claude Code path)
 bench/swebench_runs/_repos_cache/
 bench/swebench_runs/off/

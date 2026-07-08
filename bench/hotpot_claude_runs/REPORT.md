@@ -15,6 +15,20 @@ Model(s) seen in streams: `claude-sonnet-5`.
 | exact match | 3/5 | 2/5 | |
 | contains gold | 4/5 | 4/5 | |
 
+### By token class (real per-field usage)
+
+Imaging only compresses **input**; the three input classes are priced very differently, so the class that moves is what moves the bill.
+
+| token class | OFF | ON | change |
+| --- | ---: | ---: | ---: |
+| fresh input (1x) | 28,150 | 28,150 | **+0.0%** |
+| cache WRITE (~1.25-2x) | 86,078 | 155,087 | **+80.2%** |
+| cache read (~0.1x) | 478,520 | 201,585 | **-57.9%** |
+| **input-side total (imaged)** | 592,748 | 384,822 | **-35.1%** |
+| output (not compressed) | 703 | 807 | +14.8% |
+
+The bill follows the **cache-WRITE** row, not the blended total: it is the priciest input class, so its direction (down = cheaper, up = pricier) decides the real-dollar sign.
+
 ## Per-question (real)
 
 | qid | in OFF | in ON | Δ tok | $ OFF | $ ON | Δ $ | EM O/N | turns O/N |

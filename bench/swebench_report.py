@@ -12,6 +12,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from bench._usage_breakdown import breakdown_lines
+
 HERE = Path(__file__).resolve().parent
 RUNS = HERE / "swebench_runs"
 
@@ -158,6 +160,8 @@ def main() -> None:
             f"| median input-token change / instance | | | **{med:+.1f}%** |",
             "",
         ]
+        lines += breakdown_lines([o["usage"] for _, o, _ in matched],
+                                 [n["usage"] for _, _, n in matched])
 
     # Per-call aggregate (isolates compression from trajectory length).
     poff, pon = per_call_stats("off"), per_call_stats("on")
