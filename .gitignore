@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+*.env
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Runtime logs / event data
+*.log
+.imgctx/
+
+# Session scratch (created by tooling, not part of the project)
+.remember/
+
+# Benchmark outputs
+bench/last_result.json
+bench/baseline_result.json
+
+# HotpotQA experiment raw per-question artifacts (kept on disk for inspection,
+# not committed). The summary reports and aggregated results.json ARE tracked.
+bench/hotpot_runs/off/
+bench/hotpot_runs/on/
+bench/hotpot_runs/*.log
