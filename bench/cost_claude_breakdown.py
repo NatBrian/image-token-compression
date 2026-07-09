@@ -17,8 +17,8 @@ Code writes prompt cache at the 1-HOUR TTL, so cache-creation is priced at 2x th
 base input rate, not the 5-minute 1.25x. If Anthropic changes prices, edit RATES;
 the reconciliation line will immediately show any drift.
 
-Run:  .venv/bin/python -m bench.cost_breakdown
-Writes bench/COST_BREAKDOWN.md
+Run:  .venv/bin/python -m bench.COST_CLAUDE_BREAKDOWN
+Writes bench/COST_CLAUDE_BREAKDOWN.md
 """
 from __future__ import annotations
 
@@ -207,7 +207,7 @@ def main() -> None:
              "the write class lowers the bill; imaging that inflates it raises the bill.",
              ""]
 
-    out = HERE / "COST_BREAKDOWN.md"
+    out = HERE / "COST_CLAUDE_BREAKDOWN.md"
     out.write_text("\n".join(head + [""] + L))
     print(f"wrote {out}\n")
     print("\n".join(head))

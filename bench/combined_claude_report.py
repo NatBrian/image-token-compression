@@ -4,8 +4,8 @@ Reads REAL data only, dollars from each run's `total_cost_usd`, tokens from Clau
 per-field usage, for BOTH benchmarks and emits one comparison table + verdict. No
 price formula; the only math is summation and percent-change over real values.
 
-Run:  .venv/bin/python -m bench.combined_report
-Writes bench/COMBINED_REPORT.md
+Run:  .venv/bin/python -m bench.COMBINED_CLAUDE_REPORT
+Writes bench/COMBINED_CLAUDE_REPORT.md
 """
 from __future__ import annotations
 
@@ -130,7 +130,7 @@ def main() -> None:
         "400s; compression never broke tool use or answers.",
         "",
     ]
-    out = HERE / "COMBINED_REPORT.md"
+    out = HERE / "COMBINED_CLAUDE_REPORT.md"
     out.write_text("\n".join(L))
     print(f"wrote {out}")
     print("\n".join(L))

@@ -23,7 +23,7 @@ lands on fresh (1x) input that OFF cannot cache away.
 Cost is Claude Code's own `total_cost_usd` (result event). NO manual pricing.
 
 Run:
-  .venv/bin/python -m bench.longdoc_experiment --n 6 --config narrativeqa --model sonnet
+  .venv/bin/python -m bench.longdoc_claude_experiment --n 6 --config narrativeqa --model sonnet
 """
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ from bench.hotpot_claude_experiment import (
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-RUNS = HERE / "longdoc_runs"
+RUNS = HERE / "longdoc_claude_runs"
 
 # ON images ONLY the read-once doc (tool_result/history/user_text). System+tools
 # stay text so they cache-read at 0.1x exactly like OFF (no slab-cache penalty).

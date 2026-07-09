@@ -9,8 +9,8 @@ Dollars are read from each item's stream `total_cost_usd` (Claude Code's own
 billed figure); tokens from Claude's real per-field usage. No price formula, the
 only math is summation + percent-change over real values.
 
-Run:  .venv/bin/python -m bench.longdoc_report
-Writes bench/LONGDOC_REPORT.md
+Run:  .venv/bin/python -m bench.longdoc_claude_report
+Writes bench/LONGDOC_CLAUDE_REPORT.md
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ from pathlib import Path
 from bench._usage_breakdown import breakdown_lines
 
 HERE = Path(__file__).resolve().parent
-RUNS = HERE / "longdoc_runs"
+RUNS = HERE / "longdoc_claude_runs"
 
 
 def _last_result(stream: Path):
@@ -182,7 +182,7 @@ def main() -> None:
             "long agentic loop (that is what prompt caching already makes cheap).",
         ]
     L.append("")
-    out = HERE / "LONGDOC_REPORT.md"
+    out = HERE / "LONGDOC_CLAUDE_REPORT.md"
     out.write_text("\n".join(L))
     print(f"wrote {out}")
     print("\n".join(L))

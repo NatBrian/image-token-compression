@@ -31,6 +31,10 @@ Thumbs.db
 *.log
 .imgctx/
 
+# Raw request/response capture (imgctx proxy IMGCTX_CAPTURE_DIR). Heavy, per-call,
+# regenerable by rerunning; results*.json + REPORT.md stay tracked, this doesn't.
+**/capture/
+
 # Session scratch (created by tooling, not part of the project)
 .remember/
 
@@ -43,10 +47,14 @@ bench/baseline_result.json
 # the heavy/transient run data (repo checkouts, per-item streams, patches, proxy
 # event logs, run-local backups) is ignored.
 
-# HotpotQA (OpenCode/mimo path)
+# HotpotQA (OpenCode path). Wildcard covers every model-tagged run folder
+# (hotpot_opencode_runs, hotpot_opencode_runs_gemini_31_flash_lite_v2, etc.) so a new
+# --runs-dir never needs a new gitignore line. Track results*.json; ignore per-item.
 bench/hotpot_runs/off/
 bench/hotpot_runs/on/
 bench/hotpot_runs/*.log
+bench/hotpot_opencode_runs*/off/
+bench/hotpot_opencode_runs*/on/
 
 # HotpotQA (Claude Code path)
 bench/hotpot_claude_runs/off/
@@ -63,28 +71,42 @@ bench/hotpot_claude_runs/on_tools0/
 
 # Long-doc single-shot (Claude Code path). Track LONGDOC_REPORT.md + results_*.json
 # + the cached data_*.json question sets; ignore heavy per-item streams/logs.
+# (longdoc_runs is the pre-rename name, longdoc_claude_runs the current one -- keep
+# both so a stale local checkout from before the rename still ignores correctly.)
 bench/longdoc_runs/off/
 bench/longdoc_runs/on/
 bench/longdoc_runs/*.log
 bench/longdoc_runs/proxy_*events*.jsonl
 bench/longdoc_runs/results.json
 bench/longdoc_runs/data_*.json
+bench/longdoc_claude_runs/off/
+bench/longdoc_claude_runs/on/
+bench/longdoc_claude_runs/*.log
+bench/longdoc_claude_runs/proxy_*events*.jsonl
+bench/longdoc_claude_runs/results.json
+bench/longdoc_claude_runs/data_*.json
 
-# Long-doc single-shot (OpenCode/mimo path). Track results_*.json; ignore heavy streams.
-bench/longdoc_opencode_runs/off/
-bench/longdoc_opencode_runs/on/
-bench/longdoc_opencode_runs/*.log
+# Long-doc single-shot (OpenCode path, any model-tagged --runs-dir). Track results*.json.
+bench/longdoc_opencode_runs*/off/
+bench/longdoc_opencode_runs*/on/
 
-# SWE-bench (OpenCode/mimo path). Track results.json + instances.json; ignore repos/streams.
-bench/swebench_opencode_runs/_repos_cache/
-bench/swebench_opencode_runs/off/
-bench/swebench_opencode_runs/on/
-bench/swebench_opencode_runs/*.log
+# SWE-bench (OpenCode path, any model-tagged --runs-dir). Track results*.json + instances.json.
+bench/swebench_opencode_runs*/_repos_cache/
+bench/swebench_opencode_runs*/off/
+bench/swebench_opencode_runs*/on/
 
-# SWE-bench (Claude Code path)
+# SWE-bench (Claude Code path). Same pre-/post-rename note as long-doc above.
 bench/swebench_runs/_repos_cache/
 bench/swebench_runs/off/
 bench/swebench_runs/on/
 bench/swebench_runs/*.log
 bench/swebench_runs/proxy_*events*.jsonl
 bench/swebench_runs/results_*.json
+bench/swebench_claude_runs/_repos_cache/
+bench/swebench_claude_runs/off/
+bench/swebench_claude_runs/on/
+bench/swebench_claude_runs/*.log
+bench/swebench_claude_runs/proxy_*events*.jsonl
+bench/swebench_claude_runs/results_*.json
+
+tmp-test

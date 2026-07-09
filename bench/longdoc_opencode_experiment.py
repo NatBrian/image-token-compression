@@ -29,7 +29,7 @@ from bench._opencode_run import (
 )
 # Reuse the exact data + scoring from the Claude longdoc harness so the instrument
 # matches; only the runner (opencode vs claude) and cost basis differ.
-from bench.longdoc_experiment import (
+from bench.longdoc_claude_experiment import (
     best_score, gold_answers, load_items, PROMPT_TEMPLATE, SUMMARY_TEMPLATE,
 )
 
@@ -39,6 +39,30 @@ PORT = 8811  # distinct from the Claude longdoc ports and the hotpot opencode po
 
 # ON images only the unique doc; system+tools stay text (mirror the Claude arm).
 ON_ENV = {"IMGCTX_SYSTEM": "0", "IMGCTX_TOOLS": "0"}
+
+# Set from CLI in main(). Defaults keep the mimo/zen behaviour.
+MODEL = "opencode/mimo-v2.5-free"
+PROVIDER = "opencode"
+UPSTREAM = None  # None => proxy's default upstream (zen). Set for OpenAI.
+API_KEY = None
+IMGCTX_MODELS = None
+
+
+def _proxy_env(enabled: bool) -> dict:
+    env = dict(ON_ENV) if enabled else {}
+    if UPSTREAM:
+        env["IMGCTX_UPSTREAM_BASE"] = UPSTREAM
+    if IMGCTX_MODELS:
+        env["IMGCTX_MODELS"] = IMGCTX_MODELS
+    return env
+
+
+def _models_block() -> dict | None:
+    if PROVIDER == "opencode":
+        return None
+    bare = MODEL.split("/", 1)[-1]
+    return {bare: {"id": bare, "name": bare, "tool_call": True,
+                   "limit": {"context": 128000, "output": 8192}}}
 
 
 def run_item(row: dict, qid: str, cond: str, config: str, timeout: int) -> dict:
@@ -53,14 +77,15 @@ def run_item(row: dict, qid: str, cond: str, config: str, timeout: int) -> dict:
     tmpl = SUMMARY_TEMPLATE if config == "gov_report" else PROMPT_TEMPLATE
     prompt = tmpl.format(docs=str(docs.resolve()), question=question)
 
-    cfg_path = write_config(qdir / "opencode.json", PORT)
+    cfg_path = write_config(qdir / "opencode.json", PORT, provider=PROVIDER,
+                            api_key=API_KEY, models=_models_block())
     log_path = qdir / "events.jsonl"
     enabled = cond == "on"
 
     t0 = time.time()
-    proc = start_proxy(enabled, PORT, log_path, extra_env=ON_ENV if enabled else None)
+    proc = start_proxy(enabled, PORT, log_path, extra_env=_proxy_env(enabled))
     try:
-        out = run_opencode(qdir, prompt, cfg_path, timeout=timeout)
+        out = run_opencode(qdir, prompt, cfg_path, timeout=timeout, model=MODEL)
     finally:
         stop_proxy(proc, PORT)
     (qdir / "stdout.txt").write_text(out)
@@ -76,7 +101,7 @@ def run_item(row: dict, qid: str, cond: str, config: str, timeout: int) -> dict:
         "duration_s": round(time.time() - t0, 1),
         "doc_chars": len(str(row["context"])),
         "usage": u,
-        "cost_usd": None,  # free model: no provider-billed cost. Sim only, separate script.
+        "cost_usd": u["cost_usd"],  # real, provider-billed if the endpoint reports usage.cost
         "is_error": u["calls"] == 0 or "[TIMEOUT]" in out,
     }
 
@@ -88,7 +113,25 @@ def main() -> None:
                     help="LongBench config: narrativeqa | gov_report | ...")
     ap.add_argument("--timeout", type=int, default=360)
     ap.add_argument("--max-chars", type=int, default=90000)
+    ap.add_argument("--model", default="opencode/mimo-v2.5-free")
+    ap.add_argument("--provider", default="opencode",
+                    help="opencode (zen/mimo) or openai (api.openai.com via proxy)")
+    ap.add_argument("--upstream", default=None,
+                    help="IMGCTX_UPSTREAM_BASE for the proxy, e.g. https://api.openai.com/v1")
+    ap.add_argument("--api-key", default=None)
+    ap.add_argument("--imgctx-models", default=None)
+    ap.add_argument("--tag", default="",
+                    help="suffix for the results file so a different model does not clobber")
+    ap.add_argument("--runs-dir", default=None,
+                    help="override the output folder name (default longdoc_opencode_runs), "
+                         "so a different model/provider never clobbers a prior run")
     args = ap.parse_args()
+
+    global MODEL, PROVIDER, UPSTREAM, API_KEY, IMGCTX_MODELS, RUNS
+    MODEL, PROVIDER, UPSTREAM = args.model, args.provider, args.upstream
+    API_KEY, IMGCTX_MODELS = args.api_key, args.imgctx_models
+    if args.runs_dir:
+        RUNS = HERE / args.runs_dir
 
     RUNS.mkdir(parents=True, exist_ok=True)
     rows = load_items(args.config, args.n, args.max_chars)
@@ -97,7 +140,7 @@ def main() -> None:
           flush=True)
 
     results: list[dict] = []
-    results_path = RUNS / f"results_{args.config}.json"
+    results_path = RUNS / f"results_{args.config}{args.tag}.json"
     for i, row in enumerate(rows):
         qid = f"q{i:02d}"
         for cond in ("off", "on"):

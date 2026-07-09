@@ -1,0 +1,54 @@
+[
+  {
+    "cond": "off",
+    "qid": "q00",
+    "config": "narrativeqa",
+    "question": "What is Saltram's living situation?",
+    "gold": [
+      "He is a guest in the home of the Mulvilles."
+    ],
+    "pred": "Error: User not found.",
+    "em": 0,
+    "f1": 0.0,
+    "contains": 0,
+    "duration_s": 13.4,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 0,
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "completion_tokens": 0,
+      "calls": 0,
+      "compressed_calls": 0,
+      "images": 0
+    },
+    "cost_usd": null,
+    "is_error": true
+  },
+  {
+    "cond": "on",
+    "qid": "q00",
+    "config": "narrativeqa",
+    "question": "What is Saltram's living situation?",
+    "gold": [
+      "He is a guest in the home of the Mulvilles."
+    ],
+    "pred": "Error: User not found.",
+    "em": 0,
+    "f1": 0.0,
+    "contains": 0,
+    "duration_s": 13.3,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 0,
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "completion_tokens": 0,
+      "calls": 0,
+      "compressed_calls": 0,
+      "images": 0
+    },
+    "cost_usd": null,
+    "is_error": true
+  }
+]

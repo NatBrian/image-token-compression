@@ -38,12 +38,23 @@ def port_open(port: int) -> bool:
         return s.connect_ex(("127.0.0.1", port)) == 0
 
 
-def write_config(path: Path, port: int) -> Path:
-    """Isolated opencode config pointing the provider at our proxy, with headless
-    permissions so `opencode run` never blocks on a prompt. Returned via OPENCODE_CONFIG."""
+def write_config(path: Path, port: int, provider: str = "opencode",
+                 api_key: str | None = None, models: dict | None = None) -> Path:
+    """Isolated opencode config pointing `provider` at our proxy, with headless
+    permissions so `opencode run` never blocks on a prompt. Returned via OPENCODE_CONFIG.
+
+    provider="opencode" is the zen/mimo path. For a custom OpenAI-compatible provider
+    (e.g. a chat/completions gateway) pass its api_key and, if needed, a `models` block
+    (e.g. to force tool_call:true so the agent can use the Read tool)."""
+    options = {"baseURL": f"http://127.0.0.1:{port}/v1"}
+    if api_key:
+        options["apiKey"] = api_key
+    prov: dict = {"options": options}
+    if models:
+        prov["models"] = models
     cfg = {
         "$schema": "https://opencode.ai/config.json",
-        "provider": {"opencode": {"options": {"baseURL": f"http://127.0.0.1:{port}/v1"}}},
+        "provider": {provider: prov},
         "permission": {"edit": "allow", "bash": "allow", "webfetch": "allow"},
     }
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -58,6 +69,11 @@ def start_proxy(enabled: bool, port: int, log_path: Path,
     env["IMGCTX_PORT"] = str(port)
     env["IMGCTX_LOG_PATH"] = str(log_path)
     env["IMGCTX_LOG"] = "1"
+    # Always capture raw request/response bytes next to events.jsonl. If our usage/
+    # cost parsing misses a field (e.g. a paid endpoint's cost lives somewhere
+    # _parse_usage doesn't check), the original bytes are still on disk -- no rerun,
+    # no re-billing, ever.
+    env["IMGCTX_CAPTURE_DIR"] = str(log_path.parent / "capture")
     if extra_env:
         env.update(extra_env)
     log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -84,13 +100,17 @@ def stop_proxy(proc: subprocess.Popen, port: int) -> None:
 
 
 def run_opencode(cwd: Path, prompt: str, config_path: Path,
-                 timeout: int = 300) -> str:
+                 timeout: int = 300, model: str = MODEL) -> str:
     """Run one headless opencode turn against the isolated config. Returns stdout+stderr."""
     env = dict(os.environ)
     env["OPENCODE_CONFIG"] = str(config_path)
     try:
         res = subprocess.run(
-            ["opencode", "run", "--model", MODEL, prompt],
+            # --print-logs/--log-level DEBUG: opencode's own session/tool-call trace
+            # (permission decisions, streaming steps, session/message ids) lands in
+            # stderr instead of only the shared global opencode.log, so it's captured
+            # per-item in stdout.txt alongside the proxy's raw request/response capture.
+            ["opencode", "run", "--model", model, "--print-logs", "--log-level", "DEBUG", prompt],
             cwd=str(cwd), env=env, capture_output=True, text=True, timeout=timeout)
         out = (res.stdout or "") + "\n" + (res.stderr or "")
     except subprocess.TimeoutExpired as e:
@@ -112,10 +132,18 @@ def parse_final_answer(stdout: str) -> str:
 
 
 def read_usage(log_path: Path) -> dict:
-    """Sum the real per-field usage across every call in a proxy event log, including
-    the cache split the zen/mimo endpoint reports."""
+    """Sum the real per-field usage across every call in a proxy event log.
+
+    Captures everything the endpoint returns in `usage` (prompt/completion/cache
+    split, reasoning/audio/image sub-tokens, and a real provider-billed `cost` if the
+    endpoint reports one, e.g. OpenRouter's `usage.cost` in USD) rather than only the
+    handful of fields the mimo path happens to need. `raw` keeps the untouched
+    per-call usage dicts so nothing the provider sends is silently dropped."""
     t = {"prompt_tokens": 0, "cached_tokens": 0, "cache_write_tokens": 0,
-         "completion_tokens": 0, "calls": 0, "compressed_calls": 0, "images": 0}
+         "completion_tokens": 0, "total_tokens": 0,
+         "reasoning_tokens": 0, "audio_tokens": 0, "image_tokens": 0,
+         "cost_usd": 0.0, "has_cost": False,
+         "calls": 0, "compressed_calls": 0, "images": 0, "raw": []}
     if not log_path.exists():
         return t
     for line in log_path.read_text().splitlines():
@@ -132,10 +160,22 @@ def read_usage(log_path: Path) -> dict:
             t["compressed_calls"] += 1
             t["images"] += tr.get("image_count", 0) or 0
         u = ev.get("usage") or {}
-        d = u.get("prompt_tokens_details") or {}
+        t["raw"].append(u)
+        pd = u.get("prompt_tokens_details") or {}
+        cd = u.get("completion_tokens_details") or {}
         t["prompt_tokens"] += u.get("prompt_tokens", 0) or 0
-        t["cached_tokens"] += d.get("cached_tokens", 0) or 0
-        t["cache_write_tokens"] += d.get("cache_write_tokens", 0) or 0
+        t["cached_tokens"] += pd.get("cached_tokens", 0) or 0
+        t["cache_write_tokens"] += pd.get("cache_write_tokens", 0) or 0
         t["completion_tokens"] += u.get("completion_tokens", 0) or 0
+        t["total_tokens"] += u.get("total_tokens", 0) or 0
+        t["reasoning_tokens"] += cd.get("reasoning_tokens", 0) or 0
+        t["audio_tokens"] += (pd.get("audio_tokens", 0) or 0) + (cd.get("audio_tokens", 0) or 0)
+        t["image_tokens"] += cd.get("image_tokens", 0) or 0
+        cost = u.get("cost")
+        if cost is not None:
+            t["has_cost"] = True
+            t["cost_usd"] += float(cost)
     t["fresh_tokens"] = t["prompt_tokens"] - t["cached_tokens"] - t["cache_write_tokens"]
+    if not t["has_cost"]:
+        t["cost_usd"] = None
     return t

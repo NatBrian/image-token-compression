@@ -10,9 +10,9 @@ We do NOT execute the repo's tests (no Docker on this box); the deliverable is t
 token/cost reduction plus the captured patch for optional later grading.
 
 Usage:
-  python -m bench.swebench_experiment --n 10           # full run
-  python -m bench.swebench_experiment --select-only    # just pick + save instances
-  python -m bench.swebench_experiment --n 1 --instances psf__requests-...  # single
+  python -m bench.swebench_claude_experiment --n 10           # full run
+  python -m bench.swebench_claude_experiment --select-only    # just pick + save instances
+  python -m bench.swebench_claude_experiment --n 1 --instances psf__requests-...  # single
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-RUNS = HERE / "swebench_runs"
+RUNS = HERE / "swebench_claude_runs"
 REPOS = RUNS / "_repos_cache"
 SEL_PATH = RUNS / "instances.json"
 

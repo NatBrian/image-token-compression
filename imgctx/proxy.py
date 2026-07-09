@@ -91,6 +91,15 @@ def _client_headers(request: Request, settings: Settings, is_anthropic: bool = F
     return headers
 
 
+_SECRET_HEADERS = {"authorization", "x-api-key", "cookie", "proxy-authorization"}
+
+
+def _redact_headers(headers) -> dict:
+    """Header dict safe to persist to disk: never write a live API key/token."""
+    return {k: ("<redacted>" if k.lower() in _SECRET_HEADERS else v)
+            for k, v in headers.items()}
+
+
 def _resp_headers(upstream: httpx.Response) -> dict:
     return {k: v for k, v in upstream.headers.items() if k.lower() not in _RESP_STRIP}
 
@@ -135,8 +144,13 @@ def build_app(settings: Settings | None = None, client: httpx.AsyncClient | None
         out_body = raw
         stats = None
 
+        # Capture every request (not just the ones we transform) so the persistent
+        # log always has the untouched original, regardless of path/method.
+        _capture(settings, f"req_{int(t0*1000)}_in.json", raw)
+        _capture(settings, f"req_{int(t0*1000)}_in_headers.json",
+                 json.dumps(_redact_headers(request.headers)).encode("utf-8"))
+
         if transform_this:
-            _capture(settings, f"req_{int(t0*1000)}_in.json", raw)
             try:
                 body = json.loads(raw)
                 if is_anthropic:
@@ -200,6 +214,15 @@ def build_app(settings: Settings | None = None, client: httpx.AsyncClient | None
                 event["transform"] = stats.to_dict()
             if usage is not None:
                 event["usage"] = usage
+            # Always persist the untouched response bytes + headers to disk. Our own
+            # usage/cost parsing is best-effort and provider response shapes vary (a
+            # paid endpoint's cost field may live somewhere _parse_usage doesn't look);
+            # without this, a parsing gap on a paid run is unrecoverable except by
+            # re-running (and re-billing). Capped per-call so this can't grow unbounded.
+            tag = f"resp_{int(t0 * 1000)}"
+            _capture(settings, f"{tag}.json", collected[:2_000_000])
+            _capture(settings, f"{tag}_headers.json",
+                     json.dumps(dict(upstream.headers)).encode("utf-8"))
             _log_event(settings, event)
 
         return StreamingResponse(

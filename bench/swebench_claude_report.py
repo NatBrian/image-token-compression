@@ -1,4 +1,4 @@
-"""Turn bench/swebench_runs/results.json into a Markdown report.
+"""Turn bench/swebench_claude_runs/results.json into a Markdown report.
 
 ALL numbers are REAL provider data. Tokens are Claude's reported per-field usage;
 dollars are Claude Code's own `total_cost_usd`. NO hand-rolled price formula is used
@@ -15,7 +15,7 @@ from pathlib import Path
 from bench._usage_breakdown import breakdown_lines
 
 HERE = Path(__file__).resolve().parent
-RUNS = HERE / "swebench_runs"
+RUNS = HERE / "swebench_claude_runs"
 
 
 def _in_side(u: dict) -> int:
