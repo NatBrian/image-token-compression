@@ -1,0 +1,159 @@
+[
+  {
+    "cond": "off",
+    "qid": "q00",
+    "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+    "gold": "yes",
+    "pred": "yes",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 21.1,
+    "doc_chars": 4677,
+    "usage": {
+      "prompt_tokens": 38315,
+      "cached_tokens": 27136,
+      "cache_write_tokens": 0,
+      "completion_tokens": 689,
+      "total_tokens": 39004,
+      "reasoning_tokens": 288,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 9,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {},
+        {},
+        {
+          "input_tokens": 9244,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 4480
+          },
+          "output_tokens": 123,
+          "output_tokens_details": {
+            "reasoning_tokens": 8
+          },
+          "total_tokens": 9367
+        },
+        {},
+        {
+          "input_tokens": 9439,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 9088
+          },
+          "output_tokens": 162,
+          "output_tokens_details": {
+            "reasoning_tokens": 14
+          },
+          "total_tokens": 9601
+        },
+        {},
+        {
+          "input_tokens": 9674,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 9088
+          },
+          "output_tokens": 214,
+          "output_tokens_details": {
+            "reasoning_tokens": 87
+          },
+          "total_tokens": 9888
+        },
+        {},
+        {
+          "input_tokens": 9958,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 4480
+          },
+          "output_tokens": 190,
+          "output_tokens_details": {
+            "reasoning_tokens": 179
+          },
+          "total_tokens": 10148
+        }
+      ],
+      "fresh_tokens": 11179
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q00",
+    "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+    "gold": "yes",
+    "pred": "yes",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 23.5,
+    "doc_chars": 4677,
+    "usage": {
+      "prompt_tokens": 24832,
+      "cached_tokens": 20096,
+      "cache_write_tokens": 0,
+      "completion_tokens": 613,
+      "total_tokens": 25445,
+      "reasoning_tokens": 396,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 7,
+      "compressed_calls": 3,
+      "images": 6,
+      "raw": [
+        {},
+        {},
+        {
+          "input_tokens": 8089,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 4480
+          },
+          "output_tokens": 98,
+          "output_tokens_details": {
+            "reasoning_tokens": 8
+          },
+          "total_tokens": 8187
+        },
+        {},
+        {
+          "input_tokens": 8259,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 7552
+          },
+          "output_tokens": 153,
+          "output_tokens_details": {
+            "reasoning_tokens": 37
+          },
+          "total_tokens": 8412
+        },
+        {},
+        {
+          "input_tokens": 8484,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 8064
+          },
+          "output_tokens": 362,
+          "output_tokens_details": {
+            "reasoning_tokens": 351
+          },
+          "total_tokens": 8846
+        }
+      ],
+      "fresh_tokens": 4736
+    },
+    "cost_usd": null,
+    "is_error": false
+  }
+]

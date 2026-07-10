@@ -148,6 +148,10 @@ def start_proxies() -> dict[str, subprocess.Popen]:
         env = dict(os.environ)
         env.update({"IMGCTX_PORT": str(cfg["port"]), "IMGCTX_ENABLED": cfg["enabled"],
                     "IMGCTX_LOG_PATH": str(log)})
+        # Persist full raw request/response bytes per arm so image compression, the
+        # exact upstream body, and the token/cost split are all debuggable post-hoc
+        # without a paid rerun.
+        env["IMGCTX_CAPTURE_DIR"] = str(RUNS / f"capture_{cond}{TAG}")
         env.update(cfg.get("env", {}))
         out = open(RUNS / f"proxy_{cond}{TAG}.log", "w")
         procs[cond] = subprocess.Popen(
@@ -278,9 +282,14 @@ def main() -> None:
                          "read-once doc, leaving the reusable tool prefix as text. "
                          "Writes to *_tools0 dirs + results_tools0.json so the "
                          "committed baseline stays intact.")
+    ap.add_argument("--runs-dir", default=None,
+                    help="override the output folder name (default hotpot_claude_runs), "
+                         "so a verification run never clobbers a committed baseline")
     args = ap.parse_args()
 
-    global TAG
+    global TAG, RUNS
+    if args.runs_dir:
+        RUNS = HERE / args.runs_dir
     if args.tools0:
         TAG = "_tools0"
         PROXIES["on"]["env"]["IMGCTX_TOOLS"] = "0"

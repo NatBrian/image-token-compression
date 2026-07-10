@@ -300,3 +300,30 @@ def test_text_of_variants():
     assert _text_of("abc") == "abc"
     assert _text_of([{"type": "text", "text": "a"}, {"type": "text", "text": "b"}]) == "a\nb"
     assert _text_of(None) == ""
+
+
+def test_cache_token_normalization_across_providers():
+    """watch/stats must read cache tokens from the right nested key for each usage
+    shape: Anthropic (top-level), Chat Completions (prompt_tokens_details), and the
+    native Responses API used by the codex / opencode-OAuth relays
+    (input_tokens_details). Regression guard for the cache-read undercount."""
+    from imgctx.__main__ import _real_cache_read, _real_cache_write
+
+    # Anthropic Messages
+    anth = {"cache_read_input_tokens": 10, "cache_creation_input_tokens": 5}
+    assert _real_cache_read(anth, is_anthropic=True) == 10
+    assert _real_cache_write(anth, is_anthropic=True) == 5
+
+    # OpenAI Chat Completions (zen/mimo, plain OpenAI)
+    chat = {"prompt_tokens_details": {"cached_tokens": 7, "cache_write_tokens": 3}}
+    assert _real_cache_read(chat, is_anthropic=False) == 7
+    assert _real_cache_write(chat, is_anthropic=False) == 3
+
+    # Native Responses API (codex + opencode-OAuth relay) — the shape that was undercounted
+    resp = {"input_tokens_details": {"cached_tokens": 4480, "cache_write_tokens": 0}}
+    assert _real_cache_read(resp, is_anthropic=False) == 4480
+    assert _real_cache_write(resp, is_anthropic=False) == 0
+
+    # Missing/empty details -> 0, never a crash
+    assert _real_cache_read({}, is_anthropic=False) == 0
+    assert _real_cache_write({}, is_anthropic=False) == 0

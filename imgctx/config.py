@@ -109,6 +109,21 @@ class Settings:
         ).rstrip("/")
     )
 
+    # --- Codex CLI OAuth relay (ChatGPT subscription, native Responses API) ---
+    # Unlike the opencode relay (which speaks Chat Completions and needs a two-way
+    # translation), the Codex CLI speaks the Responses API natively. So this mode is a
+    # pure transform+forward: image the Responses `input` in place, inject the ChatGPT
+    # OAuth bearer, forward to the codex backend, and stream the native SSE straight
+    # back. Credentials live in Codex's own auth.json (a different shape from opencode's).
+    codex_oauth: bool = field(
+        default_factory=lambda: _env_bool("IMGCTX_CODEX_OAUTH", False)
+    )
+    codex_credentials_path: str = field(
+        default_factory=lambda: os.environ.get(
+            "IMGCTX_CODEX_CREDENTIALS", str(Path.home() / ".codex" / "auth.json")
+        )
+    )
+
     # --- master switches ---
     enabled: bool = field(default_factory=lambda: _env_bool("IMGCTX_ENABLED", True))
     # Which context regions to compress.

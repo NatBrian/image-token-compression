@@ -46,13 +46,25 @@ def _real_cache_write(u: dict, is_anthropic: bool) -> int:
     as new gateways surface new names; it is not, and cannot be, exhaustive."""
     if is_anthropic:
         return u.get("cache_creation_input_tokens", 0) or 0
-    det = u.get("prompt_tokens_details") or {}
+    # Chat Completions nests cache under prompt_tokens_details; the native Responses
+    # API (codex / opencode-OAuth relay) nests it under input_tokens_details instead.
+    det = u.get("prompt_tokens_details") or u.get("input_tokens_details") or {}
     return (
         det.get("cache_write_tokens", 0) or 0
         or u.get("cache_write_tokens", 0) or 0
         or (u.get("claude_cache_creation_5_m_tokens", 0) or 0)
         + (u.get("claude_cache_creation_1_h_tokens", 0) or 0)
     )
+
+
+def _real_cache_read(u: dict, is_anthropic: bool) -> int:
+    """Cache-READ tokens across usage shapes. Anthropic reports it top-level; Chat
+    Completions nests it under prompt_tokens_details; the native Responses API
+    (codex / opencode-OAuth relay) nests it under input_tokens_details."""
+    if is_anthropic:
+        return u.get("cache_read_input_tokens", 0) or 0
+    det = u.get("prompt_tokens_details") or u.get("input_tokens_details") or {}
+    return det.get("cached_tokens", 0) or 0
 
 
 def _real_cost(u: dict) -> float | None:
@@ -97,6 +109,8 @@ def _serve(args) -> int:
     print(f"  -> compressing for models matching {settings.model_allowlist}", file=sys.stderr)
     if settings.openai_oauth:
         print(f"  -> OpenAI OAuth relay enabled (reading tokens from {settings.openai_credentials_path})", file=sys.stderr)
+    if settings.codex_oauth:
+        print(f"  -> Codex CLI OAuth relay enabled (reading tokens from {settings.codex_credentials_path})", file=sys.stderr)
     print(f"  point your CLI's provider baseURL at http://{settings.host}:{settings.port}/v1", file=sys.stderr)
     uvicorn.run(app, host=settings.host, port=settings.port, log_level="warning")
     return 0
@@ -192,11 +206,7 @@ def _watch(args) -> int:
         # Anthropic: input_tokens / output_tokens / cache_read_input_tokens (top-level)
         ptok = u.get("prompt_tokens") or u.get("input_tokens") or 0
         ctok = u.get("completion_tokens") or u.get("output_tokens") or 0
-        if is_anthropic:
-            cache_r = u.get("cache_read_input_tokens", 0) or 0
-        else:
-            det = u.get("prompt_tokens_details") or {}
-            cache_r = det.get("cached_tokens", 0) or 0
+        cache_r = _real_cache_read(u, is_anthropic)
         cache_w = _real_cache_write(u, is_anthropic)
         real_cost = _real_cost(u)
         imgs = t.get("image_count", 0) if t else 0

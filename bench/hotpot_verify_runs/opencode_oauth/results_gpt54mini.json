@@ -1,0 +1,138 @@
+[
+  {
+    "cond": "off",
+    "qid": "q00",
+    "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+    "gold": "yes",
+    "pred": "yes",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 9.3,
+    "doc_chars": 4677,
+    "usage": {
+      "prompt_tokens": 37304,
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "completion_tokens": 153,
+      "total_tokens": 37457,
+      "reasoning_tokens": 41,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 3,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {
+          "input_tokens": 624,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 9,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 633
+        },
+        {
+          "input_tokens": 17665,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 106,
+          "output_tokens_details": {
+            "reasoning_tokens": 14
+          },
+          "total_tokens": 17771
+        },
+        {
+          "input_tokens": 19015,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 38,
+          "output_tokens_details": {
+            "reasoning_tokens": 27
+          },
+          "total_tokens": 19053
+        }
+      ],
+      "fresh_tokens": 37304
+    },
+    "cost_usd": null,
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q00",
+    "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+    "gold": "yes",
+    "pred": "yes",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 14.6,
+    "doc_chars": 4677,
+    "usage": {
+      "prompt_tokens": 35217,
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "completion_tokens": 139,
+      "total_tokens": 35356,
+      "reasoning_tokens": 41,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 3,
+      "compressed_calls": 2,
+      "images": 8,
+      "raw": [
+        {
+          "input_tokens": 624,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 10,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 634
+        },
+        {
+          "input_tokens": 16621,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 91,
+          "output_tokens_details": {
+            "reasoning_tokens": 14
+          },
+          "total_tokens": 16712
+        },
+        {
+          "input_tokens": 17972,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 38,
+          "output_tokens_details": {
+            "reasoning_tokens": 27
+          },
+          "total_tokens": 18010
+        }
+      ],
+      "fresh_tokens": 35217
+    },
+    "cost_usd": null,
+    "is_error": false
+  }
+]

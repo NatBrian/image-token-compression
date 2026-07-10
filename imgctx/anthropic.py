@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import copy
 import json
+from pathlib import Path
 
 from .config import Settings
 from .factsheet import build_factsheet
@@ -533,3 +534,67 @@ def transform_anthropic_request(body: dict, settings: Settings) -> tuple[dict, T
         stats.compressed = False
         stats.reason = f"error:{type(e).__name__}"
         return body, stats
+
+
+# --- OAuth + usage parsing for the Claude Code (Anthropic Messages) relay ---
+
+def read_oauth_token(settings: Settings) -> str | None:
+    """Read Claude Code's subscription OAuth access token at forward time so token
+    refreshes are picked up. Returns None if unavailable."""
+    try:
+        d = json.loads(Path(settings.anthropic_credentials_path).expanduser().read_text())
+        tok = d.get("claudeAiOauth", {}).get("accessToken")
+        return tok if isinstance(tok, str) and tok else None
+    except Exception:
+        return None
+
+
+def parse_usage(data: bytes) -> dict | None:
+    """Merge Anthropic usage across the response.
+
+    Non-stream: `usage` carries input/output/cache tokens together.
+    Stream: `message_start` carries input + cache tokens (output_tokens is a stub);
+    `message_delta` carries the final output_tokens. So we take input/cache from the
+    first usage that reports input_tokens and output from the last usage seen."""
+    if not data:
+        return None
+    text = data.decode("utf-8", errors="ignore")
+    # Try a plain JSON body first (a non-stream response may legitimately contain the
+    # substring "data:" in the model's text, so don't branch on that substring).
+    stripped = text.lstrip()
+    if stripped.startswith("{"):
+        try:
+            obj = json.loads(text)
+            if isinstance(obj, dict) and isinstance(obj.get("usage"), dict):
+                return obj["usage"]
+        except Exception:
+            pass
+    merged: dict = {}
+    last_output = None
+    for line in text.splitlines():
+        line = line.strip()
+        if not line.startswith("data:"):
+            continue
+        payload = line[len("data:"):].strip()
+        if not payload or payload == "[DONE]":
+            continue
+        try:
+            obj = json.loads(payload)
+        except Exception:
+            continue
+        if not isinstance(obj, dict):
+            continue
+        usage = obj.get("usage")
+        if not usage and isinstance(obj.get("message"), dict):
+            usage = obj["message"].get("usage")
+        if not isinstance(usage, dict):
+            continue
+        if usage.get("input_tokens") is not None and "input_tokens" not in merged:
+            for k in ("input_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"):
+                if usage.get(k) is not None:
+                    merged[k] = usage[k]
+        if usage.get("output_tokens") is not None:
+            last_output = usage["output_tokens"]
+    if last_output is not None:
+        merged["output_tokens"] = last_output
+    return merged or None

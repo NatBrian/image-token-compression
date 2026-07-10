@@ -33,7 +33,10 @@ Thumbs.db
 
 # Raw request/response capture (imgctx proxy IMGCTX_CAPTURE_DIR). Heavy, per-call,
 # regenerable by rerunning; results*.json + REPORT.md stay tracked, this doesn't.
+# Two dir shapes: per-item `capture/` and the claude harness's per-arm `capture_off/`
+# `capture_on/` (IMGCTX_CAPTURE_DIR is set once per proxy, not per item).
 **/capture/
+**/capture_*/
 
 # Session scratch (created by tooling, not part of the project)
 .remember/
@@ -55,6 +58,14 @@ bench/hotpot_runs/on/
 bench/hotpot_runs/*.log
 bench/hotpot_opencode_runs*/off/
 bench/hotpot_opencode_runs*/on/
+
+# HotpotQA post-refactor verification, all 4 CLIs (bench/hotpot_verify_runs/*). Track
+# REPORT.md + results*.json at each run root; ignore heavy per-item off/on dirs,
+# per-arm captures, agent streams, and proxy event logs.
+bench/hotpot_verify_runs/**/off/
+bench/hotpot_verify_runs/**/on/
+bench/hotpot_verify_runs/**/*.log
+bench/hotpot_verify_runs/**/proxy_*events*.jsonl
 
 # HotpotQA (Claude Code path)
 bench/hotpot_claude_runs/off/
