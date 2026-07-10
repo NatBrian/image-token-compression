@@ -2,216 +2,166 @@
 
 **A transparent proxy that renders bulky text context into images before it reaches a vision-capable LLM, cutting input tokens without changing your coding-agent CLI.**
 
-`imgctx` sits between a coding-agent CLI and the model provider. It intercepts each request, renders the large text regions (system prompt, tool docs, tool output, old history) to compact PNG pages, and forwards them as image blocks. Tool definitions, tool-call linkage, and multi-turn structure are preserved, so the agent behaves exactly as before while sending far fewer input tokens. It speaks two request shapes: the **OpenAI-compatible** Chat Completions API (for example [OpenCode][OpenCode]) and the **native Anthropic Messages API** used by **Claude Code**.
+`imgctx` sits between a coding-agent CLI and the model provider. It intercepts each request, renders the large text regions (system prompt, tool docs, tool output, old history) into compact PNG pages, and forwards them as image blocks. Tool definitions, tool-call linkage, and multi-turn structure are preserved, so the agent behaves exactly as before while sending far fewer input tokens. It speaks both request shapes coding agents use: the **OpenAI-compatible** Chat Completions API (OpenCode, Codex), and the native **Anthropic Messages API** (Claude Code).
 
-> **imgctx has one job: send fewer input tokens. It does that on every provider.** Whether fewer tokens also means fewer dollars is a **separate, provider-specific** question, because tokens are the weight of your request and cost is what your provider charges to ship it. On most providers, and on read-once work everywhere, the token cut is a dollar cut too (measured **-13% to -18%** real cost even on Anthropic Sonnet). The **one** case where imaging can raise a bill is a provider that charges a cache-write premium (Anthropic) on a workload that re-sends the same big context every turn (a long agentic loop), where that context is already served cheaply from cache. That is a quirk of one provider's price list, not a defect, and it is handled by aiming imgctx at the right regions. Plain-language explainer: [What imgctx saves vs what depends on your provider](docs/input-tokens-vs-cost.md). Full measured breakdown: [When imaging pays](#when-imaging-pays-and-when-it-does-not).
+An image's token cost is fixed by its pixel area, not by how many characters it holds. Dense content (code, JSON, logs, tool output) packs many characters into few image tokens, so rendering it shrinks the request with no CLI change and no model fine-tuning. Point your CLI at the proxy, keep working, send fewer tokens.
 
+```mermaid
+flowchart LR
+    %% Nodes
+    CLI["Your CLI Application"]
+    IMG["imgctx Proxy<br/>(Text-to-Image Renderer)"]
+    P["Model Provider"]
+
+    %% Flow Connections
+    CLI -- "Bulky Text Context<br/>(~46k input tokens)" --> IMG
+    IMG -- "Compressed PNG Pages<br/>(~28k input tokens)" --> P
+    P -. "Streamed Reply<br/>(Byte-for-byte)" .-> CLI
+
+    %% Style Classes
+    classDef client fill:#f8fafc,color:#0f172a,stroke:#94a3b8,stroke-width:2px;
+    classDef proxy fill:#4f46e5,color:#ffffff,stroke:#3730a3,stroke-width:2px;
+    classDef provider fill:#f0fdfa,color:#115e59,stroke:#14b8a6,stroke-width:2px;
+
+    %% Apply Styles
+    class CLI client;
+    class IMG proxy;
+    class P provider;
 ```
-your CLI  ->  imgctx proxy  ->  model provider
-              (renders bulk text to images,
-               streams the reply back untouched)
-```
 
-## Why it matters
+_Measured HotpotQA median: 46,454 input tokens to 28,464, same answer._
 
-An image's token cost is fixed by its pixel area, not by how many characters it contains. Dense content (code, JSON, logs, tool output) packs many characters into few image tokens. Agentic coding sessions re-send a large, mostly-static context on every step (system prompt, tool schemas, prior file reads), so that context dominates the token count. Rendering it to images cuts that token count with no change to the CLI and no model fine-tuning.
+## Does it actually work?
 
-Whether the token cut becomes a **dollar** cut depends on how many times that big context is read. When it is a unique input read once (long-document QA, summarization, extraction), the provider must pay full price to *store* it (a cache-write, ~1.25x to 2x the input rate), so shrinking it to image tokens cuts dollars too, measured **-13% to -18%** in real cost on Anthropic Sonnet. When it is a prefix re-read every turn of a long agentic loop, that text is already served from cache at ~0.1x, so imaging busts that warm cache into fresh writes and can cost more. The deciding class is the cache-write, and both directions are quantified in [When imaging pays](#when-imaging-pays-and-when-it-does-not).
+Two questions matter: does imaging cut tokens, and does it cut the bill. We measured both end to end through the real CLIs (OpenCode, Codex, Claude Code) across four benchmarks and five models. Same task, run twice, once with imaging off and once on.
 
-## Results
+**Yes on both, and the two move together.** Each row below is one agent, model, and task, with imgctx's regions matched to that task. The solid bar is what you use or pay *after* imaging, drawn against the faded track = the same task with imaging off (100%). The bar is visibly shorter than its track, so the shrink is the point: tokens fall (left panel), and the bill falls with them (right panel). The rows are grouped by task shape, and both groups win: read-once jobs (one document, seen once) and agent loops (a big context re-sent every turn). Claude Code's cost bars are the real provider bill (hatched); the rest are simulated from published list prices.
 
-Measured end-to-end on **HotpotQA** multihop questions driven through the **real OpenCode CLI** (`opencode run`, model `mimo-v2.5-free`). Same questions run twice, once with `imgctx` and once in pure passthrough, logged by the same proxy.
+![imgctx shrinks the request, and the bill shrinks with it](assets/chart_savings.png)
 
-![Input tokens per question, with vs without imgctx](docs/assets/tokens_per_question.png)
+## Why it works, and why it matters
 
-| metric                             | without imgctx | with imgctx |           change |
-| ---------------------------------- | -------------: | ----------: | ---------------: |
-| median input tokens / question     |         46,454 |      28,464 | **-38.7%** |
-| matched-trajectory subset (9/10 q) |        418,307 |     255,498 | **-38.9%** |
-| exact match                        |           7/10 |        7/10 |                0 |
-| answer-contains-gold               |           7/10 |        8/10 |               +1 |
+Agentic coding sessions re-send a large, mostly static context on every step: the system prompt, the tool schemas, files already read, the conversation so far. That context dominates the token count. Because image tokens are priced by pixel area rather than character count, rendering that bulk to a PNG replaces thousands of text tokens with a few hundred image tokens. The denser the text, the bigger the cut.
 
-Accuracy holds (no exact-match loss) on a hard multihop set with a small, free 9B-class reader.
+Two guarantees make it safe to leave in the path:
 
-### Isolated compression (single request)
+1. **Fail-open.** Any parse error, unknown request shape, or non-vision model falls straight through as plain passthrough. Turning imgctx on cannot break a run.
+2. **Verbatim safety.** Vision models read rendered text as embeddings, not OCR, so exact strings (hashes, UUIDs, secrets) can fail silently. imgctx keeps identifier-dense and secret-bearing blocks as text, and for any block it does image, it carries the exact tokens (paths, hashes, versions, numbers, flags) alongside the image as plain text.
 
-To isolate the compression from agent nondeterminism, the same payload is sent once as text and once imaged (`python -m bench.ab`), and the provider-billed `prompt_tokens` compared. A needle is embedded in each payload to confirm the model still reads it.
-
-| payload      | text tokens | imaged tokens |           change | needle recalled |
-| ------------ | ----------: | ------------: | ---------------: | :-------------: |
-| dense code   |      18,138 |         5,288 | **-70.8%** |       yes       |
-| 51 KB JSON   |      24,565 |         5,477 | **-77.7%** |       yes       |
-| sparse prose |       3,615 |         2,159 |           -40.3% |       yes       |
-
-On a real captured OpenCode request (system prompt + 34 tool schemas + a file-read result), the residual text that stays as tokens drops from **123,656 to 15,097 characters (-87.8%)**, with all 34 tools preserved and tool calling intact.
-
-### Bounding agent loops
-
-Agentic runs sometimes loop (the model re-reads and retries), and each looped step re-sends the accumulating imaged context, which could cost more end-to-end. `imgctx` freezes old, settled turns into byte-identical images the provider caches (it reports `cached_tokens` on them), so looped sessions stay bounded. In the run above, the end-to-end input-token total across every call was **-32.6%** versus passthrough, and the one question that did loop stayed cheap because its old turns were served from cache. Agent looping is nondeterministic and n is small, so treat the end-to-end figure as indicative; the mechanism (byte-stable, cacheable history images) is verified separately.
-
-### Dollar cost
-
-`mimo-v2.5-free` is free, so the saving is measured in tokens. Applied to a paid model's input-token price, the median cut of **17,990 input tokens per question** is worth:
-
-![Dollar saved per 1,000 questions across input prices](docs/assets/cost_savings.png)
-
-| input price ($ / 1M tokens)        | saved per 1,000 questions |
-| ---------------------------------- | ------------------------: |
-| $0.50                       | $9   |                           |
-| $1.25                       | $22  |                           |
-| $3.00                       | $54  |                           |
-| $5.00                       | $90  |                           |
-| $10.00                      | $180 |                           |
-
-This counts input tokens only. Some providers bill image inputs on a separate schedule; on `mimo` the image cost is folded into `prompt_tokens`, so the measured token figure already includes it. Reproduce every number with `python -m bench.hotpot_experiment --n 10 && python -m bench.make_report && python docs/make_charts.py`.
-
-#### Cache split and simulated cost (all four benchmarks)
-
-The zen/`mimo` endpoint reports its own cache detail (`prompt_tokens_details.cached_tokens` and `cache_write_tokens`). Running the SAME four benchmarks as the Anthropic study through OpenCode/`mimo-v2.5-free` (matched OFF vs ON) shows the structural reason the OpenCode path is a clean win in every regime, including the two that LOST money on Anthropic:
-
-| benchmark            | task shape       |  input tokens Δ | cache-write tokens | simulated cost Δ |
-| -------------------- | ---------------- | ---------------: | -----------------: | ----------------: |
-| SWE-bench Lite (n=4) | re-read, agentic | **-53.8%** |        **0** |  **-49.5%** |
-| HotpotQA (n=10)      | re-read, short   | **-32.9%** |        **0** |  **-32.1%** |
-| narrativeqa (n=6)    | read once        | **-27.1%** |        **0** |  **-35.0%** |
-| gov_report (n=4)     | read once        | **-39.4%** |        **0** |  **-41.6%** |
-
-**`cache_write_tokens` is 0 on every call, both arms, in all four benchmarks: this endpoint bills no cache-write premium.** That is the whole difference from Anthropic, where the 2x cache-write class is what imaging inflated and what raised the bill on the re-read tasks. With no such class here, the input-token cut flows straight to the bill in every regime, so SWE-bench and HotpotQA (which cost **+26.5%** and **+44.0%** on Anthropic) now show a cost *cut* on OpenCode.
-
-**On the dollar figures: `mimo-v2.5-free` is $0.00 in reality, so there is no real cost to report.** The percentages above are a clearly-labelled SIMULATION under a representative OpenAI-style rate table (fresh 1x, cache-write no premium, cache-read 0.5x), shown only to reveal the shape of the bill; the token and cache-split numbers are real. Full per-class tables, the rate table, and the honest caveat about output/loop variance: [OpenCode cost breakdown](bench/OPENCODE_COST_BREAKDOWN.md). Reproduce with `python -m bench.longdoc_opencode_experiment --n 6 --config narrativeqa`, `... --n 4 --config gov_report`, `python -m bench.swebench_opencode_experiment --n 5`, then `python -m bench.opencode_cost_breakdown`.
-
-## When imaging pays (and when it does not)
-
-Imaging always cuts **tokens**. Whether it also cuts **dollars** comes down to a single question about your task: **is the big context a reusable prefix the model re-reads many times, or a unique payload it reads once?** Get that right and `imgctx` cuts both tokens and cost, even on a caching provider like Anthropic. The measured proof is below.
-
-> **In one minute (the whole thing, simply).** Think of the provider's prompt cache as a **library**: shelving a new page (a *cache-write*) is the priciest thing you can do (~2x), borrowing an already-shelved page (a *cache-read*) is the cheapest (~0.1x), a **20x gap**. imgctx renders text to an image, which is always **new bytes**, so it always costs a shelving (write). That write is a **waste** when it replaces something already on the shelf (a fixed prefix the model re-reads, so imaging it turns cheap borrows into pricey re-shelving, bill goes **up**), and a **saving** when it is just a thinner version of a page you had to shelve anyway (a unique document read once, bill goes **down**). "Fewer tokens" and "fewer dollars" disagree precisely because of that 20x read-vs-write gap. **The one rule: image content that is unique and read once; leave the re-read prefix as text.**
->
-> Want the full, from-zero explanation with every benchmark number, the per-call cache traces, and a proof the A/B is not contaminated by shared cache? See **[Understanding Tokens, Prompt Caching, and Cost](docs/understanding-tokens-cache-cost.md)**.
-
-### The one idea to understand: prompt caching
-
-Some providers keep a **prompt cache**. The first time they see a chunk of text they charge a one-time *write* price to store it; every later request that repeats that chunk is served from cache at a steep discount (a *read*). On Anthropic, a cache-read costs about **0.1x** the normal input rate, a cache-write costs about **1.25x to 2x**, and a first-time chunk with no reuse is plain input at **1x**.
-
-That cache is what decides the outcome, so the whole question is: **how many times does the model re-read your big context?**
-
-### The losing shape: a big context re-read every turn, ON A WRITE-PREMIUM PROVIDER
-
-This shape only loses on a provider that charges a **cache-write premium**, which today means Anthropic. Long agentic coding loops are its ideal case: the same system prompt, tool schemas, and growing history repeat on every turn, so after turn one the provider serves almost all of it at the ~0.1x **read** rate. Here is the trap, step by step:
-
-1. **Without `imgctx`**, that repeated context is text the provider has already cached. You pay the cheap **read** price (~0.1x) for it every turn.
-2. **With `imgctx`**, the same context is now an **image**: far fewer tokens, but brand-new bytes the provider has never seen, so it is billed as a **write** (~1.25x to 2x) and cannot reuse the text cache.
-3. You traded a large number of **very cheap** tokens for a small number of **expensive** tokens. The token count drops, the price-per-token rises more, and the bill goes up.
-
-On this shape, on Anthropic, `imgctx` is competing against a price (0.1x) it cannot beat. **But this is a property of the 2x write premium, not of the re-read shape itself.** Run the exact same re-read tasks through the OpenCode/`mimo-v2.5-free` endpoint, which reports `cache_write_tokens = 0` (no write premium), and they cut cost instead: SWE-bench **-49.5%** and HotpotQA **-32.1%** simulated cost, versus **+26.5%** and **+44.0%** on Anthropic. Same imgctx, same tasks, opposite sign, decided entirely by whether the provider charges for the write. Full four-benchmark table: [Cache split and simulated cost](#cache-split-and-simulated-cost-all-four-benchmarks).
-
-### The winning shape: a big UNIQUE context read once
-
-Now flip it. Many real jobs send one large, unique document and read it a single time: long-document QA, summarization, classification, one-pass extraction, a big log or transcript you paste once. The document is brand-new, so **both** arms must cache-**write** it on first sight (you cannot cache-read something the provider has never seen). There is no warm cache for `imgctx` to bust, it just makes that unavoidable write **smaller**: fewer image tokens to store than the raw text. And the cache-write is the single most expensive input class (~1.25x to 2x), so shrinking it is exactly where the dollars are. This wins on a short trajectory, where the one-time write is a large slice of the bill and is not yet amortized away by many cheap re-reads (which is what saves the re-read shape and sinks imaging there).
-
-### Measured, both shapes, same model, same tool
-
-Measured through the **real Claude Code CLI** (`claude -p`, model `claude-sonnet-5`), each task run twice (compression OFF passthrough vs ON). **Dollars are Claude Code's own reported `total_cost_usd`**, not a price formula, and tokens are Claude's own reported usage:
-
-![Claude Code on claude-sonnet-5: tokens always fall; real dollars rise on re-read tasks and fall on read-once tasks](docs/assets/anthropic_token_vs_cost.png)
-
-| benchmark                                 | task shape     |     input tokens | real cost (`total_cost_usd`) |
-| ----------------------------------------- | -------------- | ---------------: | -----------------------------: |
-| SWE-bench Lite (long agentic, n=5)        | re-read prefix | **-24.7%** |               **+26.5%** |
-| HotpotQA (short read-a-doc QA, n=5)       | re-read prefix | **-35.1%** |               **+44.0%** |
-| LongBench narrativeqa (unique doc, n=6)   | read once      | **-14.6%** |               **-17.6%** |
-| LongBench gov_report (unique report, n=4) | read once      | **-13.2%** |               **-14.8%** |
-
-Same provider, same model, opposite dollar sign. The blended "input tokens" number actually understates the effect, because ~90% of that volume is cheap 0.1x cache-reads. The real lever is the **cache-write** class, and the whole result reduces to its direction:
-
-| benchmark      | task shape     | cache-WRITE tokens | real cost |
-| -------------- | -------------- | -----------------: | --------: |
-| SWE-bench Lite | re-read prefix |   **+87.6%** |    +26.5% |
-| HotpotQA       | re-read prefix |   **+80.2%** |    +44.0% |
-| narrativeqa    | read once      |   **-27.2%** |    -17.6% |
-| gov_report     | read once      |   **-26.4%** |    -14.8% |
-
-Cache-write and real cost move the same direction every time. On the re-read tasks imaging busts the warm text-cache that OFF reads at 0.1x, forcing new writes (+80% to +88%), so the bill rises even though total tokens fall. On the read-once tasks it shrinks the one write both arms must pay (-27%), so the bill falls. Fresh 1x input is ~0% in all four (Claude Code caches almost everything), so it is not the lever, the write is. Every run stayed correct: answer quality (F1 / summary) held within noise of the OFF baseline, 0 tool-call errors, 0 HTTP 400s. The economics flip with the task, the behavior does not.
-
-### So how should you use it
-
-Point `imgctx` at unique, read-once bulk, and leave it off where a cheap cache is already doing the saving for you:
-
-| Use it here (cuts tokens**and** cost)                                                                                                                                                                                                                                                                                                                                                                      | Skip it here (a write-premium cache already wins)                                                                                                                                                                                                                                                            |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Read-once large inputs** on any provider: long-document QA, summarization, classification, one-pass extraction, a big log/transcript pasted once. Measured on Anthropic Sonnet: **-13% to -18% real dollars** (LongBench). Nothing is cached to undercut, so the token cut is a straight dollar cut, and it can keep you **under the context-window limit** when the raw text would not fit. | **Re-read prefixes on a write-premium caching provider** (Anthropic / Claude Code long agentic loops). The repeated context is already ~0.1x; imaging turns cheap reads into pricier writes (measured **+26% to +44%**). This is the ONLY skip case, and it is specific to the 2x write premium. |
-| **Any regime on a provider with no cache-write premium** (OpenCode/`mimo`, OpenAI-style caching): read-once AND re-read both win, because there is no write class to inflate. Measured across all four benchmarks on OpenCode: **-27% to -54%** input tokens, cost falling with them, including the re-read tasks that lost on Anthropic.                                                          | Cache-cheap models on repetitive turns where a write premium applies, which also add a small image "read tax" on top of losing the cache discount.                                                                                                                                                           |
-| **Cheap-vision** models, where image tokens are priced low relative to text.                                                                                                                                                                                                                                                                                                                               | Short chat-style turns where the context is small to begin with; there is little to compress and the gate skips it anyway.                                                                                                                                                                                   |
-
-**Rule of thumb:** first ask *"does my provider charge a cache-write premium?"* If **no** (OpenCode/`mimo`, OpenAI-style caching), imgctx cuts both tokens and cost in every regime, just turn it on. If **yes** (Anthropic), then ask *"is the big context read once, or re-read every turn?"* **Read once** (unique document, summarize, classify, extract) is a win on both tokens and dollars even there. **Re-read** every turn is the one case that already sits at ~0.1x, so use `imgctx` only for the token-count / context-window benefit, or leave it off (`IMGCTX_ENABLED=0`). Either way you are never worse off than an informed choice, because both arms are measurable from your provider's own reported cost.
-
-This is why `imgctx` is best thought of as a **targeting tool, not an always-on switch**: it turns bulky text into cheap image tokens, a clear win exactly when that text is not already cheap. Reproduce the read-once win with `python -m bench.longdoc_experiment --n 6 --config narrativeqa --model sonnet && python -m bench.longdoc_report`, and the re-read numbers with `python -m bench.swebench_experiment --n 5 --model sonnet` and `python -m bench.hotpot_claude_experiment --n 5 --model sonnet`, then `python docs/make_anthropic_chart.py`.
-
-**Go deeper:** [Understanding Tokens, Prompt Caching, and Cost](docs/understanding-tokens-cache-cost.md) explains all of this from zero, with the full per-token-class tables for every benchmark, the exact dollar decomposition (which reconciles to Claude's real bill to the cent), a call-by-call trace of why imaging re-shelves the warm cache, and a timeline proof that the ON vs OFF comparison is not contaminated by shared cache.
-
-## Demo
-
-```console
-$ imgctx serve
-imgctx v0.1.0 proxy on http://127.0.0.1:8787
-  -> upstream https://opencode.ai/zen/v1
-
-# point OpenCode's provider at the proxy (examples/opencode.json), then:
-$ opencode run --model opencode/mimo-v2.5-free \
-    "read documents.md and answer: were Scott Derrickson and Ed Wood the same nationality?"
-> Read documents.md
-yes
-
-# same question, measured by the proxy:
-#   without imgctx : 46,283 input tokens
-#   with imgctx    : 28,552 input tokens   (-38%, same answer)
-```
+The payoff is largest exactly where agents are most expensive: long sessions with big repeated context, and one-shot jobs that paste a whole document. In both cases the request shrinks and, on the right configuration, so does the invoice.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    CLI["Coding-agent CLI<br/>(OpenCode, ...)"] -->|POST /v1/chat/completions| P
-    subgraph P["imgctx proxy"]
-        R{"eligible request?<br/>vision model, POST"}
-        R -->|no| PT["pass through unchanged"]
-        R -->|yes| T["transform: pick regions,<br/>gate, render to PNG,<br/>splice image blocks"]
+    %% Node Definitions
+    CLI["Coding-agent CLI<br/>(OpenCode / Codex / Claude Code)"]
+    U["Model Provider"]
+
+    subgraph PROXY["imgctx proxy (Rewrites Request Body Only)"]
+        direction LR
+        G{"Eligible?<br/>(Vision Model & POST)"}
+        PASS["Passthrough (Unchanged)<br/>[Fail-Open]"]
+
+        subgraph PIPE["Transform Pipeline"]
+            direction TB
+            S1["1. Split into Regions<br/>(System / Tools / Tool-Results / User / History)"]
+            S2["2. Profitability Gate<br/>(Image if cheaper than text & above size floor)"]
+            S3["3. Render Text to PNG<br/>(Freeze history to byte-identical pages + text factsheet)"]
+            S4["4. Splice Image Blocks<br/>(Preserve tool schemas & tool-call linkage)"]
+
+            S1 --> S2 --> S3 --> S4
+        end
     end
-    T -->|rewritten body| U["model provider<br/>(OpenAI-compatible)"]
-    PT --> U
-    U -->|streamed reply| CLI
+
+    %% Edge Connections
+    CLI -- "Request<br/>(Chat Completions / Responses / Messages)" --> G
+    G -- "No" --> PASS
+    G -- "Yes" --> S1
+    PASS --> U
+    S4 -- "Rewritten Body" --> U
+    U -. "Streamed Reply<br/>(Byte for Byte)" .-> CLI
+
+    %% Structural Layout Styling
+    style PROXY fill:#f8fafc,stroke:#cbd5e1,stroke-width:2px,stroke-dasharray: 5 5
+    style PIPE fill:#f0fdf4,stroke:#bbf7d0,stroke-width:2px
+
+    %% Class Definitions for Theme Uniformity
+    classDef endpoint fill:#e0e7ff,color:#1e1b4b,stroke:#4f46e5,stroke-width:2px;
+    classDef decision fill:#fef3c7,color:#451a03,stroke:#d97706,stroke-width:2px;
+    classDef bypass fill:#ffe4e6,color:#4c0519,stroke:#e11d48,stroke-width:2px;
+    classDef step fill:#ccfbf1,color:#042f2e,stroke:#0d9488,stroke-width:2px;
+
+    %% Apply Classes
+    class CLI,U endpoint;
+    class G decision;
+    class PASS bypass;
+    class S1,S2,S3,S4 step;
 ```
 
-The proxy only rewrites the request body. The response is streamed back byte-for-byte. Any parse error, unknown shape, or unsupported model falls through as a plain passthrough.
+The proxy only rewrites the request body; the response is streamed back untouched. A request is eligible only if it targets a vision model over POST, and anything else (parse errors, unknown shapes, non-vision models) falls straight through, so imgctx cannot break a run. Eligible requests pass through the pipeline above: each region is imaged only when the profitability gate says the image is cheaper than the text, and settled history turns are frozen into byte-identical PNGs so the provider's automatic prompt cache can reuse them turn after turn.
 
-## How it works
+## Results: ON vs OFF
 
-Each request is split into regions, and each region is compressed only when it pays off:
+We tested imgctx on four public benchmarks. A benchmark is just a standard set of tasks that researchers use so results can be compared fairly. These four were picked to cover the two shapes of work that matter for cost:
 
-1. **System prompt** and **tool documentation** are rendered to images. Tool schemas in `tools[]` are kept as JSON but stripped to their structure (names, parameter types, `required`, `enum`), so the provider can still validate tool calls while the verbose descriptions move into pixels.
-2. **Tool outputs** (file reads, command output) and **older user messages** are imaged in place; the live (most recent) user turn always stays as text for full fidelity.
-3. **Old conversation history** is collapsed: the settled, closed prefix (never cutting between a tool call and its result) is frozen into byte-identical image chunks that the provider caches, while the recent tail stays as text.
+- **gov-report** (summarize a long document): the agent is given one long government report and asked to summarize it. It reads the document once. Read-once.
+- **narrativeqa** (answer a question about a long story): the agent is given one long story or document and asked a question about it. Read-once.
+- **HotpotQA** (answer a question that needs several facts): a trivia-style question that can only be answered by combining facts from more than one source. The agent takes a few steps, re-sending its context each step. Agent loop.
+- **SWE-bench Lite** (fix a real software bug): the agent is dropped into a real open-source codebase with a real bug report and must edit the code to fix it. Many steps, the largest context. Agent loop.
 
-Two guards keep it safe and profitable:
+Each row below is one task, with imgctx's regions matched to that task's shape (see the config guide below).
 
-- **Profitability gate.** Image-token cost is proportional to pixel area. A block is imaged only when its estimated image cost is below its text-token cost, and only above a per-region size floor, so sparse or tiny blocks stay text.
-- **Verbatim safety.** Vision models read rendered text as embeddings, not OCR, so exact strings (hashes, UUIDs, secrets) can fail silently. `imgctx` keeps identifier-dense and secret-bearing blocks as text, and for any block it does image, it extracts the exact tokens (paths, hashes, versions, numbers, flags) and carries them alongside the image as plain text.
+**What the region columns mean.** imgctx does not image the whole prompt blindly. It splits each request into five regions and decides, per region, whether to render it to images or leave it as text. The five columns below are those regions, a check mark means that region was rendered to images for this run, and a blank means it was kept as text:
 
-Rendering is deterministic: the same text always produces the same PNG bytes, which is what lets frozen history images hit the provider's automatic prompt cache turn after turn.
+- **SYS**: the system prompt (fixed instructions).
+- **TOOLS**: the tool and function definitions.
+- **TOOL_RES**: tool outputs (file reads, command output, search results).
+- **USER**: the user's own message text.
+- **HIST**: the earlier conversation turns.
+
+| Agent       | Model         | Task               | Shape      | SYS | TOOLS | TOOL_RES | USER | HIST | Input tokens |                    Cost |
+| ----------- | ------------- | ------------------ | ---------- | :-: | :---: | :------: | :--: | :--: | -----------: | ----------------------: |
+| OpenCode    | mimo          | gov-report summary | read once  | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -72.9% |            -62.9% (sim) |
+| OpenCode    | mimo          | narrativeqa QA     | read once  |    |      |    ✓    |  ✓  |  ✓  |       -27.1% |            -51.2% (sim) |
+| Claude Code | claude-sonnet | gov-report summary | read once  |    |      |    ✓    |  ✓  |  ✓  |       -24.5% | **-41.9% (real)** |
+| Claude Code | claude-sonnet | narrativeqa QA     | read once  |    |      |    ✓    |  ✓  |      |          n/a | **-29.9% (real)** |
+| Codex       | gpt-5.4-mini  | SWE-bench code-fix | agent loop | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -24.8% |            -28.1% (sim) |
+| Codex       | gpt-5.4-mini  | HotpotQA multihop  | agent loop | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -24.1% |            -25.6% (sim) |
+| OpenCode    | mimo          | HotpotQA multihop  | agent loop | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -33.7% |            -25.2% (sim) |
+| Claude Code | claude-sonnet | SWE-bench code-fix | agent loop |    |      |    ✓    |      |      |       -27.5% | **-15.3% (real)** |
+
+Answer quality held: where tasks are scored (F1, answer-contains, summary), correctness with imaging on stayed within noise of the off baseline, with no rise in tool-call errors or HTTP failures. Cost marked **(real)** is the actual dollar amount Claude Code reports (`total_cost_usd`). Cost marked **(sim)** is simulated from the provider's published list prices, because those runs go through a subscription, so the provider does not return a per-request dollar cost. The token numbers are real in every row.
 
 ## Quick start
 
-Requirements: Python 3.10+, `poppler-utils` (`pdftoppm`) on `PATH`, and an OpenAI-compatible upstream with a multimodal model.
+Requirements: Python 3.10+, `poppler-utils` (`pdftoppm`) on `PATH`, and an upstream with a multimodal model.
 
 ```bash
 git clone https://github.com/NatBrian/image-token-compression
 cd image-token-compression
 pip install -e .
-imgctx serve            # proxy on http://127.0.0.1:8787
+imgctx serve            # run the proxy on http://127.0.0.1:8787
+imgctx stats            # summarize tokens saved from the event log
+imgctx watch            # live per-call table: tokens, cache split, cost, as requests flow
+imgctx version          # print the installed version
 ```
 
-### Use it in a coding-agent CLI
+`imgctx serve` also takes `--port`, `--host`, and `--upstream <url>` to override those settings on the command line. `imgctx stats` and `imgctx watch` take `--path <event-log>` (default `~/.imgctx/events.jsonl`), and `imgctx watch` takes `--pricing <json>` (or the `IMGCTX_PRICING` env var) to simulate a dollar cost per call.
 
-Point the CLI's provider base URL at the proxy. For OpenCode (`~/.config/opencode/opencode.json`, see `examples/opencode.json`):
+### Tested coding agents
+
+| CLI                   | API shape imgctx speaks            | Auth options                             | Status |
+| --------------------- | ---------------------------------- | ---------------------------------------- | :----: |
+| **OpenCode**    | OpenAI-compatible Chat Completions | provider API key, or ChatGPT OAuth relay | tested |
+| **Claude Code** | native Anthropic Messages          | API key, or Claude subscription OAuth    | tested |
+| **Codex CLI**   | native Responses API               | ChatGPT OAuth relay                      | tested |
+
+Models validated: `claude-sonnet`, `claude-haiku`, `gpt-5.4-mini`, `mimo-v2.5-free`, `gemini-3.1-flash-lite`. Any OpenAI-compatible CLI works the same way as OpenCode: point its base URL at the proxy and set `IMGCTX_UPSTREAM_BASE` to the real endpoint.
+
+### OpenCode, OpenAI-compatible API
+
+Point OpenCode's provider base URL at the proxy (`~/.config/opencode/opencode.json`), and set the real upstream:
 
 ```json
 {
@@ -222,34 +172,16 @@ Point the CLI's provider base URL at the proxy. For OpenCode (`~/.config/opencod
 }
 ```
 
-Then use OpenCode as usual:
-
 ```bash
+IMGCTX_UPSTREAM_BASE=https://opencode.ai/zen/v1 imgctx serve
 opencode run --model opencode/mimo-v2.5-free "read src/app.py and explain what it does"
-imgctx stats            # summarize tokens saved from ~/.imgctx/events.jsonl
 ```
 
-Any OpenAI-compatible CLI works the same way: set its base URL to `http://127.0.0.1:8787/v1` and set `IMGCTX_UPSTREAM_BASE` to the real endpoint.
+### OpenCode, ChatGPT (OpenAI) OAuth subscription
 
-### Use it with Claude Code
+Route OpenCode through a ChatGPT Plus/Pro/Go subscription instead of an API key. OpenCode's built-in `openai` provider hardcodes a fetch override to `chatgpt.com`, so use a **custom** OpenAI-compatible provider to dodge it. imgctx then reads your OAuth tokens from OpenCode's `auth.json`, converts Chat Completions to the Responses API the backend speaks, and injects the auth headers.
 
-`imgctx` also speaks the native Anthropic Messages API, so Claude Code can route through it. Point Claude Code's base URL at the proxy:
-
-```bash
-ANTHROPIC_BASE_URL=http://127.0.0.1:8787 claude -p "fix the failing test in src/app.py"
-```
-
-The proxy forwards to `https://api.anthropic.com` and, for subscription auth, injects the OAuth token from `~/.claude/.credentials.json` (Claude Code strips its own credential from non-canonical hosts). For coding agents, keep the **system prompt as text** (`IMGCTX_SYSTEM=0`): it carries exact cwd/tool-use rules and is already cache-read cheaply, so imaging it is low-reward and can mis-orient the agent.
-
-**Match it to the job (see [When imaging pays](#when-imaging-pays-and-when-it-does-not)):** on Anthropic it cuts real dollars for **read-once** work (long-document QA, summarization, extraction: measured **-13% to -18%**), but can raise cost on **re-read** long agentic loops where the context is already cache-read cheaply. Both arms are measurable from Claude Code's own `total_cost_usd`, so measure before committing.
-
-### Use it with an OpenAI (ChatGPT) OAuth subscription
-
-`imgctx` can route OpenCode through your **ChatGPT Plus/Pro/Go subscription** instead of an OpenAI API key. OpenCode's built-in `openai` provider hardcodes a fetch override that rewrites every request to `https://chatgpt.com/backend-api/codex/responses`, so a plain proxy is bypassed. A **custom OpenAI-compatible provider** dodges that override; `imgctx` then reads your OAuth tokens from OpenCode's `auth.json`, compresses, converts Chat Completions ⇄ the Responses API the backend speaks, and injects the auth headers.
-
-Prerequisites: `opencode login openai` completed, so `~/.local/share/opencode/auth.json` holds a valid `openai` OAuth entry.
-
-1. Add a custom provider to `~/.config/opencode/opencode.json` (its base URL points at the proxy; the `apiKey` is an unused sentinel because auth comes from `auth.json`):
+Prerequisite: `opencode login openai` completed, so `~/.local/share/opencode/auth.json` holds a valid `openai` entry.
 
 ```json
 {
@@ -265,32 +197,28 @@ Prerequisites: `opencode login openai` completed, so `~/.local/share/opencode/au
 }
 ```
 
-2. Start the proxy in OAuth mode — it **must** listen on the same port as the base URL above (default `8787`):
-
 ```bash
-IMGCTX_OPENAI_OAUTH=1 imgctx serve      # -> http://127.0.0.1:8787
-```
-
-3. Run OpenCode against the custom provider:
-
-```bash
+IMGCTX_OPENAI_OAUTH=1 imgctx serve      # must listen on the base-URL port (8787)
 opencode run --model imgctx-openai/gpt-5.4-mini "read src/app.py and explain what it does"
 ```
 
-The proxy injects `Authorization: Bearer <access>` + `ChatGPT-Account-Id` from `auth.json` and refreshes the token on a 401. If OpenCode reports `Unable to connect`, the proxy is not running on the port in the base URL, or `IMGCTX_OPENAI_OAUTH=1` was not set. Tool calls (agentic use) are fully bridged, so file read/edit/bash work as normal.
+The proxy injects `Authorization: Bearer <access>` and `ChatGPT-Account-Id` from `auth.json` and refreshes on a 401. If OpenCode reports `Unable to connect`, the proxy is not on the base-URL port, or `IMGCTX_OPENAI_OAUTH=1` was not set.
 
-### Use it with the Codex CLI (ChatGPT OAuth subscription)
+### Claude Code
 
-`imgctx` can also front the **Codex CLI** on your ChatGPT subscription. Codex is simpler than OpenCode: it speaks the **Responses API natively**, so `imgctx` needs no Chat⇄Responses translation — it images the Responses `input` in place (preserving every `function_call` / `function_call_output` / `reasoning` item so the agent loop stays intact), injects the OAuth headers, and streams the native SSE straight back.
+imgctx speaks the native Anthropic Messages API, so Claude Code routes through it directly:
 
-Two gotchas, both settled by the config below:
+```bash
+ANTHROPIC_BASE_URL=http://127.0.0.1:8787 claude -p "fix the failing test in src/app.py"
+```
 
-- **Do not use `requires_openai_auth = true`.** That flag makes Codex ignore your `base_url` and go straight to `chatgpt.com`, bypassing the proxy. Use a dummy `env_key` instead — `imgctx` supplies the real OAuth itself.
-- **Select the provider with `model_provider`, not `default_model_provider`.** Only `model_provider` actually routes the request; the `default_` key is ignored for `codex exec`.
+The proxy forwards to `https://api.anthropic.com` and, for subscription auth, injects the OAuth token from `~/.claude/.credentials.json` (Claude Code strips its own credential from non-canonical hosts). For coding work, keep the system prompt as text (`IMGCTX_SYSTEM=0`): it carries exact cwd and tool-use rules, is already served cheaply from cache, and imaging it is low reward. On Anthropic, match the regions to the task (see Configuration and Known limitations below); it cuts real dollars on read-once work.
 
-Prerequisites: `codex login` completed (ChatGPT auth), so `~/.codex/auth.json` holds valid `tokens`.
+### Codex CLI (ChatGPT OAuth subscription)
 
-1. Add a custom provider to `~/.codex/config.toml` and select it:
+Codex speaks the Responses API natively, so imgctx needs no translation: it images the Responses `input` in place (preserving every `function_call`, `function_call_output`, and `reasoning` item so the agent loop stays intact), injects the OAuth headers, and streams the native SSE straight back.
+
+Prerequisite: `codex login` completed, so `~/.codex/auth.json` holds valid `tokens`. Two settings matter, both handled below: do not set `requires_openai_auth = true` (it sends Codex straight to `chatgpt.com`, bypassing the proxy), and select the provider with `model_provider`, not `default_model_provider`.
 
 ```toml
 model = "gpt-5.4-mini"
@@ -300,63 +228,131 @@ model_provider = "imgctx"        # NOT default_model_provider
 name = "imgctx"
 base_url = "http://127.0.0.1:8787/v1"
 wire_api = "responses"
-env_key = "IMGCTX_DUMMY_KEY"     # any non-empty value; imgctx overrides it with real OAuth
+env_key = "IMGCTX_DUMMY_KEY"     # any non-empty value; imgctx supplies real OAuth
 ```
 
-2. Start the proxy in Codex OAuth mode (same port as the base URL):
-
 ```bash
-IMGCTX_DUMMY_KEY=x IMGCTX_CODEX_OAUTH=1 imgctx serve      # -> http://127.0.0.1:8787
-```
-
-3. Run Codex:
-
-```bash
+IMGCTX_DUMMY_KEY=x IMGCTX_CODEX_OAUTH=1 imgctx serve
 IMGCTX_DUMMY_KEY=x codex exec "read src/app.py and explain what it does"
 ```
 
-The proxy injects `Authorization: Bearer <access>` + `ChatGPT-Account-Id` from `~/.codex/auth.json` and refreshes the token on a 401. A harmless `GET /v1/models` 404 in Codex's log is just its optional model-list refresh; the `/responses` call is unaffected. As with Claude Code, imaging the big fixed system prompt is optional — set `IMGCTX_SYSTEM=0` to keep it text.
+The proxy injects the OAuth headers from `~/.codex/auth.json` and refreshes on a 401. A harmless `GET /v1/models` 404 in Codex's log is just its optional model-list refresh.
 
-### Configuration
+### Other providers, or let your coding agent set it up
 
-All settings are environment variables:
+Any OpenAI-compatible CLI works: point its base URL at `http://127.0.0.1:8787/v1` and set `IMGCTX_UPSTREAM_BASE` to the real endpoint. To have an AI coding assistant wire it up for you, paste this prompt into your agent:
 
-| variable                                                                                                   | default                              | meaning                                             |
-| ---------------------------------------------------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------- |
-| `IMGCTX_PORT`                                                                                            | `8787`                             | proxy port                                          |
-| `IMGCTX_UPSTREAM_BASE`                                                                                   | `https://opencode.ai/zen/v1`       | real upstream (OpenAI-compatible)                   |
-| `IMGCTX_MODELS`                                                                                          | `mimo,gemini,gpt-4,gpt-5,qwen,glm` | vision allowlist (substring match);`off` disables |
-| `IMGCTX_TOOLS` / `IMGCTX_SYSTEM` / `IMGCTX_TOOL_RESULTS` / `IMGCTX_USER_TEXT` / `IMGCTX_HISTORY` | on                                   | per-region toggles                                  |
-| `IMGCTX_MIN_TOOL_RESULT_CHARS` / `IMGCTX_MIN_USER_TEXT_CHARS`                                          | `6000`                             | per-region size floor                               |
-| `IMGCTX_MIN_SYSTEM_CHARS` / `IMGCTX_MIN_TOTAL_CHARS`                                                   | `2000`                             | slab and whole-request floors                       |
-| `IMGCTX_DPI`                                                                                             | `96`                               | render DPI (lower = denser, higher = more legible)  |
-| `IMGCTX_MAX_PIXELS`                                                                                      | `1000000`                          | per-image pixel cap (avoid provider downscaling)    |
-| `IMGCTX_KEEP_SHARP` / `IMGCTX_FACTSHEET`                                                               | on                                   | verbatim-safety features                            |
-| `IMGCTX_ENABLED`                                                                                         | on                                   | master switch (`0` = pure passthrough)            |
-| `IMGCTX_OPENAI_OAUTH`                                                                                    | `0`                                | relay OpenCode through a ChatGPT OAuth subscription (reads `auth.json`, routes to the codex backend) |
-| `IMGCTX_OPENAI_CREDENTIALS`                                                                              | `~/.local/share/opencode/auth.json` | path to OpenCode's OAuth token file                 |
-| `IMGCTX_OPENAI_OAUTH_UPSTREAM`                                                                           | `https://chatgpt.com/backend-api/codex` | codex backend base (append `/responses`)        |
-| `IMGCTX_CODEX_OAUTH`                                                                                     | `0`                                | relay the Codex CLI through a ChatGPT OAuth subscription (native Responses API, in-place imaging) |
-| `IMGCTX_CODEX_CREDENTIALS`                                                                               | `~/.codex/auth.json`               | path to the Codex CLI's OAuth token file            |
+```text
+Set up the "imgctx" transparent proxy (https://github.com/NatBrian/image-token-compression)
+in front of my coding-agent CLI so my requests send fewer input tokens.
+
+1. Clone https://github.com/NatBrian/image-token-compression and `pip install -e .`
+   (needs Python 3.10+ and poppler-utils / pdftoppm on PATH).
+2. Read the README's Quick start and Configuration sections to learn the env vars.
+3. Detect which CLI I use (OpenCode, Codex, Claude Code, or another OpenAI-compatible
+   tool) and configure it to route through the proxy at http://127.0.0.1:8787:
+     - OpenAI-compatible CLIs: set the provider baseURL to http://127.0.0.1:8787/v1
+       and start the proxy with IMGCTX_UPSTREAM_BASE set to the real endpoint.
+     - Claude Code: set ANTHROPIC_BASE_URL=http://127.0.0.1:8787.
+     - Codex: add an imgctx model_provider with wire_api=responses.
+4. Start the proxy (`imgctx serve`), run one real request, then `imgctx stats` to
+   confirm tokens dropped. Match the imaged regions to my task shape using the
+   README's Configuration and Known limitations guidance.
+```
+
+## Configuration
+
+All settings are environment variables. The ones you are most likely to set are in **bold**. Defaults are sensible, so most setups only need the upstream and the per-region toggles.
+
+| variable                                                                                                             | default                                                       | meaning                                                                         |
+| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **`IMGCTX_UPSTREAM_BASE`**                                                                                   | `https://opencode.ai/zen/v1`                                | real upstream for the OpenAI-compatible path; set this to your provider         |
+| `IMGCTX_UPSTREAM_KEY`                                                                                              | (empty)                                                       | Authorization value for the upstream; empty passes the client's own key through |
+| `IMGCTX_ANTHROPIC_UPSTREAM`                                                                                        | `https://api.anthropic.com`                                 | upstream for the Claude Code (Messages API) path                                |
+| `IMGCTX_HOST` / `IMGCTX_PORT`                                                                                    | `127.0.0.1` / `8787`                                      | bind address and port (the port must match the CLI's base URL)                  |
+| `IMGCTX_MODELS`                                                                                                    | `mimo,gemini,gpt-4,gpt-5,qwen,glm,claude,haiku,sonnet,opus` | vision allowlist (substring match);`off` disables all imaging                 |
+| **`IMGCTX_SYSTEM` / `IMGCTX_TOOLS` / `IMGCTX_TOOL_RESULTS` / `IMGCTX_USER_TEXT` / `IMGCTX_HISTORY`** | `1`                                                         | per-region toggles; match these to your task (see below)                        |
+| `IMGCTX_MIN_TOOL_RESULT_CHARS` / `IMGCTX_MIN_USER_TEXT_CHARS`                                                    | `6000`                                                      | per-region size floor                                                           |
+| `IMGCTX_MIN_SYSTEM_CHARS` / `IMGCTX_MIN_TOTAL_CHARS`                                                             | `2000`                                                      | slab and whole-request floors                                                   |
+| `IMGCTX_DPI`                                                                                                       | `96`                                                        | render DPI (lower is denser, higher is more legible)                            |
+| `IMGCTX_MAX_PIXELS`                                                                                                | `1000000`                                                   | per-image pixel cap (avoids provider downscaling)                               |
+| `IMGCTX_KEEP_SHARP` / `IMGCTX_FACTSHEET`                                                                         | `1`                                                         | verbatim-safety features                                                        |
+| `IMGCTX_ENABLED`                                                                                                   | `1`                                                         | master switch (`0` is pure passthrough)                                       |
+| `IMGCTX_TIMEOUT`                                                                                                   | `600`                                                       | upstream request timeout, seconds                                               |
+| `IMGCTX_LOG_PATH`                                                                                                  | `~/.imgctx/events.jsonl`                                    | event log that`imgctx stats` and `imgctx watch` read                        |
+| `IMGCTX_OPENAI_OAUTH`                                                                                              | `0`                                                         | relay OpenCode through a ChatGPT OAuth subscription                             |
+| `IMGCTX_OPENAI_CREDENTIALS`                                                                                        | `~/.local/share/opencode/auth.json`                         | OpenCode OAuth token file                                                       |
+| `IMGCTX_OPENAI_OAUTH_UPSTREAM`                                                                                     | `https://chatgpt.com/backend-api/codex`                     | ChatGPT backend base for the OpenCode relay                                     |
+| `IMGCTX_CODEX_OAUTH`                                                                                               | `0`                                                         | relay the Codex CLI through a ChatGPT OAuth subscription                        |
+| `IMGCTX_CODEX_CREDENTIALS`                                                                                         | `~/.codex/auth.json`                                        | Codex CLI OAuth token file                                                      |
+| `IMGCTX_ANTHROPIC_CREDENTIALS`                                                                                     | `~/.claude/.credentials.json`                               | Claude Code OAuth token file (subscription relay)                               |
+
+<details>
+<summary><strong>Advanced tuning</strong> (defaults are fine for almost everyone)</summary>
+
+| variable                                                | default               | meaning                                                                      |
+| ------------------------------------------------------- | --------------------- | ---------------------------------------------------------------------------- |
+| `IMGCTX_ANTHROPIC_OAUTH_INJECT`                       | `1`                 | re-inject the stored Claude OAuth bearer on the Messages path                |
+| `IMGCTX_ANTHROPIC_CACHE_IMAGES`                       | `1`                 | mark the fixed system+tools image cacheable so it cache-reads on later turns |
+| `IMGCTX_HISTORY_KEEP_TAIL`                            | `6`                 | most recent turns kept as text                                               |
+| `IMGCTX_HISTORY_MIN_PREFIX`                           | `6`                 | minimum settled turns before history is frozen to images                     |
+| `IMGCTX_HISTORY_FREEZE_CHUNK`                         | `6`                 | turns per frozen, cacheable history image chunk                              |
+| `IMGCTX_CHARS_PER_TOKEN`                              | `4.0`               | text-cost estimate used by the profitability gate                            |
+| `IMGCTX_PIXELS_PER_TOKEN`                             | `750`               | image-cost estimate (pixels per token) used by the gate                      |
+| `IMGCTX_IMAGE_MARGIN`                                 | `1.15`              | safety margin on the image estimate (biases toward passthrough)              |
+| `IMGCTX_MAX_IMAGES` / `IMGCTX_MAX_IMAGES_PER_BLOCK` | `60` / `24`       | caps on images per request and per single block                              |
+| `IMGCTX_FONT` / `IMGCTX_CJK_FONT`                   | bundled DejaVu / none | render fonts (set a CJK font to render CJK glyphs)                           |
+| `IMGCTX_FONT_SIZE` / `IMGCTX_LINE_HEIGHT`           | `9.0` / `10.0`    | render text size and line spacing                                            |
+| `IMGCTX_NEWLINE_MARKER`                               | `1`                 | draw a visible newline marker so soft wraps are distinguishable              |
+| `IMGCTX_IMAGE_DETAIL`                                 | `high`              | image-detail hint sent to the provider                                       |
+| `IMGCTX_LOG`                                          | `1`                 | write the event log (the source for`stats` and `watch`)                  |
+| `IMGCTX_CAPTURE_DIR`                                  | (empty)               | if set, dump full request bodies here for debugging                          |
+
+</details>
+
+**Which regions to image, matched to the task.** The five regions from the results table map to five toggles: `IMGCTX_SYSTEM`, `IMGCTX_TOOLS`, `IMGCTX_TOOL_RESULTS`, `IMGCTX_USER_TEXT`, `IMGCTX_HISTORY`. Set each to `1` to render that region to images, or `0` to keep it as text. The right choice depends on your provider and task:
+
+- **No cache-write premium** (OpenAI, Codex, mimo, gemini): image everything (all five on). The one exception is mimo on long agent loops, where imaging can make it emit more output; there, image only tool outputs, user text, and history (system and tools off).
+- **Cache-write premium** (Anthropic / Claude Code): image only big, unique, read-once content. For one-shot document tasks, image tool outputs, user text, and history but keep system and tools as text. On long agent loops, keep the repeated prefix (system, tools, history) as text and image only fresh tool outputs.
 
 ## Known limitations
 
-- **The token cut is guaranteed; the dollar cut is provider-specific.** imgctx always reduces input tokens (that is the product, and it holds on every provider). Turning that into a lower bill depends on your provider's price list, not on imgctx. On providers with no cache-write premium (OpenAI, no-cache upstreams) and on read-once work everywhere, fewer tokens is fewer dollars (measured **-13% to -18%** on Anthropic Sonnet for read-once, and **-33% to -47%** on the no-cache OpenCode path). The single exception is **Anthropic-style caching on a re-send-heavy workload**: when a big prefix is re-read every turn of a long agentic loop, Anthropic already serves it at ~0.1x, so imaging trades cheap cache-reads for pricier cache-writes and can raise the bill even as tokens fall (measured **+26% to +44%**). That is one provider's pricing choosing the outcome, not a bug; the fix is *targeting* the right regions, not a code change. See [What imgctx saves vs what depends on your provider](docs/input-tokens-vs-cost.md), the use-it-here/skip-it-here guide in [When imaging pays](#when-imaging-pays-and-when-it-does-not), or the from-zero deep dive: [Understanding Tokens, Prompt Caching, and Cost](docs/understanding-tokens-cache-cost.md).
-- **Lossy for exact strings inside images.** Byte-exact recall (hashes, UUIDs, secrets) is unreliable and fails silently. Mitigated (kept as text plus a factsheet), not eliminated. Byte-critical content should stay text.
-- **Reader-model dependent.** Comprehension varies by model; keep the allowlist to models you have validated. Weaker readers can lose some accuracy on hard tasks.
-- **Latency.** Rendering adds time to large requests before they leave, and vision encoding adds server-side time.
-- **Wins on dense content.** Sparse prose has little to gain; the gate skips content where imaging would cost more than it saves.
-- **Agent-loop variance.** History collapse bounds looped-session cost, but agent looping is nondeterministic and not fully eliminated.
+imgctx is a targeting tool, not a magic switch. There is one thing that can surprise you. This section explains it in plain words, and what to do so it never bites you.
+
+### Fewer tokens does not always mean a smaller bill
+
+imgctx always makes your request smaller (fewer input tokens). That is guaranteed on every provider. Turning those smaller requests into a smaller bill depends on one detail: how your provider prices text you send over and over.
+
+**A 30-second primer on the "prompt cache".** When a coding agent works, it re-sends almost the same big prompt on every step (the instructions, the list of tools, files it already read). To avoid charging you full price for that repetition, providers keep a cache:
+
+- The **first** time they see a chunk of text, they store it. This is a **cache write**. It costs a little more than normal, like paying to file a document in a cabinet.
+- **Every later** time you send the exact same text, they reuse the stored copy. This is a **cache read**. It is very cheap, often about one tenth of the normal price, like photocopying the document you already filed.
+- The catch: the match must be exact. Change one character and it counts as brand-new text, so it is a new write, not a cheap read.
+
+**Why imaging can cost more in one specific case.** An image is brand-new bytes, different from the text it replaced. So if you turn a chunk of text into an image when the provider was already serving that text cheaply from cache, you swap a cheap **cache read** for a pricier **cache write**. You send fewer tokens, but each one now costs more, and the bill can rise even as the token count drops. Our benchmarks show this in exactly one situation: a **long agent loop** (the same big context re-sent every step) on a provider that **charges extra for cache writes** (today that means Anthropic / Claude Code).
+
+**On every other provider and task, imaging cuts the bill too.** Providers like OpenAI, Codex, and the OpenCode models charge nothing extra for a cache write, so there is no penalty and the token cut flows straight to the bill. And read-once work (summarize or ask questions about one document) wins everywhere, including on Anthropic, because that text was never cached in the first place, so imaging simply makes the one-time cost smaller.
+
+**What you should do (the config guide above spells this out):**
+
+- **Provider does not charge extra for cache writes** (OpenAI, Codex, mimo, gemini): turn imaging on for everything.
+- **Provider does charge extra** (Anthropic / Claude Code): image only the big, unique, read-once parts (a pasted document, fresh tool output), and leave the repeated prefix as text (`IMGCTX_SYSTEM=0`, and keep tools and history as text).
+
+You are never flying blind: your provider reports the dollar cost, so you can run your own workload both ways and keep the cheaper one. This is a pricing quirk of one provider on one kind of task, not a flaw in the idea, and the token saving is always real. Full numbers and the per-cost breakdown are in [`bench/FINAL_REPORT.md`](bench/FINAL_REPORT.md).
+
+### Other limitations
+
+- **Exact strings inside images can be misread.** A vision model reads a picture of text by understanding it, not by copying it character for character, so byte-exact values (hashes, UUIDs, secrets) can come back slightly wrong, and silently. imgctx reduces this by keeping identifier-heavy and secret-bearing blocks as text and by attaching the exact tokens alongside each image, but it does not eliminate it. Keep byte-critical content as text.
+- **Results depend on the reader model.** Some models read rendered text better than others. Stick to models you have checked (the allowlist), because a weaker model can lose some accuracy on hard tasks.
+- **Only dense text is worth imaging.** Short or sparse text has little to gain, so the built-in profitability gate skips it and leaves it as text. The wins come from big, dense content (code, JSON, logs, long documents).
+- **A little extra latency.** Rendering text to images adds a moment before a large request is sent, and the model spends a little more time reading images.
+- **Small samples.** Each measured result is a handful of items, so trust the direction of an effect more than the exact percentage, which will move with more data. This is engineering evidence, not a peer-reviewed study.
 
 ## Inspired by
 
 - *Text or Pixels? It Takes Half: On the Token Efficiency of Visual Text Inputs in Multimodal LLMs* ([arXiv:2510.18279](https://arxiv.org/abs/2510.18279))
 - *LensVLM: Selective Context Expansion for Compressed Visual Representation of Text* ([arXiv:2605.07019](https://arxiv.org/abs/2605.07019))
 
-`imgctx` is an independent implementation of the render-text-as-image idea, built as a transparent proxy for coding-agent CLIs.
-
 ## License
 
 MIT, see [LICENSE](LICENSE).
-
-[OpenCode]: https://opencode.ai
