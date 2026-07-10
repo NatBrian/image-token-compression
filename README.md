@@ -148,7 +148,8 @@ Each row below is one task, with imgctx's regions matched to that task's shape (
 | OpenCode    | mimo          | gov-report summary | read once  | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -72.9% |            -62.9% (sim) |
 | OpenCode    | mimo          | narrativeqa QA     | read once  |    |      |    ✓    |  ✓  |  ✓  |       -27.1% |            -51.2% (sim) |
 | Claude Code | claude-sonnet | gov-report summary | read once  |    |      |    ✓    |  ✓  |  ✓  |       -24.5% | **-41.9% (real)** |
-| Claude Code | claude-sonnet | narrativeqa QA     | read once  |    |      |    ✓    |  ✓  |      |          n/a | **-29.9% (real)** |
+| Codex       | gpt-5.4-mini  | narrativeqa QA     | read once  | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -18.2% |            -15.1% (sim) |
+| Codex       | gpt-5.4-mini  | gov-report summary | read once  | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -19.9% |            -13.1% (sim) |
 | Codex       | gpt-5.4-mini  | SWE-bench code-fix | agent loop | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -24.8% |            -28.1% (sim) |
 | Codex       | gpt-5.4-mini  | HotpotQA multihop  | agent loop | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -24.1% |            -25.6% (sim) |
 | OpenCode    | mimo          | HotpotQA multihop  | agent loop | ✓ |  ✓  |    ✓    |  ✓  |  ✓  |       -33.7% |            -25.2% (sim) |
