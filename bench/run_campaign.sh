@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Safe full-campaign launcher (ON/OFF, all live cells).
 #
-# Concurrency model: THREE lanes -- mimo, codex, claude -- run at the same time
+# Concurrency model: THREE lanes (mimo, codex, claude) run at the same time
 # (different endpoints: zen / chatgpt / anthropic, so no shared rate limit). But
 # WITHIN a lane the cells run strictly ONE AT A TIME. This keeps each account/endpoint
-# from contending with itself -- in particular the FREE mimo/zen route, which returned
+# from contending with itself, in particular the FREE mimo/zen route, which returned
 # "No provider available" under parallel load during the dry-run.
 #
 # Safety guards:
@@ -12,7 +12,7 @@
 #     and is non-empty (prevents the double-launch-into-one-dir corruption we hit).
 #   * swebench repo cache is pre-warmed SERIALLY and instances.json is pre-seeded into
 #     every swebench cell, so the three lanes never race on git clone or the HF fetch.
-#   * fresh timestamped output folder -- never overwrites an old run.
+#   * fresh timestamped output folder, never overwrites an old run.
 #
 # Per-benchmark N and timeouts are variables below; override via env, e.g.
 #   N_SWE=3 N_HOTPOT=20 bash bench/run_campaign.sh
@@ -50,7 +50,7 @@ for cell in ("mimo_swebench", "codex_swebench", "claude_swebench"):
     (d / "instances.json").write_text(json.dumps(insts, indent=2))
 print("[prewarm] done:", [i["instance_id"] for i in insts])
 PY
-[ $? -ne 0 ] && { echo "PREWARM FAILED -- abort"; exit 1; }
+[ $? -ne 0 ] && { echo "PREWARM FAILED: abort"; exit 1; }
 
 # ---- helpers ----
 # guard <results_path> : returns 0 (run) if the file is absent/empty, 1 (skip) otherwise.
@@ -65,7 +65,7 @@ cell () {
   echo "   $name exit=$? -> $2"
 }
 
-# ---- LANE: mimo (opencode/mimo-v2.5-free via zen) -- STRICTLY SEQUENTIAL, port 8830 ----
+# ---- LANE: mimo (opencode/mimo-v2.5-free via zen), STRICTLY SEQUENTIAL, port 8830 ----
 mimo_lane () {
   cell mimo_hotpot   "mimo_hotpot/results.json" \
     $PY -m bench.hotpot_opencode_experiment   --n "$N_HOTPOT" --timeout "$T_SHORT" --port 8830 --runs-dir "${RUN}/mimo_hotpot"
@@ -78,7 +78,7 @@ mimo_lane () {
   echo "LANE mimo DONE"
 }
 
-# ---- LANE: codex (gpt-5.4-mini, ChatGPT OAuth) -- sequential, port 8840 ----
+# ---- LANE: codex (gpt-5.4-mini, ChatGPT OAuth), sequential, port 8840 ----
 codex_lane () {
   cell codex_hotpot   "codex_hotpot/results.json" \
     $PY -m bench.hotpot_codex_experiment   --n "$N_HOTPOT" --timeout "$T_SHORT" --port 8840 --runs-dir "${RUN}/codex_hotpot"
@@ -91,7 +91,7 @@ codex_lane () {
   echo "LANE codex DONE"
 }
 
-# ---- LANE: claude sonnet (Anthropic) -- sequential, port-base 8850 (on/off = 8850/8851) ----
+# ---- LANE: claude sonnet (Anthropic), sequential, port-base 8850 (on/off = 8850/8851) ----
 claude_lane () {
   cell claude_swebench "claude_swebench/results.json" \
     $PY -m bench.swebench_claude_experiment --n "$N_SWE" --timeout "$T_SWE" --port-base 8850 --model sonnet --runs-dir "${RUN}/claude_swebench"

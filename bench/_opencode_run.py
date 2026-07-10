@@ -76,7 +76,7 @@ def start_proxy(enabled: bool, port: int, log_path: Path,
     env["IMGCTX_LOG"] = "1"
     # Always capture raw request/response bytes next to events.jsonl. If our usage/
     # cost parsing misses a field (e.g. a paid endpoint's cost lives somewhere
-    # _parse_usage doesn't check), the original bytes are still on disk -- no rerun,
+    # _parse_usage doesn't check), the original bytes are still on disk: no rerun,
     # no re-billing, ever.
     env["IMGCTX_CAPTURE_DIR"] = str(log_path.parent / "capture")
     if extra_env:
@@ -151,10 +151,10 @@ def run_opencode(cwd: Path, prompt: str, config_path: Path,
 
 def is_run_error(u: dict, out: str) -> bool:
     """A run counts as failed if it made no call, timed out, or produced ZERO input
-    tokens (an empty completion -- the failure mode that silently corrupted the OFF
+    tokens (an empty completion, the failure mode that silently corrupted the OFF
     baseline in the campaign). We do NOT test looks_transient(out) here: run_opencode
     already retried transient errors, and a recovered run still carries the original
-    error text in its log -- testing it would false-flag a healthy retried run. A
+    error text in its log. Testing it would false-flag a healthy retried run. A
     genuinely exhausted-retry failure logs no usage, so the zero-token test catches
     it anyway."""
     return (u.get("calls", 0) == 0

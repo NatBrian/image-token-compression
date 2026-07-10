@@ -44,7 +44,7 @@ PREFERRED_REPOS = ["psf/requests", "pallets/flask", "pylint-dev/pylint", "pytest
 
 # ON arm = the Anthropic-loop cost-aware profile from bench._profiles: keep the
 # STATIC prefix (system + tool DOCS) as TEXT so Anthropic native caching reads it at
-# 0.1x -- imaging the static tool-doc slab was the verified +26% cost driver (it
+# 0.1x. Imaging the static tool-doc slab was the verified +26% cost driver (it
 # inflates the one-time cache-WRITE). Only first-appearance huge tool_results image;
 # no churning history-collapse. (Corrected from the earlier IMGCTX_TOOLS=1 config.)
 _ON_REGION = {k: v for k, v in (resolve_profile(AGENT, BENCHMARK, "on") or {}).items()

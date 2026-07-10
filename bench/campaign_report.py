@@ -13,7 +13,7 @@ The drivers store `usage` in two different shapes:
 `normalize()` collapses both into one schema so every cell is compared identically.
 
 Cost is taken verbatim from each item's `cost_usd` (real for claude, simulated for
-codex/mimo -- the driver already applied bench._profiles.cost_for). We never
+codex/mimo: the driver already applied bench._profiles.cost_for). We never
 recompute here; we only sum and delta what the run recorded.
 
 Usage:
@@ -133,8 +133,8 @@ def render(summary: dict) -> str:
     rows.append(f"| **cost ({basis})** | {ocost} | {ncost} | {dcost} |")
     of1 = f"{o['f1']/o['f1_n']:.3f}" if o["f1_n"] else "-"
     nf1 = f"{n['f1']/n['f1_n']:.3f}" if n["f1_n"] else "-"
-    rows.append(f"| F1 (avg) | {of1} | {nf1} | — |")
-    rows.append(f"| items / ON images | {o['n']} / — | {n['n']} / {n['imgs']} | — |")
+    rows.append(f"| F1 (avg) | {of1} | {nf1} | n/a |")
+    rows.append(f"| items / ON images | {o['n']} / n/a | {n['n']} / {n['imgs']} | n/a |")
     lines.append("\n".join(rows))
     lines.append("")
     return "\n".join(lines)

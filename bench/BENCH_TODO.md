@@ -1,4 +1,4 @@
-# Full Benchmark Campaign — TODO & Decisions
+# Full Benchmark Campaign: TODO & Decisions
 
 **Status: DRY-RUN DONE (N=2, all 11 cells). Now hardening per-agent before paid scale.**
 Build A-F complete. mimo fixes applied (see H). Current: mimo swebench-ON verdict, then codex, then claude. See I for next TODO. NO paid scale run until all 3 agents green + user approves.
@@ -12,8 +12,8 @@ Agents: `claude sonnet`, `codex gpt-5.4-mini`, `opencode mimo-2.5`
 
 ## Hard requirements (from user)
 
-1. **Personalized config per agent** — not one uniform config. Each agent's profile grounded in its *verified* cache pricing + logic (see below).
-2. **All scripts ready** — every (agent × benchmark) cell has a working driver.
+1. **Personalized config per agent**: not one uniform config. Each agent's profile grounded in its *verified* cache pricing + logic (see below).
+2. **All scripts ready**: every (agent × benchmark) cell has a working driver.
 3. **Raw request/response captured** for every run → can regenerate token usage / cost / F1 / loop-count **without rerunning** the bench.
 4. **ON/OFF comparison** for token, cache, cost per cell.
 5. Cost labeled **real** (provider-reported) or **simulated** (token×verified-rate), explicitly.
@@ -36,10 +36,10 @@ Agents: `claude sonnet`, `codex gpt-5.4-mini`, `opencode mimo-2.5`
 
 ### Cost logic (verified in code + real data)
 - Anthropic: cache read→write = **12.5×**. Imaging content that's already cache-read in a loop is net-NEGATIVE.
-- **Keep static prefix (system + tool docs) as TEXT on Anthropic** — native cache reads it at 0.1×; imaging it only inflates the one-time write. Image only large FRESH non-prefix content (a doc, a huge one-shot tool_result).
+- **Keep static prefix (system + tool docs) as TEXT on Anthropic**: native cache reads it at 0.1×; imaging it only inflates the one-time write. Image only large FRESH non-prefix content (a doc, a huge one-shot tool_result).
 - OpenAI/mimo: no write fee → aggressive imaging always safe.
 
-### swebench claude regression — ATTRIBUTED (old run, no rerun)
+### swebench claude regression: ATTRIBUTED (old run, no rerun)
 - +81k cache-write came from imaging the **tool-doc slab** (162k/172k writes), NOT history (only 10k).
 - Root cause: `swebench_claude` left `IMGCTX_TOOLS=1` → imaged static tool docs. Fix = `TOOLS=0` (match winning longdoc config).
 
@@ -50,8 +50,8 @@ Agents: `claude sonnet`, `codex gpt-5.4-mini`, `opencode mimo-2.5`
 | agent | family | HotpotQA | SWE-bench | longdoc NQA/Gov |
 |---|---|---|---|---|
 | **opencode mimo** | OpenAI-style (no write fee) | aggressive: SYSTEM=1 TOOLS=1 results/history/user ON | aggressive | aggressive |
-| **codex gpt-5.4-mini** | OpenAI-style | SYSTEM=1 (only lever — see note) | SYSTEM=1 TOOLS=1 aggressive | aggressive |
-| **claude sonnet** | Anthropic (write trap) | SKIP — reuse old data | SYSTEM=0 TOOLS=0, tool_results(fresh-huge) ON, history OFF | SYSTEM=0 TOOLS=0, tool_results+history ON (doc is file-read) |
+| **codex gpt-5.4-mini** | OpenAI-style | SYSTEM=1 (only lever, see note) | SYSTEM=1 TOOLS=1 aggressive | aggressive |
+| **claude sonnet** | Anthropic (write trap) | SKIP: reuse old data | SYSTEM=0 TOOLS=0, tool_results(fresh-huge) ON, history OFF | SYSTEM=0 TOOLS=0, tool_results+history ON (doc is file-read) |
 
 - **codex hotpot note:** doc <6k threshold, sandboxed shell can't cat doc → system prompt is the ONLY imageable region. Documented exception.
 - **claude hotpot: SKIP new run.** Doc 4.7k < 6k, no big history → imgctx no-op (ON=OFF). Reuse existing data to present the counter-intuition finding: Anthropic imaging is wrong for that task category.
@@ -67,7 +67,7 @@ Agents: `claude sonnet`, `codex gpt-5.4-mini`, `opencode mimo-2.5`
 - [x] Wire every driver to import + apply its profile, and LOG `profile_meta()` -> `run_meta{tag}.json`. All 8 drivers verified (ast+import+resolve). mimo/codex use OpenAI-aggressive (all regions ON); claude swebench=corrected loop (SYSTEM/TOOLS/USER/HISTORY=0, TOOL_RESULTS=1); claude longdoc=doc profile.
 
 ### B. Cost layer (real + simulated, labeled)
-- [x] claude = real `total_cost_usd` verbatim, NO recompute (`cost_basis=real_provider`). Decided: don't simulate claude — list-rate decomp is a clean 3× off Claude Code's effective subscription rates; real is authoritative.
+- [x] claude = real `total_cost_usd` verbatim, NO recompute (`cost_basis=real_provider`). Decided: don't simulate claude: list-rate decomp is a clean 3× off Claude Code's effective subscription rates; real is authoritative.
 - [x] codex = simulated OpenAI list (`$0.75`/`$0.075` cached/`$4.50,` no write fee), cache-class aware
 - [x] mimo = simulated at Xiaomi MiMo-V2.5 REAL first-party list (`$0.14` fresh / `$0.003` cache-read / `$0.28` out, no write fee). NB: mimo-v2.5 = Xiaomi MiMo, NOT MiniMax.
 - [x] Fix dead path in `cost_claude_breakdown.py` (`swebench_runs`→`swebench_claude_runs`, `longdoc_runs`→`longdoc_claude_runs`)
@@ -111,32 +111,32 @@ Ensure these new run output in new folder with timestamp so it will not replace 
 
 ---
 
-## G. Dry-run findings (N=2, noisy — directional only)
+## G. Dry-run findings (N=2, noisy, directional only)
 
 Categorized every cell that errored or went ON-worse:
 
 **Errors / broken data (root-caused):**
-- **mimo endpoint contention** — under 11-way parallel, the FREE zen route dropped with
+- **mimo endpoint contention**: under 11-way parallel, the FREE zen route dropped with
   `"No provider available"` (20+ files). OFF arms (imaging off) failed too => NOT profile/
   imaging; it is concurrency vs a free endpoint. Old runs worked only because sequential.
 - `is_error` missed zero-token/empty completions => corrupted OFF baseline => fake "+22%
   input" on mimo hotpot/nqa.
 
 **Genuine ON-worse:**
-- claude·narrativeqa cost +25.5% — ONE item (q00) looped on ON (out +12x, cache-read +310%).
+- claude·narrativeqa cost +25.5%: ONE item (q00) looped on ON (out +12x, cache-read +310%).
   q01 ON was cheaper. Loop-amplification.
-- codex·hotpot q01 f1 0.667->0 on ON — small-doc imaging hurts the answer (known marginal case).
-- mimo·swebench ON — aggressive imaging (235-338 images) vs old 94-120; coder may be blinded.
+- codex·hotpot q01 f1 0.667->0 on ON: small-doc imaging hurts the answer (known marginal case).
+- mimo·swebench ON: aggressive imaging (235-338 images) vs old 94-120; coder may be blinded.
 
 **Tokens up but GOOD (mechanism working, keep):**
-- claude·gov_report input +40% but cost -40.7% — imaging converts expensive cache-WRITES
+- claude·gov_report input +40% but cost -40.7%: imaging converts expensive cache-WRITES
   (1.25x) into cheap cache-READS (0.1x). Intended Anthropic play.
 
 ## H. Fixes applied (mimo, `bench/_opencode_run.py`)
-- [x] `run_opencode(retries=3)` — retry TRANSIENT zen errors (No provider available / stream
+- [x] `run_opencode(retries=3)`: retry TRANSIENT zen errors (No provider available / stream
       error / 429 / 5xx / overloaded) w/ linear backoff; skip retry on [TIMEOUT]. Recovered 10
       runs in the sequential refix.
-- [x] `is_run_error(u, out)` — flag calls==0 OR prompt_tokens==0 OR [TIMEOUT]. (Deliberately
+- [x] `is_run_error(u, out)`: flag calls==0 OR prompt_tokens==0 OR [TIMEOUT]. (Deliberately
       NOT looks_transient: a retried-then-recovered run keeps the old error text -> would
       false-flag a healthy run. Dead runs log zero tokens, caught anyway.)
 - [x] Wired into hotpot/swebench/longdoc opencode drivers; unit-tested.
@@ -166,7 +166,7 @@ Categorized every cell that errored or went ON-worse:
       agent's small-doc cells). NOT codex-specific.
 
 **claude: WORKING ✓** (validated from dry-run data, no rerun/spend)
-- [x] gov_report clean 2/2 win (q00 -43%, q01 -38%) — imaging converts cache-writes->reads.
+- [x] gov_report clean 2/2 win (q00 -43%, q01 -38%): imaging converts cache-writes->reads.
 - [x] swebench: flask -28%, psf ~flat, all err=False. **TOOLS=0 fix VALIDATED** (ON<=OFF; old
       +26% regression gone).
 - [x] narrativeqa: q01 -18% win; q00 LOOP blowup (out 672->8517, cread 171k->702k, cost +38%).
@@ -193,7 +193,7 @@ Categorized every cell that errored or went ON-worse:
       mimo initially failed (free-endpoint OUTAGE, not code); re-ran mimo when it recovered.
       claude·narrativeqa swapped to the HISTORY=0 fixed data. Report: `.../REPORT.md`.
 
-### CAMPAIGN RESULT (N=2) — token always down; cost is provider/task specific
+### CAMPAIGN RESULT (N=2): token always down; cost is provider/task specific
 | cell | input Δ | cost Δ |
 |---|---|---|
 | claude gov | -45.1% | -43.2% ✓ |
@@ -220,7 +220,7 @@ Categorized every cell that errored or went ON-worse:
 ### Optional mimo tuning (if we want mimo green too)
 - [ ] mimo·narrativeqa: try HISTORY=0 (curb the loop -> less output). 
 - [ ] mimo·swebench: less aggressive imaging when baseline is cache-read-heavy (imaging a
-      cheaply-cached repo is a net-negative trade at mimo's rates) — e.g. TOOL_RESULTS off, or a
+      cheaply-cached repo is a net-negative trade at mimo's rates), e.g. TOOL_RESULTS off, or a
       fresh-vs-cached gate.
 - Note: mimo is actually FREE; these "costs" are SIMULATED at list rates to show where imaging
   would pay off if it were a paid API.

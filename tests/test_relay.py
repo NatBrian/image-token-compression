@@ -1,12 +1,12 @@
 """Relay-path guard tests: opencode (OpenAI OAuth) + codex (native Responses).
 
 These pin the behaviour the two OAuth relays must preserve across the module
-split -- routing to /responses, OAuth header injection from each CLI's own
+split: routing to /responses, OAuth header injection from each CLI's own
 credential file shape, chat->responses conversion (opencode only), and the
 SSE handling (opencode converts Responses->Chat; codex passes native through).
 
-They run fully in-process against a fake ChatGPT /responses upstream -- no
-network, no paid quota -- so the refactor is CI-guarded instead of validated
+They run fully in-process against a fake ChatGPT /responses upstream, no
+network, no paid quota, so the refactor is CI-guarded instead of validated
 only by live runs.
 """
 import json
@@ -150,7 +150,7 @@ async def test_codex_relay_preserves_native_and_injects(codex_wired):
     assert r.status_code == 200
 
     up = received["body"]
-    # Native input preserved in place -- every typed item survives, byte-identical.
+    # Native input preserved in place; every typed item survives, byte-identical.
     assert up["input"] == body["input"]
     assert up["instructions"] == "system slab"
     # No Chat<->Responses round-trip: no `messages` key ever appears.
@@ -465,7 +465,7 @@ async def test_capture_writes_full_raw_request_and_response(tmp_path):
     resp = next(f for f in files if f.name.startswith("resp_") and f.name.endswith(".json") and "headers" not in f.name)
     # Raw request preserved.
     assert json.loads(req_in.read_text())["messages"][0]["content"] == "hi"
-    # Full response on disk -- the 5000-char delta survived intact (not head/tail clipped).
+    # Full response on disk: the 5000-char delta survived intact (not head/tail clipped).
     body = resp.read_text()
     assert ("x" * 5000) in body
     assert "[DONE]" in body

@@ -1,0 +1,82 @@
+{
+  "campaign_20260710_180022/claude_longdoc/proxy_off_events.jsonl": {
+    "calls": 15,
+    "images": 0
+  },
+  "campaign_20260710_180022/claude_longdoc/proxy_on_events.jsonl": {
+    "calls": 10,
+    "images": 30
+  },
+  "campaign_20260710_180022/claude_swebench/proxy_off_events.jsonl": {
+    "calls": 9,
+    "images": 0
+  },
+  "campaign_20260710_180022/claude_swebench/proxy_on_events.jsonl": {
+    "calls": 9,
+    "images": 0
+  },
+  "campaign_dryrun_20260710_152928/claude_longdoc/proxy_off_events.jsonl": {
+    "calls": 13,
+    "images": 0
+  },
+  "campaign_dryrun_20260710_152928/claude_longdoc/proxy_on_events.jsonl": {
+    "calls": 22,
+    "images": 84
+  },
+  "campaign_dryrun_20260710_152928/claude_swebench/proxy_off_events.jsonl": {
+    "calls": 11,
+    "images": 0
+  },
+  "campaign_dryrun_20260710_152928/claude_swebench/proxy_on_events.jsonl": {
+    "calls": 8,
+    "images": 0
+  },
+  "claude_nqa_hist0_20260710_182803/proxy_off_events.jsonl": {
+    "calls": 4,
+    "images": 0
+  },
+  "claude_nqa_hist0_20260710_182803/proxy_on_events.jsonl": {
+    "calls": 5,
+    "images": 24
+  },
+  "hotpot_claude_runs/proxy_off_events.jsonl": {
+    "calls": 10,
+    "images": 0
+  },
+  "hotpot_claude_runs/proxy_off_tools0_events.jsonl": {
+    "calls": 10,
+    "images": 0
+  },
+  "hotpot_claude_runs/proxy_on_events.jsonl": {
+    "calls": 10,
+    "images": 131
+  },
+  "hotpot_claude_runs/proxy_on_tools0_events.jsonl": {
+    "calls": 10,
+    "images": 1
+  },
+  "hotpot_verify_runs/claude_sonnet/proxy_off_events.jsonl": {
+    "calls": 2,
+    "images": 0
+  },
+  "hotpot_verify_runs/claude_sonnet/proxy_on_events.jsonl": {
+    "calls": 2,
+    "images": 26
+  },
+  "longdoc_claude_runs/proxy_off_events.jsonl": {
+    "calls": 28,
+    "images": 0
+  },
+  "longdoc_claude_runs/proxy_on_events.jsonl": {
+    "calls": 27,
+    "images": 155
+  },
+  "swebench_claude_runs/proxy_off_events.jsonl": {
+    "calls": 27,
+    "images": 0
+  },
+  "swebench_claude_runs/proxy_on_events.jsonl": {
+    "calls": 31,
+    "images": 420
+  }
+}

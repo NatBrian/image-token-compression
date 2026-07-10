@@ -319,7 +319,7 @@ def test_cache_token_normalization_across_providers():
     assert _real_cache_read(chat, is_anthropic=False) == 7
     assert _real_cache_write(chat, is_anthropic=False) == 3
 
-    # Native Responses API (codex + opencode-OAuth relay) — the shape that was undercounted
+    # Native Responses API (codex + opencode-OAuth relay): the shape that was undercounted
     resp = {"input_tokens_details": {"cached_tokens": 4480, "cache_write_tokens": 0}}
     assert _real_cache_read(resp, is_anthropic=False) == 4480
     assert _real_cache_write(resp, is_anthropic=False) == 0

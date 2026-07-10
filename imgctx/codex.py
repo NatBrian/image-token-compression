@@ -3,7 +3,7 @@
 The Codex CLI speaks the OpenAI Responses API natively: the request carries an
 `input` array of typed items (message / function_call / function_call_output /
 reasoning / ...) plus a top-level `instructions` slab, and expects a native
-Responses SSE stream back. So this path is a pure transform+forward -- unlike the
+Responses SSE stream back. So this path is a pure transform+forward; unlike the
 opencode relay, there is no Chat Completions translation in either direction.
 
 Placement rules (Responses constraints, distinct from Chat and from Anthropic):
@@ -83,7 +83,7 @@ def transform_responses_native(body: dict, settings: Settings) -> tuple[dict, Tr
     """Image a native Responses API request in place, preserving every input item.
 
     Images (a) large function_call_output tool results, (b) older large user
-    messages, and (c) the system `instructions` slab -- while leaving function_call,
+    messages, and (c) the system `instructions` slab, while leaving function_call,
     reasoning, and all other items byte-identical and in order. Fail-open: any shape
     issue returns the original body untouched."""
     stats = TransformStats()
@@ -104,7 +104,7 @@ def transform_responses_native(body: dict, settings: Settings) -> tuple[dict, Tr
 
         # Keep the live/last user turn as text (high-fidelity actionable instruction);
         # older user turns are eligible for imaging. Tool results are imaged regardless
-        # of recency -- the freshest large tool output is exactly what we want imaged.
+        # of recency; the freshest large tool output is exactly what we want imaged.
         last_user_idx = -1
         for i, it in enumerate(input_data):
             if isinstance(it, dict) and it.get("type") == "message" and it.get("role") == "user":
@@ -201,7 +201,7 @@ def transform_responses_native(body: dict, settings: Settings) -> tuple[dict, Tr
 def read_oauth_token(settings: Settings) -> dict | None:
     """Read the Codex CLI's ChatGPT OAuth tokens at forward time (so Codex's own
     background refreshes are picked up). Codex's auth.json nests the tokens under a
-    `tokens` object -- a different shape from opencode's flat `openai` object.
+    `tokens` object, a different shape from opencode's flat `openai` object.
 
     Returns {"access": str, "refresh": str, "account_id": str} or None.
     """

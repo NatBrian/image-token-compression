@@ -14,7 +14,7 @@ from .config import load_settings
 
 # Optional: well-known model pricing (USD per 1M tokens).
 # Populated by --pricing or a PRICING_JSON / IMGCTX_PRICING env var.
-# Structure: {model: {input, output, cache_read}}  — all per-1M-tokens.
+# Structure: {model: {input, output, cache_read}}. All per-1M-tokens.
 _DEFAULT_PRICING: dict[str, dict[str, float]] = {}
 
 
@@ -40,7 +40,7 @@ def _maybe_cost(m: str, kind: str, tokens: float, pricing: dict) -> str:
 
 def _real_cache_write(u: dict, is_anthropic: bool) -> int:
     """Cache-WRITE tokens, checked across every shape seen in the wild so far.
-    There is no universal field name across providers -- Anthropic, OpenAI-style
+    There is no universal field name across providers: Anthropic, OpenAI-style
     gateways, and multiplexing gateways (e.g. an OpenAI-shaped response that's
     actually proxying a Claude backend) each use a different key. This list grows
     as new gateways surface new names; it is not, and cannot be, exhaustive."""
@@ -69,7 +69,7 @@ def _real_cache_read(u: dict, is_anthropic: bool) -> int:
 
 def _real_cost(u: dict) -> float | None:
     """A provider-reported dollar cost, if this endpoint sends one (e.g. OpenRouter's
-    usage.cost). None means "not reported", never "zero" -- do not conflate with a
+    usage.cost). None means "not reported", never "zero"; do not conflate with a
     genuinely free call."""
     c = u.get("cost")
     return float(c) if c is not None else None

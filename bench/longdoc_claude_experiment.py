@@ -135,7 +135,7 @@ def best_score(pred: str, golds: list[str]):
 
 
 # --------------------------------------------------------------------------- #
-# proxy management (dual, both up at once)  -- mirror of hotpot harness
+# proxy management (dual, both up at once): mirror of hotpot harness
 # --------------------------------------------------------------------------- #
 def start_proxies() -> dict[str, subprocess.Popen]:
     procs: dict[str, subprocess.Popen] = {}

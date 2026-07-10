@@ -7,7 +7,7 @@ function_call_output tool result when codex cats the file) in place and streams 
 native SSE back.
 
 For each question we run codex twice: compression OFF (relay only, no imaging) and
-ON (relay + imaging). The proxy stays in OAuth-relay mode in BOTH arms -- OFF just
+ON (relay + imaging). The proxy stays in OAuth-relay mode in BOTH arms. OFF just
 toggles IMGCTX_ENABLED=0. Every /responses call's usage (input/output + cache split
 under input_tokens_details) and the full raw request/response bytes are captured to
 disk per arm, so token/cost/compression can be inspected without a paid rerun.

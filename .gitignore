@@ -80,7 +80,7 @@ bench/hotpot_claude_runs/on_tools0/
 
 # Long-doc single-shot (Claude Code path). Track LONGDOC_REPORT.md + results_*.json
 # + the cached data_*.json question sets; ignore heavy per-item streams/logs.
-# (longdoc_runs is the pre-rename name, longdoc_claude_runs the current one -- keep
+# (longdoc_runs is the pre-rename name, longdoc_claude_runs the current one; keep
 # both so a stale local checkout from before the rename still ignores correctly.)
 bench/longdoc_runs/off/
 bench/longdoc_runs/on/
@@ -158,7 +158,24 @@ bench/mimo_refix_*/{off,on}/
 bench/mimo_refix_*/**/capture/
 bench/mimo_refix_*/**/*events*.jsonl
 
-# Data archived in bench_data.tar.gz — no longer tracked individually (July 2026).
+# Superseded report markdown + their generator scripts. Kept locally, untracked on
+# GitHub. FINAL_REPORT.md (via bench/generate_final_report.py) is the one canonical
+# report; its shared data helpers live in bench/_report_data.py.
+bench/FULL_REPORT.md
+bench/COST_CLAUDE_BREAKDOWN.md
+bench/COMBINED_CLAUDE_REPORT.md
+bench/LONGDOC_CLAUDE_REPORT.md
+bench/HOTPOT_FULL_COMPARISON.md
+bench/OPENCODE_COST_BREAKDOWN.md
+bench/cost_claude_breakdown.py
+bench/combined_claude_report.py
+bench/longdoc_claude_report.py
+bench/hotpot_full_analysis.py
+bench/opencode_cost_breakdown.py
+docs/understanding-tokens-cache-cost.md
+docs/input-tokens-vs-cost.md
+
+# Data archived in bench_data.tar.gz, no longer tracked individually (July 2026).
 # All files matched below are safely backed up in the archive.
 bench/**/results*.json
 bench/**/run_meta*.json
@@ -167,3 +184,5 @@ bench/**/CAMPAIGN.txt
 bench/**/REPORT.md
 bench/**/TOOLS0_REPORT.md
 bench/**/data.json
+
+tmp-test

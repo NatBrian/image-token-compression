@@ -5,7 +5,7 @@ Both the opencode relay (flat `openai` credential shape) and the codex relay
 id, and both must serialize concurrent 401-driven refreshes through one process
 lock so two racing requests don't each burn the single-use refresh token.
 
-This module owns only those invariants -- the endpoint, the client id, the lock,
+This module owns only those invariants: the endpoint, the client id, the lock,
 and the bare refresh POST. Each CLI module keeps its own credential-file read and
 write-back, because those shapes differ.
 """
@@ -34,7 +34,7 @@ def get_refresh_lock():
 async def post_refresh(refresh_token: str) -> dict | None:
     """Exchange a refresh token for a fresh token set. Returns the parsed JSON
     body (access_token / refresh_token / expires_in / id_token) or None on any
-    failure. Does no disk I/O -- callers persist to their own credential file."""
+    failure. Does no disk I/O; callers persist to their own credential file."""
     if not refresh_token:
         return None
     try:

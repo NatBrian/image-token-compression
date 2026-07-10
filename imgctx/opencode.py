@@ -286,7 +286,7 @@ def make_sse_converter():
 
         # Each SSE event MUST end with a blank line (\n\n). The AI-SDK eventsource
         # parser concatenates consecutive `data:` lines into ONE event until it sees
-        # that blank line -- single-\n framing merges every chunk into an unparseable
+        # that blank line; single-\n framing merges every chunk into an unparseable
         # blob and nothing dispatches (silent: no text, no tool calls).
         return "".join(l + "\n\n" for l in out_lines).encode("utf-8") if out_lines else b""
 

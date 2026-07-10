@@ -15,7 +15,7 @@ into image(s) ONCE and keep the recent tail as TEXT. Two properties make it pay:
     each chunk renders from a FIXED message range, so a completed chunk's PNG bytes
     stay byte-identical as the conversation grows -> Anthropic's prompt cache reads
     it back at 0.1x instead of re-creating it. A per-turn moving boundary would
-    change the bytes every call and never cache -- the make-or-break detail.
+    change the bytes every call and never cache: the make-or-break detail.
 
 Anthropic specifics vs the OpenAI port: tool_use lives in assistant content blocks
 and tool_result inside user content blocks (no `role:"tool"`); images are

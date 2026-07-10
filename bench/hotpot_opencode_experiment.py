@@ -55,7 +55,7 @@ OAUTH = False  # ChatGPT OAuth relay (opencode -> imgctx -> chatgpt.com codex ba
 
 def _proxy_env(cond: str) -> dict | None:
     """Per-region imaging profile (from bench._profiles) + relay knobs (both arms).
-    The OAuth/upstream/models knobs are NOT imaging flags -- they stay in both arms;
+    The OAuth/upstream/models knobs are NOT imaging flags: they stay in both arms;
     OFF disables imaging, not the relay."""
     env = dict(resolve_profile(AGENT, BENCHMARK, cond) or {})
     if OAUTH:

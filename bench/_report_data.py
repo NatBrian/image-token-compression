@@ -1,29 +1,23 @@
-"""Generate one detailed markdown report over EVERY benchmark run on disk.
+"""Shared data layer for the benchmark report (private helper module).
 
-Walks a fixed list of run folders, finds every `results*.json`, normalizes the
-several usage/cost shapes that accumulated across the project's history, and emits:
+Walks a fixed list of run folders, finds every `results*.json`, and normalizes the
+several usage/cost shapes that accumulated across the project's history into one
+schema. It also reconstructs each run's imgctx region config and computes real and
+simulated cost. It renders NO markdown itself; bench.generate_final_report imports
+these helpers and produces the one canonical FINAL_REPORT.md.
 
-  * a global summary table (one line per run: agent/model/bench/N + input & cost deltas)
-  * a detailed section per run:
-      - per-condition aggregate (OFF vs ON): every token class, BOTH real and
-        simulated cost, deltas, avg calls/turns, images, score, errors
-      - a per-item table so nothing is hidden
-
-Cost policy (each run shows BOTH so you can choose later):
-  * REAL   -- taken verbatim when present: Anthropic rows carry Claude Code's
+Cost policy (each run carries BOTH so the report can choose):
+  * REAL:   taken verbatim when present: Anthropic rows carry Claude Code's
              `cost_usd` (real_provider); some endpoints report `usage.cost_usd`
              (real_endpoint). Never recomputed.
-  * SIMULATED -- always computed from tokens x a per-model list rate table, clearly
+  * SIMULATED: always computed from tokens x a per-model list rate table, clearly
              labelled, so free/subscription runs (mimo, codex, gemini) have a dollar
              figure and paid runs can be cross-checked.
 
-Nothing is rerun; every number is regenerated from the captured results files.
-
-Run:  .venv/bin/python -m bench.generate_full_report [--out bench/FULL_REPORT.md]
+Nothing is rerun; every number is derived from the captured results files.
 """
 from __future__ import annotations
 
-import argparse
 import glob
 import json
 import os
@@ -180,15 +174,8 @@ def load_meta(results_path: Path) -> dict | None:
 
 def pct(o: float | None, n: float | None) -> str:
     if not o or o == 0 or n is None:
-        return "—"
+        return "n/a"
     return f"{100.0 * (n - o) / o:+.1f}%"
-
-
-def fmt_usd(v):
-    # Wrap in backticks: a bare "$" starts a LaTeX math span in many markdown
-    # renderers (GitHub etc.), so "$0.83 | $0.47" would merge two table columns.
-    # A code span renders the dollar sign literally and keeps the columns intact.
-    return f"`${v:.4f}`" if isinstance(v, (int, float)) else "—"
 
 
 # --------------------------------------------------------------------------- #
@@ -197,9 +184,9 @@ def fmt_usd(v):
 # the tokens/cost or the deltas are not interpretable.                          #
 #                                                                               #
 # Two provenance classes:                                                       #
-#   * DATA      -- new runs serialize the exact env into run_meta.json          #
+#   * DATA:     new runs serialize the exact env into run_meta.json             #
 #                  (`on_env`); read verbatim.                                    #
-#   * RECON     -- older runs predate run_meta; the config lived ONLY in the     #
+#   * RECON:    older runs predate run_meta; the config lived ONLY in the        #
 #                  driver, and the drivers have since changed. Each is read from #
 #                  the driver AT THE COMMIT that produced that folder (not the   #
 #                  current file), and pinned here with that commit for audit.    #
@@ -365,187 +352,3 @@ def aggregate(rows, fam, rate_key):
 
 def avg(xs):
     return sum(xs) / len(xs) if xs else None
-
-
-def render_run(run) -> str:
-    fam, rate_key = run["family"], run["rate_key"]
-    arms = aggregate(run["rows"], fam, rate_key)
-    L = []
-    src = RATES.get(rate_key, (0, 0, 0, 0, "n/a"))[4] if rate_key else "n/a"
-    L.append(f"### `{run['rel']}` — {run['bench']}")
-    L.append(f"agent **{run['agent']}** · model **{run['model']}** · family **{fam}** · "
-             f"sim-rate _{src}_")
-    cfg = config_for(run)
-    if cfg:
-        prov = "DATA" if cfg["src"].startswith("run_meta") else "RECON"
-        bits = " · ".join(f"{s}={cfg[k]}" for s, k in zip(REGION_SHORT, REGION_KEYS))
-        L.append(f"ON imaging regions ({prov}): {bits}  ")
-        L.append(f"_config source: {cfg['src']}_ · OFF arm images nothing (IMGCTX_ENABLED=0)")
-    else:
-        L.append("_ON region config: unknown (no run_meta, no reconstruction match)_")
-    if "off" not in arms or "on" not in arms:
-        L.append(f"_only arms {list(arms)} present — no delta_\n")
-        return "\n".join(L)
-    o, n = arms["off"], arms["on"]
-
-    def row(label, key, kfmt=lambda v: f"{v:,}"):
-        return f"| {label} | {kfmt(o[key])} | {kfmt(n[key])} | {pct(o[key], n[key])} |"
-
-    L.append("")
-    L.append("| metric | OFF | ON | Δ |")
-    L.append("|---|---:|---:|---:|")
-    L.append(row("items", "n"))
-    L.append(f"| errors | {o['err']} | {n['err']} | — |")
-    L.append(row("input total", "input_total"))
-    L.append(row("· fresh", "fresh"))
-    L.append(row("· cache-read", "cache_read"))
-    L.append(row("· cache-write", "cache_write"))
-    L.append(row("output", "output"))
-    ac_o, ac_n = avg(o["calls"]), avg(n["calls"])
-    L.append(f"| avg calls/turns | {ac_o:.1f} | {ac_n:.1f} | {pct(ac_o, ac_n)} |"
-             if ac_o and ac_n else f"| avg calls/turns | {ac_o} | {ac_n} | — |")
-    img, icalls, isrc, ishare = on_images(run, arms)
-    if img is not None:
-        note = (f"‡{isrc}, shared per-arm log across {ishare} runs (folder-level, not per-run)"
-                if ishare > 1 else isrc)
-        L.append(f"| ON images (sum) | — | {img:,} | {note} |")
-        a = avg_img_call(img, icalls)
-        if a is not None:
-            L.append(f"| ON avg img / call | — | {a:.2f} | over {icalls} imaging calls |")
-    else:
-        L.append("| ON images (sum) | — | — | uncaptured (Anthropic usage has no image field) |")
-    # cost: real (if any) + simulated (always if rate known)
-    ro = o["real"] if o["real_n"] else None
-    rn = n["real"] if n["real_n"] else None
-    L.append(f"| **cost REAL** | {fmt_usd(ro)} | {fmt_usd(rn)} | {pct(ro, rn)} |")
-    so = o["sim"] if rate_key else None
-    sn = n["sim"] if rate_key else None
-    L.append(f"| **cost SIMULATED** | {fmt_usd(so)} | {fmt_usd(sn)} | {pct(so, sn)} |")
-    # score
-    if o["patch"] or n["patch"]:
-        po = f"{sum(o['patch'])}/{len(o['patch'])}" if o["patch"] else "—"
-        pn = f"{sum(n['patch'])}/{len(n['patch'])}" if n["patch"] else "—"
-        L.append(f"| patches produced | {po} | {pn} | — |")
-    if o["f1"] or n["f1"]:
-        f_o, f_n = avg(o["f1"]), avg(n["f1"])
-        L.append(f"| F1 (avg) | {f_o:.3f} | {f_n:.3f} | {pct(f_o, f_n)} |" if f_o is not None and f_n is not None
-                 else f"| F1 (avg) | {f_o} | {f_n} | — |")
-    if o["contains"] or n["contains"]:
-        c_o, c_n = avg(o["contains"]), avg(n["contains"])
-        L.append(f"| contains (avg) | {c_o:.3f} | {c_n:.3f} | — |")
-    du_o, du_n = avg(o["dur"]), avg(n["dur"])
-    if du_o and du_n:
-        L.append(f"| avg duration s | {du_o:.0f} | {du_n:.0f} | — |")
-    L.append("")
-
-    # per-item detail
-    L.append("<details><summary>per-item detail</summary>\n")
-    L.append("| item | cond | calls | fresh | c-read | c-write | out | imgs | real USD | sim USD | score | err |")
-    L.append("|---|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|:--:|")
-    for r in run["rows"]:
-        c = cond_of(r)
-        if c is None:
-            continue
-        t = norm_tokens(r)
-        rc, _ = real_cost(r, fam)
-        sc = sim_cost(t, rate_key)
-        idv = r.get("qid") or r.get("instance_id") or "?"
-        if "produced_patch" in r:
-            score = "patch" if r.get("produced_patch") else "no-patch"
-        elif isinstance(r.get("f1"), (int, float)):
-            score = f"f1={r['f1']:.2f}"
-        else:
-            score = "—"
-        cl = t["calls"] if t["calls"] is not None else "—"
-        im = t["images"] if t["images"] is not None else "—"
-        L.append(f"| {str(idv)[:22]} | {c} | {cl} | {t['fresh']:,} | {t['cache_read']:,} | "
-                 f"{t['cache_write']:,} | {t['output']:,} | {im} | {fmt_usd(rc)} | {fmt_usd(sc)} | "
-                 f"{score} | {'Y' if r.get('is_error') else ''} |")
-    L.append("\n</details>\n")
-    return "\n".join(L)
-
-
-def render_summary(runs) -> str:
-    L = ["## Summary — every run (delta = ON vs OFF)\n"]
-    L.append("ON-regions column is the imgctx config (which text regions were rendered to "
-             "images) as **SYS·TOOLS·TOOL_RES·USER·HIST**, 1=imaged 0=kept-as-text. "
-             "Every benchmark used a different config, so the deltas are only comparable "
-             "within the same region string. `*` = reconstructed from the driver at the "
-             "run's commit (older runs); unmarked = recorded in run_meta.\n")
-    L.append("Avg img/call = ON-arm images per model call (claude from the events "
-             "backfill; codex/mimo/gemini from results). `‡` = >1 run shared one per-arm "
-             "proxy log (claude longdoc nqa+gov; hotpot base/sonnet/haiku), so that figure "
-             "is folder-level, not per-run. `—` for claude = uncaptured.\n")
-    L.append("| run | agent | model | bench | N | ON regions | avg img/call | input Δ | real cost Δ | sim cost Δ |")
-    L.append("|---|---|---|---|--:|:--:|--:|--:|--:|--:|")
-    for run in runs:
-        arms = aggregate(run["rows"], run["family"], run["rate_key"])
-        if "off" not in arms or "on" not in arms:
-            continue
-        o, n = arms["off"], arms["on"]
-        ro = o["real"] if o["real_n"] else None
-        rn = n["real"] if n["real_n"] else None
-        so = o["sim"] if run["rate_key"] else None
-        sn = n["sim"] if run["rate_key"] else None
-        cfg = config_for(run)
-        cbits = config_bits(cfg)
-        if cfg and not cfg["src"].startswith("run_meta"):
-            cbits += "*"
-        img, icalls, isrc, ishare = on_images(run, arms)
-        a = avg_img_call(img, icalls) if img is not None else None
-        acell = f"{a:.1f}" if a is not None else "—"
-        if a is not None and ishare > 1:
-            acell += "‡"
-        short = run["rel"].replace("/results", "/").replace(".json", "")
-        L.append(f"| {short} | {run['agent']} | {run['model']} | {run['bench']} | {o['n']}+{n['n']} | "
-                 f"`{cbits}` | {acell} | {pct(o['input_total'], n['input_total'])} | {pct(ro, rn)} | {pct(so, sn)} |")
-    L.append("")
-    return "\n".join(L)
-
-
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default="bench/FULL_REPORT.md")
-    args = ap.parse_args()
-
-    runs = collect()
-    # order: by benchmark then agent then path for readability
-    runs.sort(key=lambda r: (r["bench"], r["family"], r["rel"]))
-
-    # Load the image backfill sidecar (built by bench.backfill_images) and count how
-    # many runs share each ON-arm event log (claude longdoc nqa+gov share one).
-    global SIDECAR, SHARE
-    side_path = Path("bench/image_backfill.json")
-    SIDECAR = json.loads(side_path.read_text()) if side_path.exists() else {}
-    for run in runs:
-        k = on_events_key(run)
-        if k:
-            SHARE[k] = SHARE.get(k, 0) + 1
-
-    blocks = ["# Full benchmark report — all runs\n",
-              f"_Generated from {len(RUN_DIRS)} run folders; {len(runs)} (file × benchmark) runs. "
-              "Every number regenerated from captured results — nothing rerun._\n",
-              "**Cost columns:** REAL = provider/endpoint-reported (verbatim); "
-              "SIMULATED = tokens × per-model list rate (labelled per run). Both shown so the "
-              "final report can pick either.\n",
-              "### Rate tables used for SIMULATED cost (USD / 1M tokens)\n",
-              "| model class | fresh | cache-write | cache-read | output | source |",
-              "|---|--:|--:|--:|--:|---|"]
-    for k, (ri, cw, cr, ro, src) in RATES.items():
-        blocks.append(f"| {k} | {ri} | {cw} | {cr} | {ro} | {src} |")
-    blocks.append("")
-    blocks.append(render_summary(runs))
-    blocks.append("## Detailed runs\n")
-    cur = None
-    for run in runs:
-        if run["bench"] != cur:
-            cur = run["bench"]
-            blocks.append(f"\n# ▶ Benchmark: {cur}\n")
-        blocks.append(render_run(run))
-
-    Path(args.out).write_text("\n".join(blocks))
-    print(f"wrote {args.out}  ({len(runs)} runs from {len(RUN_DIRS)} folders)")
-
-
-if __name__ == "__main__":
-    main()

@@ -66,7 +66,7 @@ def _upstream_url(path: str, settings: Settings) -> str:
             return base + "/responses"
         return base + path
 
-    # NEW: OpenAI OAuth mode — ALL paths route to /responses
+    # NEW: OpenAI OAuth mode: ALL paths route to /responses
     if settings.openai_oauth:
         return settings.openai_oauth_upstream_base.rstrip("/") + "/responses"
 
@@ -110,7 +110,7 @@ def _client_headers(request: Request, settings: Settings, is_anthropic: bool = F
                 headers.pop("x-api-key", None)
         return headers
 
-    # Codex CLI relay — inject the ChatGPT OAuth bearer + account id from Codex's
+    # Codex CLI relay: inject the ChatGPT OAuth bearer + account id from Codex's
     # auth.json, overriding whatever the CLI attached (a dummy env_key, or nothing).
     # This keeps the relay working regardless of how Codex authenticates a custom
     # provider, and never depends on it sending its subscription token to localhost.
@@ -122,7 +122,7 @@ def _client_headers(request: Request, settings: Settings, is_anthropic: bool = F
             headers.pop("x-api-key", None)
         return headers
 
-    # NEW: OpenAI OAuth relay — inject tokens from opencode's auth.json
+    # NEW: OpenAI OAuth relay: inject tokens from opencode's auth.json
     if settings.openai_oauth:
         tokens = read_openai_token(settings)
         if tokens:
@@ -237,7 +237,7 @@ def build_app(settings: Settings | None = None, client: httpx.AsyncClient | None
                 pass
 
         # Persist the EXACT bytes we send upstream (post-compression, post-OAuth
-        # conversion) so a failed extraction never forces a paid rerun -- the raw
+        # conversion) so a failed extraction never forces a paid rerun; the raw
         # request on disk always matches what the provider actually billed.
         if method == "POST" and (transform_this or settings.openai_oauth):
             _capture(settings, f"req_{int(t0*1000)}_out.json", out_body)
