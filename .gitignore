@@ -163,3 +163,7 @@ bench/mimo_refix_*/**/*events*.jsonl
 bench/**/results*.json
 bench/**/run_meta*.json
 bench/**/instances.json
+bench/**/CAMPAIGN.txt
+bench/**/REPORT.md
+bench/**/TOOLS0_REPORT.md
+bench/**/data.json
