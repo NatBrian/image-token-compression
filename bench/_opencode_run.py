@@ -50,6 +50,11 @@ def write_config(path: Path, port: int, provider: str = "opencode",
     if api_key:
         options["apiKey"] = api_key
     prov: dict = {"options": options}
+    # A custom (non-zen) provider must declare the SDK so opencode loads it as an
+    # OpenAI-compatible chat/completions provider (matches the user's global config
+    # and the OAuth-relay setup); zen's built-in "opencode" provider needs no npm.
+    if provider != "opencode":
+        prov["npm"] = "@ai-sdk/openai-compatible"
     if models:
         prov["models"] = models
     cfg = {
@@ -161,12 +166,17 @@ def read_usage(log_path: Path) -> dict:
             t["images"] += tr.get("image_count", 0) or 0
         u = ev.get("usage") or {}
         t["raw"].append(u)
-        pd = u.get("prompt_tokens_details") or {}
-        cd = u.get("completion_tokens_details") or {}
-        t["prompt_tokens"] += u.get("prompt_tokens", 0) or 0
+        # Usage keys are shape-dependent: Chat Completions uses prompt_tokens /
+        # completion_tokens / prompt_tokens_details; the OpenAI Responses API (the
+        # ChatGPT-OAuth codex path) uses input_tokens / output_tokens /
+        # input_tokens_details / output_tokens_details. Read both so the OAuth relay's
+        # events.jsonl is summed correctly without a paid rerun.
+        pd = u.get("prompt_tokens_details") or u.get("input_tokens_details") or {}
+        cd = u.get("completion_tokens_details") or u.get("output_tokens_details") or {}
+        t["prompt_tokens"] += u.get("prompt_tokens") or u.get("input_tokens") or 0
         t["cached_tokens"] += pd.get("cached_tokens", 0) or 0
         t["cache_write_tokens"] += pd.get("cache_write_tokens", 0) or 0
-        t["completion_tokens"] += u.get("completion_tokens", 0) or 0
+        t["completion_tokens"] += u.get("completion_tokens") or u.get("output_tokens") or 0
         t["total_tokens"] += u.get("total_tokens", 0) or 0
         t["reasoning_tokens"] += cd.get("reasoning_tokens", 0) or 0
         t["audio_tokens"] += (pd.get("audio_tokens", 0) or 0) + (cd.get("audio_tokens", 0) or 0)

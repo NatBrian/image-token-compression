@@ -92,6 +92,23 @@ class Settings:
         default_factory=lambda: _env_bool("IMGCTX_ANTHROPIC_CACHE_IMAGES", True)
     )
 
+    # --- OpenAI OAuth relay (for opencode ChatGPT subscription) ---
+    openai_oauth: bool = field(
+        default_factory=lambda: _env_bool("IMGCTX_OPENAI_OAUTH", False)
+    )
+    openai_credentials_path: str = field(
+        default_factory=lambda: os.environ.get(
+            "IMGCTX_OPENAI_CREDENTIALS",
+            str(Path.home() / ".local" / "share" / "opencode" / "auth.json")
+        )
+    )
+    openai_oauth_upstream_base: str = field(
+        default_factory=lambda: os.environ.get(
+            "IMGCTX_OPENAI_OAUTH_UPSTREAM",
+            "https://chatgpt.com/backend-api/codex"
+        ).rstrip("/")
+    )
+
     # --- master switches ---
     enabled: bool = field(default_factory=lambda: _env_bool("IMGCTX_ENABLED", True))
     # Which context regions to compress.

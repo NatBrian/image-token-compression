@@ -66,7 +66,10 @@ def _models_block() -> dict | None:
 
 
 def run_item(row: dict, qid: str, cond: str, config: str, timeout: int) -> dict:
-    qdir = RUNS / cond / qid
+    # Namespace per-item dirs by CONFIG: multiple configs share the same qid (q00,
+    # q01...), so without the config prefix a later config's run would rmtree and
+    # clobber an earlier one's raw request/response capture in the same --runs-dir.
+    qdir = RUNS / cond / f"{config}-{qid}"
     if qdir.exists():
         shutil.rmtree(qdir)
     qdir.mkdir(parents=True)
@@ -150,7 +153,7 @@ def main() -> None:
             except Exception as ex:
                 r = {"cond": cond, "qid": qid, "config": args.config,
                      "harness_error": f"{type(ex).__name__}:{ex}",
-                     "usage": read_usage(RUNS / cond / qid / "events.jsonl"),
+                     "usage": read_usage(RUNS / cond / f"{args.config}-{qid}" / "events.jsonl"),
                      "cost_usd": None, "is_error": True}
             u = r.get("usage", {})
             print(f"    calls={u.get('calls')} cmp={u.get('compressed_calls')} "

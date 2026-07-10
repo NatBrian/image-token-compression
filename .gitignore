@@ -89,6 +89,9 @@ bench/longdoc_claude_runs/data_*.json
 # Long-doc single-shot (OpenCode path, any model-tagged --runs-dir). Track results*.json.
 bench/longdoc_opencode_runs*/off/
 bench/longdoc_opencode_runs*/on/
+# Junk run: gemini-3.1-flash-lite went unavailable mid-run -> all-error, zero-signal
+# data (no valid tokens/answers). Exclude the whole folder, results included.
+bench/longdoc_opencode_runs_gemini_31_flash_lite/
 
 # SWE-bench (OpenCode path, any model-tagged --runs-dir). Track results*.json + instances.json.
 bench/swebench_opencode_runs*/_repos_cache/

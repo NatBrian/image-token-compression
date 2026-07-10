@@ -243,6 +243,42 @@ The proxy forwards to `https://api.anthropic.com` and, for subscription auth, in
 
 **Match it to the job (see [When imaging pays](#when-imaging-pays-and-when-it-does-not)):** on Anthropic it cuts real dollars for **read-once** work (long-document QA, summarization, extraction: measured **-13% to -18%**), but can raise cost on **re-read** long agentic loops where the context is already cache-read cheaply. Both arms are measurable from Claude Code's own `total_cost_usd`, so measure before committing.
 
+### Use it with an OpenAI (ChatGPT) OAuth subscription
+
+`imgctx` can route OpenCode through your **ChatGPT Plus/Pro/Go subscription** instead of an OpenAI API key. OpenCode's built-in `openai` provider hardcodes a fetch override that rewrites every request to `https://chatgpt.com/backend-api/codex/responses`, so a plain proxy is bypassed. A **custom OpenAI-compatible provider** dodges that override; `imgctx` then reads your OAuth tokens from OpenCode's `auth.json`, compresses, converts Chat Completions ⇄ the Responses API the backend speaks, and injects the auth headers.
+
+Prerequisites: `opencode login openai` completed, so `~/.local/share/opencode/auth.json` holds a valid `openai` OAuth entry.
+
+1. Add a custom provider to `~/.config/opencode/opencode.json` (its base URL points at the proxy; the `apiKey` is an unused sentinel because auth comes from `auth.json`):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "imgctx-openai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "OpenAI (via imgctx)",
+      "options": { "baseURL": "http://localhost:8787/v1", "apiKey": "oauth-relay" },
+      "models": { "gpt-5.4-mini": { "name": "GPT 5.4 Mini (imgctx)" } }
+    }
+  }
+}
+```
+
+2. Start the proxy in OAuth mode — it **must** listen on the same port as the base URL above (default `8787`):
+
+```bash
+IMGCTX_OPENAI_OAUTH=1 imgctx serve      # -> http://127.0.0.1:8787
+```
+
+3. Run OpenCode against the custom provider:
+
+```bash
+opencode run --model imgctx-openai/gpt-5.4-mini "read src/app.py and explain what it does"
+```
+
+The proxy injects `Authorization: Bearer <access>` + `ChatGPT-Account-Id` from `auth.json` and refreshes the token on a 401. If OpenCode reports `Unable to connect`, the proxy is not running on the port in the base URL, or `IMGCTX_OPENAI_OAUTH=1` was not set. Tool calls (agentic use) are fully bridged, so file read/edit/bash work as normal.
+
 ### Configuration
 
 All settings are environment variables:
@@ -259,6 +295,9 @@ All settings are environment variables:
 | `IMGCTX_MAX_PIXELS`                                                                                      | `1000000`                          | per-image pixel cap (avoid provider downscaling)    |
 | `IMGCTX_KEEP_SHARP` / `IMGCTX_FACTSHEET`                                                               | on                                   | verbatim-safety features                            |
 | `IMGCTX_ENABLED`                                                                                         | on                                   | master switch (`0` = pure passthrough)            |
+| `IMGCTX_OPENAI_OAUTH`                                                                                    | `0`                                | relay OpenCode through a ChatGPT OAuth subscription (reads `auth.json`, routes to the codex backend) |
+| `IMGCTX_OPENAI_CREDENTIALS`                                                                              | `~/.local/share/opencode/auth.json` | path to OpenCode's OAuth token file                 |
+| `IMGCTX_OPENAI_OAUTH_UPSTREAM`                                                                           | `https://chatgpt.com/backend-api/codex` | codex backend base (append `/responses`)        |
 
 ## Known limitations
 

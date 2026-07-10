@@ -95,6 +95,8 @@ def _serve(args) -> int:
     print(f"imgctx v{__version__} proxy on http://{settings.host}:{settings.port}", file=sys.stderr)
     print(f"  -> upstream {settings.upstream_base}", file=sys.stderr)
     print(f"  -> compressing for models matching {settings.model_allowlist}", file=sys.stderr)
+    if settings.openai_oauth:
+        print(f"  -> OpenAI OAuth relay enabled (reading tokens from {settings.openai_credentials_path})", file=sys.stderr)
     print(f"  point your CLI's provider baseURL at http://{settings.host}:{settings.port}/v1", file=sys.stderr)
     uvicorn.run(app, host=settings.host, port=settings.port, log_level="warning")
     return 0
