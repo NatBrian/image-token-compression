@@ -47,10 +47,15 @@ PROVIDER = "opencode"
 UPSTREAM = None
 API_KEY = None
 IMGCTX_MODELS = None
+OAUTH = False  # ChatGPT OAuth relay (opencode -> imgctx -> chatgpt.com codex backend)
 
 
 def _proxy_env(enabled: bool) -> dict | None:
     env = dict(ON_ENV) if enabled else {}
+    # The OAuth relay must stay ON in BOTH arms -- OFF disables imaging, not the relay,
+    # so the OFF arm is "relay only" (no compression) and ON is "relay + compression".
+    if OAUTH:
+        env["IMGCTX_OPENAI_OAUTH"] = "1"
     if UPSTREAM:
         env["IMGCTX_UPSTREAM_BASE"] = UPSTREAM
     if IMGCTX_MODELS:
@@ -122,14 +127,26 @@ def main() -> None:
     ap.add_argument("--imgctx-models", default=None,
                     help="override IMGCTX_MODELS allowlist, e.g. to add 'kimi'")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--oauth", action="store_true",
+                    help="route opencode through the ChatGPT OAuth relay (imgctx_openai "
+                         "provider + IMGCTX_OPENAI_OAUTH=1). Defaults model to "
+                         "imgctx-openai/gpt-5.4-mini and apiKey to a dummy sentinel.")
     ap.add_argument("--runs-dir", default=None,
                     help="override the output folder name (default hotpot_opencode_runs), "
                          "so a different model/provider never clobbers a prior run")
     args = ap.parse_args()
 
-    global MODEL, PROVIDER, UPSTREAM, API_KEY, IMGCTX_MODELS, RUNS
+    global MODEL, PROVIDER, UPSTREAM, API_KEY, IMGCTX_MODELS, RUNS, OAUTH
     MODEL, PROVIDER, UPSTREAM = args.model, args.provider, args.upstream
     API_KEY, IMGCTX_MODELS = args.api_key, args.imgctx_models
+    if args.oauth:
+        OAUTH = True
+        if args.provider == "opencode":
+            PROVIDER = "imgctx-openai"
+        if args.model == "opencode/mimo-v2.5-free":
+            MODEL = "imgctx-openai/gpt-5.4-mini"
+        if not API_KEY:
+            API_KEY = "oauth-relay"
     if args.runs_dir:
         RUNS = HERE / args.runs_dir
 

@@ -279,6 +279,44 @@ opencode run --model imgctx-openai/gpt-5.4-mini "read src/app.py and explain wha
 
 The proxy injects `Authorization: Bearer <access>` + `ChatGPT-Account-Id` from `auth.json` and refreshes the token on a 401. If OpenCode reports `Unable to connect`, the proxy is not running on the port in the base URL, or `IMGCTX_OPENAI_OAUTH=1` was not set. Tool calls (agentic use) are fully bridged, so file read/edit/bash work as normal.
 
+### Use it with the Codex CLI (ChatGPT OAuth subscription)
+
+`imgctx` can also front the **Codex CLI** on your ChatGPT subscription. Codex is simpler than OpenCode: it speaks the **Responses API natively**, so `imgctx` needs no Chat⇄Responses translation — it images the Responses `input` in place (preserving every `function_call` / `function_call_output` / `reasoning` item so the agent loop stays intact), injects the OAuth headers, and streams the native SSE straight back.
+
+Two gotchas, both settled by the config below:
+
+- **Do not use `requires_openai_auth = true`.** That flag makes Codex ignore your `base_url` and go straight to `chatgpt.com`, bypassing the proxy. Use a dummy `env_key` instead — `imgctx` supplies the real OAuth itself.
+- **Select the provider with `model_provider`, not `default_model_provider`.** Only `model_provider` actually routes the request; the `default_` key is ignored for `codex exec`.
+
+Prerequisites: `codex login` completed (ChatGPT auth), so `~/.codex/auth.json` holds valid `tokens`.
+
+1. Add a custom provider to `~/.codex/config.toml` and select it:
+
+```toml
+model = "gpt-5.4-mini"
+model_provider = "imgctx"        # NOT default_model_provider
+
+[model_providers.imgctx]
+name = "imgctx"
+base_url = "http://127.0.0.1:8787/v1"
+wire_api = "responses"
+env_key = "IMGCTX_DUMMY_KEY"     # any non-empty value; imgctx overrides it with real OAuth
+```
+
+2. Start the proxy in Codex OAuth mode (same port as the base URL):
+
+```bash
+IMGCTX_DUMMY_KEY=x IMGCTX_CODEX_OAUTH=1 imgctx serve      # -> http://127.0.0.1:8787
+```
+
+3. Run Codex:
+
+```bash
+IMGCTX_DUMMY_KEY=x codex exec "read src/app.py and explain what it does"
+```
+
+The proxy injects `Authorization: Bearer <access>` + `ChatGPT-Account-Id` from `~/.codex/auth.json` and refreshes the token on a 401. A harmless `GET /v1/models` 404 in Codex's log is just its optional model-list refresh; the `/responses` call is unaffected. As with Claude Code, imaging the big fixed system prompt is optional — set `IMGCTX_SYSTEM=0` to keep it text.
+
 ### Configuration
 
 All settings are environment variables:
@@ -298,6 +336,8 @@ All settings are environment variables:
 | `IMGCTX_OPENAI_OAUTH`                                                                                    | `0`                                | relay OpenCode through a ChatGPT OAuth subscription (reads `auth.json`, routes to the codex backend) |
 | `IMGCTX_OPENAI_CREDENTIALS`                                                                              | `~/.local/share/opencode/auth.json` | path to OpenCode's OAuth token file                 |
 | `IMGCTX_OPENAI_OAUTH_UPSTREAM`                                                                           | `https://chatgpt.com/backend-api/codex` | codex backend base (append `/responses`)        |
+| `IMGCTX_CODEX_OAUTH`                                                                                     | `0`                                | relay the Codex CLI through a ChatGPT OAuth subscription (native Responses API, in-place imaging) |
+| `IMGCTX_CODEX_CREDENTIALS`                                                                               | `~/.codex/auth.json`               | path to the Codex CLI's OAuth token file            |
 
 ## Known limitations
 
