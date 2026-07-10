@@ -191,6 +191,117 @@ def fmt_usd(v):
     return f"`${v:.4f}`" if isinstance(v, (int, float)) else "—"
 
 
+# --------------------------------------------------------------------------- #
+# ON-arm imgctx region config, per run. Every benchmark used a DIFFERENT config #
+# (which text regions get rendered to images), so it must be reported alongside #
+# the tokens/cost or the deltas are not interpretable.                          #
+#                                                                               #
+# Two provenance classes:                                                       #
+#   * DATA      -- new runs serialize the exact env into run_meta.json          #
+#                  (`on_env`); read verbatim.                                    #
+#   * RECON     -- older runs predate run_meta; the config lived ONLY in the     #
+#                  driver, and the drivers have since changed. Each is read from #
+#                  the driver AT THE COMMIT that produced that folder (not the   #
+#                  current file), and pinned here with that commit for audit.    #
+# imgctx defaults every region ON (imgctx/config.py: all _env_bool default True),#
+# so a driver that set only IMGCTX_ENABLED ran all-regions-on.                   #
+# --------------------------------------------------------------------------- #
+REGION_KEYS = ["IMGCTX_SYSTEM", "IMGCTX_TOOLS", "IMGCTX_TOOL_RESULTS",
+               "IMGCTX_USER_TEXT", "IMGCTX_HISTORY"]
+REGION_SHORT = ["SYS", "TOOLS", "TOOL_RES", "USER", "HIST"]
+
+
+def _cfg(source, **over):
+    d = {k: "1" for k in REGION_KEYS}   # imgctx default: every region imaged
+    d.update(over)
+    d["src"] = source
+    return d
+
+
+# Checked in order; first substring match on the run's rel path wins. More
+# specific paths (…_gemini, …_gpt_54_mini, results_tools0) precede their prefixes.
+RECON = [
+    ("hotpot_verify_runs/claude_sonnet",  _cfg("hotpot_claude_experiment.py@cb64fc3", IMGCTX_SYSTEM="0")),
+    ("hotpot_verify_runs/codex",          _cfg("hotpot_codex_experiment.py@cb64fc3 (defaults: all on)")),
+    ("hotpot_verify_runs/opencode_mimo",  _cfg("hotpot_opencode_experiment.py@cb64fc3", IMGCTX_SYSTEM="0")),
+    ("hotpot_verify_runs/opencode_oauth", _cfg("hotpot_opencode_experiment.py@cb64fc3", IMGCTX_SYSTEM="0")),
+    ("hotpot_claude_runs/results_tools0", _cfg("hotpot_claude_experiment.py --tools0 @92ab124", IMGCTX_SYSTEM="0", IMGCTX_TOOLS="0")),
+    ("hotpot_claude_runs/results",        _cfg("hotpot_claude_experiment.py@2eb3f56", IMGCTX_SYSTEM="0")),
+    ("hotpot_opencode_runs_gemini",       _cfg("hotpot_opencode_experiment.py@094debc", IMGCTX_SYSTEM="0")),
+    ("hotpot_opencode_runs",              _cfg("hotpot_opencode_experiment.py@094debc", IMGCTX_SYSTEM="0")),
+    ("hotpot_runs/",                      _cfg("hotpot_experiment.py@c1aa5e2 (defaults: all on)")),
+    ("longdoc_claude_runs",               _cfg("longdoc_claude_experiment.py@094debc", IMGCTX_SYSTEM="0", IMGCTX_TOOLS="0")),
+    ("longdoc_opencode_runs_gpt_54_mini", _cfg("longdoc_opencode_experiment.py@162ccbe", IMGCTX_SYSTEM="0", IMGCTX_TOOLS="0")),
+    ("longdoc_opencode_runs_gemini",      _cfg("longdoc_opencode_experiment.py@094debc (junk: provider dropped mid-run)", IMGCTX_SYSTEM="0", IMGCTX_TOOLS="0")),
+    ("longdoc_opencode_runs",             _cfg("longdoc_opencode_experiment.py@2327fd7", IMGCTX_SYSTEM="0", IMGCTX_TOOLS="0")),
+    ("swebench_claude_runs",              _cfg("swebench_claude_experiment.py@094debc", IMGCTX_SYSTEM="0")),
+    ("swebench_opencode_runs_gemini",     _cfg("swebench_opencode_experiment.py@094debc", IMGCTX_SYSTEM="0")),
+    ("swebench_opencode_runs",            _cfg("swebench_opencode_experiment.py@2327fd7", IMGCTX_SYSTEM="0")),
+]
+
+
+def config_for(run) -> dict | None:
+    """ON-arm region config for a run: prefer run_meta.on_env (recorded in the
+    data at run time), else the reconstructed driver-at-commit map above."""
+    meta = run.get("meta") or {}
+    onenv = meta.get("on_env")
+    if isinstance(onenv, dict) and any(k in onenv for k in REGION_KEYS):
+        d = {k: str(onenv.get(k, "1")) for k in REGION_KEYS}
+        d["src"] = "run_meta.on_env (recorded at run time)"
+        return d
+    for sub, cfg in RECON:
+        if sub in run["rel"]:
+            return cfg
+    return None
+
+
+def config_bits(cfg) -> str:
+    """Compact S·T·R·U·H digit string, 1=imaged 0=text."""
+    return "·".join(cfg[k] for k in REGION_KEYS) if cfg else "?"
+
+
+# --------------------------------------------------------------------------- #
+# Image-count backfill. claude results carry no image count (Anthropic usage has #
+# no such field); bench/image_backfill.json (built by bench.backfill_images from  #
+# the proxy event logs, WITHOUT touching results.json) supplies per-arm counts.   #
+# codex/mimo/gemini already record `images` per item in results, used directly.   #
+# --------------------------------------------------------------------------- #
+SIDECAR: dict[str, dict] = {}   # loaded in main(); {events-rel-path: {calls, images}}
+SHARE: dict[str, int] = {}      # ON-events key -> #runs mapping to it (claude only)
+
+
+def on_events_key(run) -> str | None:
+    """Path (rel to bench/) of the ON-arm proxy event log for a claude run."""
+    if run["family"] != "anthropic":
+        return None
+    d = str(Path(run["rel"]).parent)
+    tag = "_tools0" if "tools0" in run["rel"] else ""
+    return f"{d}/proxy_on{tag}_events.jsonl"
+
+
+def on_images(run, arms) -> tuple[int | None, int | None, str, int]:
+    """(images, imaging-calls, source, share_count) for the ON arm.
+
+    claude -> from the events-backfill sidecar. share_count>1 means >1 run wrote to
+    the same per-arm log (imgctx appends), so the count is folder-level, not per-run
+    (longdoc nqa+gov; hotpot base/_sonnet/_haiku). Others -> summed from results.json.
+    """
+    on = arms.get("on") or {}
+    if run["family"] == "anthropic":
+        key = on_events_key(run)
+        rec = SIDECAR.get(key) if key else None
+        if rec is None:
+            return None, None, "uncaptured", 1
+        return rec["images"], rec["calls"], "events-backfill", SHARE.get(key, 1)
+    imgs = on.get("images", 0) or 0
+    calls = sum(on.get("calls") or [])
+    return imgs, calls, "results", 1
+
+
+def avg_img_call(images, calls):
+    return images / calls if calls else None
+
+
 def collect():
     """Return list of run dicts, each = one (results file, benchmark) grouping."""
     runs = []
@@ -264,6 +375,14 @@ def render_run(run) -> str:
     L.append(f"### `{run['rel']}` — {run['bench']}")
     L.append(f"agent **{run['agent']}** · model **{run['model']}** · family **{fam}** · "
              f"sim-rate _{src}_")
+    cfg = config_for(run)
+    if cfg:
+        prov = "DATA" if cfg["src"].startswith("run_meta") else "RECON"
+        bits = " · ".join(f"{s}={cfg[k]}" for s, k in zip(REGION_SHORT, REGION_KEYS))
+        L.append(f"ON imaging regions ({prov}): {bits}  ")
+        L.append(f"_config source: {cfg['src']}_ · OFF arm images nothing (IMGCTX_ENABLED=0)")
+    else:
+        L.append("_ON region config: unknown (no run_meta, no reconstruction match)_")
     if "off" not in arms or "on" not in arms:
         L.append(f"_only arms {list(arms)} present — no delta_\n")
         return "\n".join(L)
@@ -285,7 +404,16 @@ def render_run(run) -> str:
     ac_o, ac_n = avg(o["calls"]), avg(n["calls"])
     L.append(f"| avg calls/turns | {ac_o:.1f} | {ac_n:.1f} | {pct(ac_o, ac_n)} |"
              if ac_o and ac_n else f"| avg calls/turns | {ac_o} | {ac_n} | — |")
-    L.append(f"| ON images (sum) | — | {n['images']:,} | — |")
+    img, icalls, isrc, ishare = on_images(run, arms)
+    if img is not None:
+        note = (f"‡{isrc}, shared per-arm log across {ishare} runs (folder-level, not per-run)"
+                if ishare > 1 else isrc)
+        L.append(f"| ON images (sum) | — | {img:,} | {note} |")
+        a = avg_img_call(img, icalls)
+        if a is not None:
+            L.append(f"| ON avg img / call | — | {a:.2f} | over {icalls} imaging calls |")
+    else:
+        L.append("| ON images (sum) | — | — | uncaptured (Anthropic usage has no image field) |")
     # cost: real (if any) + simulated (always if rate known)
     ro = o["real"] if o["real_n"] else None
     rn = n["real"] if n["real_n"] else None
@@ -339,8 +467,17 @@ def render_run(run) -> str:
 
 def render_summary(runs) -> str:
     L = ["## Summary — every run (delta = ON vs OFF)\n"]
-    L.append("| run | agent | model | bench | N | input Δ | real cost Δ | sim cost Δ |")
-    L.append("|---|---|---|---|--:|--:|--:|--:|")
+    L.append("ON-regions column is the imgctx config (which text regions were rendered to "
+             "images) as **SYS·TOOLS·TOOL_RES·USER·HIST**, 1=imaged 0=kept-as-text. "
+             "Every benchmark used a different config, so the deltas are only comparable "
+             "within the same region string. `*` = reconstructed from the driver at the "
+             "run's commit (older runs); unmarked = recorded in run_meta.\n")
+    L.append("Avg img/call = ON-arm images per model call (claude from the events "
+             "backfill; codex/mimo/gemini from results). `‡` = >1 run shared one per-arm "
+             "proxy log (claude longdoc nqa+gov; hotpot base/sonnet/haiku), so that figure "
+             "is folder-level, not per-run. `—` for claude = uncaptured.\n")
+    L.append("| run | agent | model | bench | N | ON regions | avg img/call | input Δ | real cost Δ | sim cost Δ |")
+    L.append("|---|---|---|---|--:|:--:|--:|--:|--:|--:|")
     for run in runs:
         arms = aggregate(run["rows"], run["family"], run["rate_key"])
         if "off" not in arms or "on" not in arms:
@@ -350,9 +487,18 @@ def render_summary(runs) -> str:
         rn = n["real"] if n["real_n"] else None
         so = o["sim"] if run["rate_key"] else None
         sn = n["sim"] if run["rate_key"] else None
+        cfg = config_for(run)
+        cbits = config_bits(cfg)
+        if cfg and not cfg["src"].startswith("run_meta"):
+            cbits += "*"
+        img, icalls, isrc, ishare = on_images(run, arms)
+        a = avg_img_call(img, icalls) if img is not None else None
+        acell = f"{a:.1f}" if a is not None else "—"
+        if a is not None and ishare > 1:
+            acell += "‡"
         short = run["rel"].replace("/results", "/").replace(".json", "")
         L.append(f"| {short} | {run['agent']} | {run['model']} | {run['bench']} | {o['n']}+{n['n']} | "
-                 f"{pct(o['input_total'], n['input_total'])} | {pct(ro, rn)} | {pct(so, sn)} |")
+                 f"`{cbits}` | {acell} | {pct(o['input_total'], n['input_total'])} | {pct(ro, rn)} | {pct(so, sn)} |")
     L.append("")
     return "\n".join(L)
 
@@ -365,6 +511,16 @@ def main():
     runs = collect()
     # order: by benchmark then agent then path for readability
     runs.sort(key=lambda r: (r["bench"], r["family"], r["rel"]))
+
+    # Load the image backfill sidecar (built by bench.backfill_images) and count how
+    # many runs share each ON-arm event log (claude longdoc nqa+gov share one).
+    global SIDECAR, SHARE
+    side_path = Path("bench/image_backfill.json")
+    SIDECAR = json.loads(side_path.read_text()) if side_path.exists() else {}
+    for run in runs:
+        k = on_events_key(run)
+        if k:
+            SHARE[k] = SHARE.get(k, 0) + 1
 
     blocks = ["# Full benchmark report — all runs\n",
               f"_Generated from {len(RUN_DIRS)} run folders; {len(runs)} (file × benchmark) runs. "

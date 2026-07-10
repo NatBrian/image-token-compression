@@ -17,60 +17,64 @@ _Generated from 16 run folders; 52 (file × benchmark) runs. Every number regene
 
 ## Summary — every run (delta = ON vs OFF)
 
-| run | agent | model | bench | N | input Δ | real cost Δ | sim cost Δ |
-|---|---|---|---|--:|--:|--:|--:|
-| campaign_20260710_180022/claude_longdoc/_gov_report | claude | sonnet | gov_report | 2+2 | -45.1% | -43.2% | -41.3% |
-| campaign_dryrun_20260710_152928/claude_longdoc/_gov_report | claude | sonnet | gov_report | 2+2 | +40.1% | -40.7% | -30.6% |
-| longdoc_claude_runs/ | claude | claude-sonnet | gov_report | 4+4 | -13.2% | -14.8% | -12.2% |
-| longdoc_claude_runs/_gov_report | claude | claude-sonnet | gov_report | 4+4 | -13.2% | -14.8% | -12.2% |
-| longdoc_opencode_runs_gemini_31_flash_lite/_gov_report | opencode | gemini-3.1-flash-lite | gov_report | 3+3 | — | — | — |
-| campaign_20260710_180022/mimo_longdoc/_gov_report | mimo | opencode/mimo-v2.5-free | gov_report | 2+2 | -70.4% | — | -51.2% |
-| campaign_dryrun_20260710_152928/mimo_longdoc/_gov_report | mimo | opencode/mimo-v2.5-free | gov_report | 2+2 | -83.2% | — | -89.3% |
-| longdoc_opencode_runs/_gov_report | opencode | mimo-v2.5-free | gov_report | 4+4 | -39.4% | — | -47.5% |
-| mimo_refix_20260710_160813/mimo_longdoc/_gov_report | mimo | opencode/mimo-v2.5-free | gov_report | 2+2 | +20.0% | — | +35.8% |
-| campaign_20260710_180022/codex_longdoc/_gov_report | codex | gpt-5.4-mini | gov_report | 2+2 | -18.0% | — | -2.5% |
-| campaign_dryrun_20260710_152928/codex_longdoc/_gov_report | codex | gpt-5.4-mini | gov_report | 2+2 | -23.3% | — | -27.6% |
-| longdoc_opencode_runs/_gov_report_gpt4omini | opencode | gpt-4o-mini | gov_report | 1+1 | — | — | — |
-| longdoc_opencode_runs_gpt_54_mini/_gov_report | opencode | gpt-5.4-mini | gov_report | 1+1 | -44.0% | — | -9.5% |
-| hotpot_claude_runs/ | claude | claude-sonnet | hotpot | 5+5 | -35.1% | +44.0% | +31.6% |
-| hotpot_claude_runs/_haiku | claude | claude-haiku | hotpot | 5+5 | -29.4% | +124.8% | +124.8% |
-| hotpot_claude_runs/_sonnet | claude | claude-sonnet | hotpot | 5+5 | -35.1% | +8.0% | +8.0% |
-| hotpot_claude_runs/_tools0 | claude | claude-sonnet | hotpot | 5+5 | -0.2% | -25.4% | -21.6% |
-| hotpot_verify_runs/claude_sonnet/ | claude | claude-sonnet | hotpot | 1+1 | -34.8% | -32.7% | -32.0% |
-| hotpot_opencode_runs_gemini_31_flash_lite_v2/ | opencode | gemini-3.1-flash-lite | hotpot | 3+3 | -19.0% | — | -12.6% |
-| campaign_20260710_180022/mimo_hotpot/ | mimo | opencode/mimo-v2.5-free | hotpot | 2+2 | -52.2% | — | -16.8% |
-| campaign_dryrun_20260710_152928/mimo_hotpot/ | mimo | opencode/mimo-v2.5-free | hotpot | 2+2 | +22.1% | — | +5.1% |
-| hotpot_runs/ | opencode | mimo-v2.5-free | hotpot | 10+10 | -32.6% | — | -28.0% |
-| hotpot_verify_runs/opencode_mimo/_mimo | opencode | mimo-v2.5-free | hotpot | 1+1 | -12.0% | — | -8.0% |
-| mimo_refix_20260710_160813/mimo_hotpot/ | mimo | opencode/mimo-v2.5-free | hotpot | 2+2 | -24.4% | — | +37.3% |
-| campaign_20260710_180022/codex_hotpot/ | codex | gpt-5.4-mini | hotpot | 2+2 | -6.4% | — | -26.2% |
-| campaign_dryrun_20260710_152928/codex_hotpot/ | codex | gpt-5.4-mini | hotpot | 2+2 | -35.1% | — | -13.9% |
-| hotpot_opencode_runs/_gpt4omini | opencode | gpt-4o-mini | hotpot | 1+1 | +3433.5% | — | +5776.5% |
-| hotpot_verify_runs/codex/ | codex | gpt-5.4-mini | hotpot | 1+1 | -35.2% | — | -42.2% |
-| hotpot_verify_runs/opencode_oauth/_gpt54mini | opencode | gpt-5.4-mini | hotpot | 1+1 | -5.6% | — | -5.7% |
-| campaign_20260710_180022/claude_longdoc/_narrativeqa | claude | sonnet | narrativeqa | 2+2 | +5.0% | -29.9% | -23.4% |
-| campaign_dryrun_20260710_152928/claude_longdoc/_narrativeqa | claude | sonnet | narrativeqa | 2+2 | +92.8% | +25.5% | +41.5% |
-| claude_nqa_hist0_20260710_182803/_narrativeqa | claude | sonnet | narrativeqa | 2+2 | +5.0% | -29.9% | -23.4% |
-| longdoc_claude_runs/_narrativeqa | claude | claude-sonnet | narrativeqa | 6+6 | -15.7% | -28.7% | -24.9% |
-| longdoc_opencode_runs_gemini_31_flash_lite/_narrativeqa | opencode | gemini-3.1-flash-lite | narrativeqa | 3+3 | — | — | — |
-| campaign_20260710_180022/mimo_longdoc/_narrativeqa | mimo | opencode/mimo-v2.5-free | narrativeqa | 2+2 | -58.0% | — | +39.8% |
-| campaign_dryrun_20260710_152928/mimo_longdoc/_narrativeqa | mimo | opencode/mimo-v2.5-free | narrativeqa | 2+2 | +0.8% | — | -35.1% |
-| longdoc_opencode_runs/_narrativeqa | opencode | mimo-v2.5-free | narrativeqa | 6+6 | -27.1% | — | -51.2% |
-| mimo_refix_20260710_160813/mimo_longdoc/_narrativeqa | mimo | opencode/mimo-v2.5-free | narrativeqa | 2+2 | -59.3% | — | +11.5% |
-| campaign_20260710_180022/codex_longdoc/_narrativeqa | codex | gpt-5.4-mini | narrativeqa | 2+2 | -0.0% | — | -16.1% |
-| campaign_dryrun_20260710_152928/codex_longdoc/_narrativeqa | codex | gpt-5.4-mini | narrativeqa | 2+2 | -36.0% | — | -13.8% |
-| longdoc_opencode_runs/_narrativeqa_gpt4omini | opencode | gpt-4o-mini | narrativeqa | 1+1 | — | — | — |
-| longdoc_opencode_runs_gpt_54_mini/_narrativeqa | opencode | gpt-5.4-mini | narrativeqa | 1+1 | +116.5% | — | +243.4% |
-| campaign_20260710_180022/claude_swebench/ | claude | sonnet | swebench | 2+2 | +0.7% | -36.5% | -30.4% |
-| campaign_dryrun_20260710_152928/claude_swebench/ | claude | sonnet | swebench | 2+2 | -27.5% | -15.3% | -17.3% |
-| swebench_claude_runs/ | claude | claude-sonnet | swebench | 5+5 | -24.7% | +26.5% | +13.8% |
-| swebench_opencode_runs_gemini_31_flash_lite/ | opencode | gemini-3.1-flash-lite | swebench | 2+2 | +90.5% | — | +83.1% |
-| campaign_20260710_180022/mimo_swebench/ | mimo | opencode/mimo-v2.5-free | swebench | 2+2 | -63.0% | — | +12.3% |
-| campaign_dryrun_20260710_152928/mimo_swebench/ | mimo | opencode/mimo-v2.5-free | swebench | 2+2 | -63.3% | — | -18.2% |
-| mimo_refix_20260710_160813/mimo_swebench/ | mimo | opencode/mimo-v2.5-free | swebench | 2+2 | +59.0% | — | +339.9% |
-| swebench_opencode_runs/ | opencode | mimo-v2.5-free | swebench | 5+5 | -28.7% | — | +62.0% |
-| campaign_20260710_180022/codex_swebench/ | codex | gpt-5.4-mini | swebench | 2+2 | -19.0% | — | -37.9% |
-| campaign_dryrun_20260710_152928/codex_swebench/ | codex | gpt-5.4-mini | swebench | 2+2 | -29.8% | — | -15.8% |
+ON-regions column is the imgctx config (which text regions were rendered to images) as **SYS·TOOLS·TOOL_RES·USER·HIST**, 1=imaged 0=kept-as-text. Every benchmark used a different config, so the deltas are only comparable within the same region string. `*` = reconstructed from the driver at the run's commit (older runs); unmarked = recorded in run_meta.
+
+Avg img/call = ON-arm images per model call (claude from the events backfill; codex/mimo/gemini from results). `‡` = >1 run shared one per-arm proxy log (claude longdoc nqa+gov; hotpot base/sonnet/haiku), so that figure is folder-level, not per-run. `—` for claude = uncaptured.
+
+| run | agent | model | bench | N | ON regions | avg img/call | input Δ | real cost Δ | sim cost Δ |
+|---|---|---|---|--:|:--:|--:|--:|--:|--:|
+| campaign_20260710_180022/claude_longdoc/_gov_report | claude | sonnet | gov_report | 2+2 | `0·0·1·1·1` | 3.0‡ | -45.1% | -43.2% | -41.3% |
+| campaign_dryrun_20260710_152928/claude_longdoc/_gov_report | claude | sonnet | gov_report | 2+2 | `0·0·1·1·1` | 3.8‡ | +40.1% | -40.7% | -30.6% |
+| longdoc_claude_runs/ | claude | claude-sonnet | gov_report | 4+4 | `0·0·1·1·1*` | 5.7‡ | -13.2% | -14.8% | -12.2% |
+| longdoc_claude_runs/_gov_report | claude | claude-sonnet | gov_report | 4+4 | `0·0·1·1·1*` | 5.7‡ | -13.2% | -14.8% | -12.2% |
+| longdoc_opencode_runs_gemini_31_flash_lite/_gov_report | opencode | gemini-3.1-flash-lite | gov_report | 3+3 | `0·0·1·1·1*` | — | — | — | — |
+| campaign_20260710_180022/mimo_longdoc/_gov_report | mimo | opencode/mimo-v2.5-free | gov_report | 2+2 | `1·1·1·1·1` | 10.5 | -70.4% | — | -51.2% |
+| campaign_dryrun_20260710_152928/mimo_longdoc/_gov_report | mimo | opencode/mimo-v2.5-free | gov_report | 2+2 | `1·1·1·1·1` | 9.1 | -83.2% | — | -89.3% |
+| longdoc_opencode_runs/_gov_report | opencode | mimo-v2.5-free | gov_report | 4+4 | `0·0·1·1·1*` | 1.2 | -39.4% | — | -47.5% |
+| mimo_refix_20260710_160813/mimo_longdoc/_gov_report | mimo | opencode/mimo-v2.5-free | gov_report | 2+2 | `1·1·1·1·1` | 10.1 | +20.0% | — | +35.8% |
+| campaign_20260710_180022/codex_longdoc/_gov_report | codex | gpt-5.4-mini | gov_report | 2+2 | `1·1·1·1·1` | 1.0 | -18.0% | — | -2.5% |
+| campaign_dryrun_20260710_152928/codex_longdoc/_gov_report | codex | gpt-5.4-mini | gov_report | 2+2 | `1·1·1·1·1` | 1.6 | -23.3% | — | -27.6% |
+| longdoc_opencode_runs/_gov_report_gpt4omini | opencode | gpt-4o-mini | gov_report | 1+1 | `0·0·1·1·1*` | — | — | — | — |
+| longdoc_opencode_runs_gpt_54_mini/_gov_report | opencode | gpt-5.4-mini | gov_report | 1+1 | `0·0·1·1·1*` | 0.0 | -44.0% | — | -9.5% |
+| hotpot_claude_runs/ | claude | claude-sonnet | hotpot | 5+5 | `0·1·1·1·1*` | 13.1‡ | -35.1% | +44.0% | +31.6% |
+| hotpot_claude_runs/_haiku | claude | claude-haiku | hotpot | 5+5 | `0·1·1·1·1*` | 13.1‡ | -29.4% | +124.8% | +124.8% |
+| hotpot_claude_runs/_sonnet | claude | claude-sonnet | hotpot | 5+5 | `0·1·1·1·1*` | 13.1‡ | -35.1% | +8.0% | +8.0% |
+| hotpot_claude_runs/_tools0 | claude | claude-sonnet | hotpot | 5+5 | `0·0·1·1·1*` | 0.1 | -0.2% | -25.4% | -21.6% |
+| hotpot_verify_runs/claude_sonnet/ | claude | claude-sonnet | hotpot | 1+1 | `0·1·1·1·1*` | 13.0 | -34.8% | -32.7% | -32.0% |
+| hotpot_opencode_runs_gemini_31_flash_lite_v2/ | opencode | gemini-3.1-flash-lite | hotpot | 3+3 | `0·1·1·1·1*` | 2.8 | -19.0% | — | -12.6% |
+| campaign_20260710_180022/mimo_hotpot/ | mimo | opencode/mimo-v2.5-free | hotpot | 2+2 | `1·1·1·1·1` | 7.0 | -52.2% | — | -16.8% |
+| campaign_dryrun_20260710_152928/mimo_hotpot/ | mimo | opencode/mimo-v2.5-free | hotpot | 2+2 | `1·1·1·1·1` | 7.8 | +22.1% | — | +5.1% |
+| hotpot_runs/ | opencode | mimo-v2.5-free | hotpot | 10+10 | `1·1·1·1·1*` | 8.1 | -32.6% | — | -28.0% |
+| hotpot_verify_runs/opencode_mimo/_mimo | opencode | mimo-v2.5-free | hotpot | 1+1 | `0·1·1·1·1*` | 3.3 | -12.0% | — | -8.0% |
+| mimo_refix_20260710_160813/mimo_hotpot/ | mimo | opencode/mimo-v2.5-free | hotpot | 2+2 | `1·1·1·1·1` | 7.5 | -24.4% | — | +37.3% |
+| campaign_20260710_180022/codex_hotpot/ | codex | gpt-5.4-mini | hotpot | 2+2 | `1·1·1·1·1` | 0.8 | -6.4% | — | -26.2% |
+| campaign_dryrun_20260710_152928/codex_hotpot/ | codex | gpt-5.4-mini | hotpot | 2+2 | `1·1·1·1·1` | 1.5 | -35.1% | — | -13.9% |
+| hotpot_opencode_runs/_gpt4omini | opencode | gpt-4o-mini | hotpot | 1+1 | `0·1·1·1·1*` | 5.1 | +3433.5% | — | +5776.5% |
+| hotpot_verify_runs/codex/ | codex | gpt-5.4-mini | hotpot | 1+1 | `1·1·1·1·1*` | 0.9 | -35.2% | — | -42.2% |
+| hotpot_verify_runs/opencode_oauth/_gpt54mini | opencode | gpt-5.4-mini | hotpot | 1+1 | `0·1·1·1·1*` | 2.7 | -5.6% | — | -5.7% |
+| campaign_20260710_180022/claude_longdoc/_narrativeqa | claude | sonnet | narrativeqa | 2+2 | `0·0·1·1·0` | 3.0‡ | +5.0% | -29.9% | -23.4% |
+| campaign_dryrun_20260710_152928/claude_longdoc/_narrativeqa | claude | sonnet | narrativeqa | 2+2 | `0·0·1·1·1` | 3.8‡ | +92.8% | +25.5% | +41.5% |
+| claude_nqa_hist0_20260710_182803/_narrativeqa | claude | sonnet | narrativeqa | 2+2 | `0·0·1·1·0` | 4.8 | +5.0% | -29.9% | -23.4% |
+| longdoc_claude_runs/_narrativeqa | claude | claude-sonnet | narrativeqa | 6+6 | `0·0·1·1·1*` | 5.7‡ | -15.7% | -28.7% | -24.9% |
+| longdoc_opencode_runs_gemini_31_flash_lite/_narrativeqa | opencode | gemini-3.1-flash-lite | narrativeqa | 3+3 | `0·0·1·1·1*` | — | — | — | — |
+| campaign_20260710_180022/mimo_longdoc/_narrativeqa | mimo | opencode/mimo-v2.5-free | narrativeqa | 2+2 | `1·1·1·1·1` | 8.9 | -58.0% | — | +39.8% |
+| campaign_dryrun_20260710_152928/mimo_longdoc/_narrativeqa | mimo | opencode/mimo-v2.5-free | narrativeqa | 2+2 | `1·1·1·1·1` | 11.0 | +0.8% | — | -35.1% |
+| longdoc_opencode_runs/_narrativeqa | opencode | mimo-v2.5-free | narrativeqa | 6+6 | `0·0·1·1·1*` | 4.0 | -27.1% | — | -51.2% |
+| mimo_refix_20260710_160813/mimo_longdoc/_narrativeqa | mimo | opencode/mimo-v2.5-free | narrativeqa | 2+2 | `1·1·1·1·1` | 9.7 | -59.3% | — | +11.5% |
+| campaign_20260710_180022/codex_longdoc/_narrativeqa | codex | gpt-5.4-mini | narrativeqa | 2+2 | `1·1·1·1·1` | 0.9 | -0.0% | — | -16.1% |
+| campaign_dryrun_20260710_152928/codex_longdoc/_narrativeqa | codex | gpt-5.4-mini | narrativeqa | 2+2 | `1·1·1·1·1` | 1.8 | -36.0% | — | -13.8% |
+| longdoc_opencode_runs/_narrativeqa_gpt4omini | opencode | gpt-4o-mini | narrativeqa | 1+1 | `0·0·1·1·1*` | — | — | — | — |
+| longdoc_opencode_runs_gpt_54_mini/_narrativeqa | opencode | gpt-5.4-mini | narrativeqa | 1+1 | `0·0·1·1·1*` | 5.5 | +116.5% | — | +243.4% |
+| campaign_20260710_180022/claude_swebench/ | claude | sonnet | swebench | 2+2 | `0·0·1·0·0` | 0.0 | +0.7% | -36.5% | -30.4% |
+| campaign_dryrun_20260710_152928/claude_swebench/ | claude | sonnet | swebench | 2+2 | `0·0·1·0·0` | 0.0 | -27.5% | -15.3% | -17.3% |
+| swebench_claude_runs/ | claude | claude-sonnet | swebench | 5+5 | `0·1·1·1·1*` | 13.5 | -24.7% | +26.5% | +13.8% |
+| swebench_opencode_runs_gemini_31_flash_lite/ | opencode | gemini-3.1-flash-lite | swebench | 2+2 | `0·1·1·1·1*` | 10.1 | +90.5% | — | +83.1% |
+| campaign_20260710_180022/mimo_swebench/ | mimo | opencode/mimo-v2.5-free | swebench | 2+2 | `1·1·1·1·1` | 14.5 | -63.0% | — | +12.3% |
+| campaign_dryrun_20260710_152928/mimo_swebench/ | mimo | opencode/mimo-v2.5-free | swebench | 2+2 | `1·1·1·1·1` | 11.7 | -63.3% | — | -18.2% |
+| mimo_refix_20260710_160813/mimo_swebench/ | mimo | opencode/mimo-v2.5-free | swebench | 2+2 | `1·1·1·1·1` | 9.3 | +59.0% | — | +339.9% |
+| swebench_opencode_runs/ | opencode | mimo-v2.5-free | swebench | 5+5 | `0·1·1·1·1*` | 8.7 | -28.7% | — | +62.0% |
+| campaign_20260710_180022/codex_swebench/ | codex | gpt-5.4-mini | swebench | 2+2 | `1·1·1·1·1` | 0.8 | -19.0% | — | -37.9% |
+| campaign_dryrun_20260710_152928/codex_swebench/ | codex | gpt-5.4-mini | swebench | 2+2 | `1·1·1·1·1` | 1.6 | -29.8% | — | -15.8% |
 
 ## Detailed runs
 
@@ -79,6 +83,8 @@ _Generated from 16 run folders; 52 (file × benchmark) runs. Every number regene
 
 ### `campaign_20260710_180022/claude_longdoc/results_gov_report.json` — gov_report
 agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (DATA): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -90,7 +96,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 | · cache-write | 65,842 | 31,659 | -51.9% |
 | output | 5,650 | 4,983 | -11.8% |
 | avg calls/turns | 7.5 | 5.0 | -33.3% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 30 | ‡events-backfill, shared per-arm log across 2 runs (folder-level, not per-run) |
+| ON avg img / call | — | 3.00 | over 10 imaging calls |
 | **cost REAL** | `$0.8333` | `$0.4736` | -43.2% |
 | **cost SIMULATED** | `$0.6852` | `$0.4024` | -41.3% |
 | F1 (avg) | 0.121 | 0.101 | -16.5% |
@@ -110,6 +117,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 
 ### `campaign_dryrun_20260710_152928/claude_longdoc/results_gov_report.json` — gov_report
 agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (DATA): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -121,7 +130,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 | · cache-write | 117,399 | 43,135 | -63.3% |
 | output | 3,117 | 5,236 | +68.0% |
 | avg calls/turns | 2.5 | 4.0 | +60.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 84 | ‡events-backfill, shared per-arm log across 2 runs (folder-level, not per-run) |
+| ON avg img / call | — | 3.82 | over 22 imaging calls |
 | **cost REAL** | `$0.8554` | `$0.5076` | -40.7% |
 | **cost SIMULATED** | `$0.5912` | `$0.4106` | -30.6% |
 | F1 (avg) | 0.093 | 0.078 | -16.1% |
@@ -141,6 +151,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 
 ### `longdoc_claude_runs/results.json` — gov_report
 agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_claude_experiment.py@094debc_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -152,7 +164,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 | · cache-write | 122,059 | 89,880 | -26.4% |
 | output | 8,748 | 11,607 | +32.7% |
 | avg calls/turns | 7.0 | 6.8 | -3.6% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 155 | ‡events-backfill, shared per-arm log across 3 runs (folder-level, not per-run) |
+| ON avg img / call | — | 5.74 | over 27 imaging calls |
 | **cost REAL** | `$1.5001` | `$1.2786` | -14.8% |
 | **cost SIMULATED** | `$1.2255` | `$1.0764` | -12.2% |
 | F1 (avg) | 0.102 | 0.123 | +21.1% |
@@ -176,6 +189,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 
 ### `longdoc_claude_runs/results_gov_report.json` — gov_report
 agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_claude_experiment.py@094debc_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -187,7 +202,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 | · cache-write | 122,059 | 89,880 | -26.4% |
 | output | 8,748 | 11,607 | +32.7% |
 | avg calls/turns | 7.0 | 6.8 | -3.6% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 155 | ‡events-backfill, shared per-arm log across 3 runs (folder-level, not per-run) |
+| ON avg img / call | — | 5.74 | over 27 imaging calls |
 | **cost REAL** | `$1.5001` | `$1.2786` | -14.8% |
 | **cost SIMULATED** | `$1.2255` | `$1.0764` | -12.2% |
 | F1 (avg) | 0.102 | 0.123 | +21.1% |
@@ -211,6 +227,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 
 ### `longdoc_opencode_runs_gemini_31_flash_lite/results_gov_report.json` — gov_report
 agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · sim-rate _Gemini 3.1 flash-lite approx list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_opencode_experiment.py@094debc (junk: provider dropped mid-run)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -222,7 +240,7 @@ agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · si
 | · cache-write | 0 | 0 | — |
 | output | 0 | 0 | — |
 | avg calls/turns | 0.0 | 0.0 | — |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 0 | results |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0000` | `$0.0000` | — |
 | F1 (avg) | 0.000 | 0.000 | — |
@@ -244,6 +262,8 @@ agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · si
 
 ### `campaign_20260710_180022/mimo_longdoc/results_gov_report.json` — gov_report
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -255,7 +275,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 17,542 | 11,188 | -36.2% |
 | avg calls/turns | 33.5 | 19.0 | -43.3% |
-| ON images (sum) | — | 399 | — |
+| ON images (sum) | — | 399 | results |
+| ON avg img / call | — | 10.50 | over 38 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0300` | `$0.0146` | -51.2% |
 | F1 (avg) | 0.136 | 0.135 | -0.7% |
@@ -275,6 +296,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `campaign_dryrun_20260710_152928/mimo_longdoc/results_gov_report.json` — gov_report
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -286,7 +309,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 1,728 | 842 | -51.3% |
 | avg calls/turns | 11.0 | 7.0 | -36.4% |
-| ON images (sum) | — | 128 | — |
+| ON images (sum) | — | 128 | results |
+| ON avg img / call | — | 9.14 | over 14 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0133` | `$0.0014` | -89.3% |
 | F1 (avg) | 0.128 | 0.049 | -61.7% |
@@ -306,6 +330,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `longdoc_opencode_runs/results_gov_report.json` — gov_report
 agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_opencode_experiment.py@2327fd7_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -317,7 +343,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 | · cache-write | 0 | 0 | — |
 | output | 10,287 | 10,520 | +2.3% |
 | avg calls/turns | 7.8 | 5.8 | -25.8% |
-| ON images (sum) | — | 27 | — |
+| ON images (sum) | — | 27 | results |
+| ON avg img / call | — | 1.17 | over 23 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0164` | `$0.0086` | -47.5% |
 | F1 (avg) | 0.130 | 0.125 | -4.0% |
@@ -341,6 +368,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 
 ### `mimo_refix_20260710_160813/mimo_longdoc/results_gov_report.json` — gov_report
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -352,7 +381,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 9,784 | 17,123 | +75.0% |
 | avg calls/turns | 22.5 | 29.0 | +28.9% |
-| ON images (sum) | — | 586 | — |
+| ON images (sum) | — | 586 | results |
+| ON avg img / call | — | 10.10 | over 58 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0089` | `$0.0121` | +35.8% |
 | F1 (avg) | 0.049 | 0.100 | +105.2% |
@@ -372,6 +402,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `campaign_20260710_180022/codex_longdoc/results_gov_report.json` — gov_report
 agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -383,7 +415,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 | · cache-write | 0 | 0 | — |
 | output | 3,776 | 2,454 | -35.0% |
 | avg calls/turns | 16.0 | 16.0 | +0.0% |
-| ON images (sum) | — | 32 | — |
+| ON images (sum) | — | 32 | results |
+| ON avg img / call | — | 1.00 | over 32 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0405` | `$0.0394` | -2.5% |
 | F1 (avg) | 0.015 | 0.011 | -25.8% |
@@ -403,6 +436,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 
 ### `campaign_dryrun_20260710_152928/codex_longdoc/results_gov_report.json` — gov_report
 agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -414,7 +449,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 | · cache-write | 0 | 0 | — |
 | output | 2,773 | 1,949 | -29.7% |
 | avg calls/turns | 5.5 | 5.0 | -9.1% |
-| ON images (sum) | — | 16 | — |
+| ON images (sum) | — | 16 | results |
+| ON avg img / call | — | 1.60 | over 10 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0297` | `$0.0215` | -27.6% |
 | F1 (avg) | 0.009 | 0.015 | +63.2% |
@@ -434,6 +470,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 
 ### `longdoc_opencode_runs/results_gov_report_gpt4omini.json` — gov_report
 agent **opencode** · model **gpt-4o-mini** · family **openai** · sim-rate _OpenAI gpt-4o-mini list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_opencode_experiment.py@2327fd7_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -445,7 +483,7 @@ agent **opencode** · model **gpt-4o-mini** · family **openai** · sim-rate _Op
 | · cache-write | 0 | 0 | — |
 | output | 0 | 0 | — |
 | avg calls/turns | 0.0 | 0.0 | — |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 0 | results |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0000` | `$0.0000` | — |
 | F1 (avg) | 0.004 | 0.004 | +0.0% |
@@ -463,6 +501,8 @@ agent **opencode** · model **gpt-4o-mini** · family **openai** · sim-rate _Op
 
 ### `longdoc_opencode_runs_gpt_54_mini/results_gov_report.json` — gov_report
 agent **opencode** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_opencode_experiment.py@162ccbe_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -474,7 +514,8 @@ agent **opencode** · model **gpt-5.4-mini** · family **openai** · sim-rate _O
 | · cache-write | 0 | 0 | — |
 | output | 1,152 | 313 | -72.8% |
 | avg calls/turns | 4.0 | 3.0 | -25.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 0 | results |
+| ON avg img / call | — | 0.00 | over 3 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0188` | `$0.0170` | -9.5% |
 | F1 (avg) | 0.105 | 0.071 | -32.4% |
@@ -495,6 +536,8 @@ agent **opencode** · model **gpt-5.4-mini** · family **openai** · sim-rate _O
 
 ### `hotpot_claude_runs/results.json` — hotpot
 agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_claude_experiment.py@2eb3f56_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -506,7 +549,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 | · cache-write | 86,078 | 155,087 | +80.2% |
 | output | 703 | 807 | +14.8% |
 | avg calls/turns | 2.0 | 2.0 | +0.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 131 | ‡events-backfill, shared per-arm log across 3 runs (folder-level, not per-run) |
+| ON avg img / call | — | 13.10 | over 10 imaging calls |
 | **cost REAL** | `$0.7550` | `$1.0876` | +44.0% |
 | **cost SIMULATED** | `$0.5613` | `$0.7386` | +31.6% |
 | F1 (avg) | 0.848 | 0.684 | -19.3% |
@@ -532,6 +576,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 
 ### `hotpot_claude_runs/results_haiku.json` — hotpot
 agent **claude** · model **claude-haiku** · family **anthropic** · sim-rate _Anthropic claude-haiku list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_claude_experiment.py@2eb3f56_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -543,7 +589,8 @@ agent **claude** · model **claude-haiku** · family **anthropic** · sim-rate _
 | · cache-write | 65,054 | 222,165 | +241.5% |
 | output | 3,044 | 3,208 | +5.4% |
 | avg calls/turns | 2.0 | 2.0 | +0.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 131 | ‡events-backfill, shared per-arm log across 3 runs (folder-level, not per-run) |
+| ON avg img / call | — | 13.10 | over 10 imaging calls |
 | **cost REAL** | `$0.1349` | `$0.3032` | +124.8% |
 | **cost SIMULATED** | `$0.1349` | `$0.3032` | +124.8% |
 | F1 (avg) | 0.848 | 0.860 | +1.5% |
@@ -569,6 +616,8 @@ agent **claude** · model **claude-haiku** · family **anthropic** · sim-rate _
 
 ### `hotpot_claude_runs/results_sonnet.json` — hotpot
 agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_claude_experiment.py@2eb3f56_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -580,7 +629,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 | · cache-write | 129,092 | 163,262 | +26.5% |
 | output | 671 | 737 | +9.8% |
 | avg calls/turns | 2.0 | 2.0 | +0.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 131 | ‡events-backfill, shared per-arm log across 3 runs (folder-level, not per-run) |
+| ON avg img / call | — | 13.10 | over 10 imaging calls |
 | **cost REAL** | `$0.2364` | `$0.2552` | +8.0% |
 | **cost SIMULATED** | `$0.7092` | `$0.7657` | +8.0% |
 | F1 (avg) | 0.848 | 0.848 | +0.0% |
@@ -606,6 +656,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 
 ### `hotpot_claude_runs/results_tools0.json` — hotpot
 agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_claude_experiment.py --tools0 @92ab124_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -617,7 +669,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 | · cache-write | 128,672 | 84,148 | -34.6% |
 | output | 771 | 815 | +5.7% |
 | avg calls/turns | 2.0 | 2.0 | +0.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 1 | events-backfill |
+| ON avg img / call | — | 0.10 | over 10 imaging calls |
 | **cost REAL** | `$0.9985` | `$0.7450` | -25.4% |
 | **cost SIMULATED** | `$0.7090` | `$0.5556` | -21.6% |
 | F1 (avg) | 0.848 | 0.848 | +0.0% |
@@ -643,6 +696,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 
 ### `hotpot_verify_runs/claude_sonnet/results.json` — hotpot
 agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_claude_experiment.py@cb64fc3_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -654,7 +709,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 | · cache-write | 60,773 | 39,998 | -34.2% |
 | output | 127 | 137 | +7.9% |
 | avg calls/turns | 2.0 | 2.0 | +0.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 26 | events-backfill |
+| ON avg img / call | — | 13.00 | over 2 imaging calls |
 | **cost REAL** | `$0.3994` | `$0.2686` | -32.7% |
 | **cost SIMULATED** | `$0.2626` | `$0.1786` | -32.0% |
 | F1 (avg) | 1.000 | 1.000 | +0.0% |
@@ -672,6 +728,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 
 ### `hotpot_opencode_runs_gemini_31_flash_lite_v2/results.json` — hotpot
 agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · sim-rate _Gemini 3.1 flash-lite approx list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_opencode_experiment.py@094debc_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -683,7 +741,8 @@ agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · si
 | · cache-write | 0 | 0 | — |
 | output | 328 | 213 | -35.1% |
 | avg calls/turns | 3.3 | 3.0 | -10.0% |
-| ON images (sum) | — | 25 | — |
+| ON images (sum) | — | 25 | results |
+| ON avg img / call | — | 2.78 | over 9 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0151` | `$0.0132` | -12.6% |
 | F1 (avg) | 0.767 | 0.667 | -13.0% |
@@ -705,6 +764,8 @@ agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · si
 
 ### `campaign_20260710_180022/mimo_hotpot/results.json` — hotpot
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -716,7 +777,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 1,160 | 2,342 | +101.9% |
 | avg calls/turns | 3.5 | 3.0 | -14.3% |
-| ON images (sum) | — | 42 | — |
+| ON images (sum) | — | 42 | results |
+| ON avg img / call | — | 7.00 | over 6 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0021` | `$0.0017` | -16.8% |
 | F1 (avg) | 0.834 | 0.650 | -22.0% |
@@ -736,6 +798,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `campaign_dryrun_20260710_152928/mimo_hotpot/results.json` — hotpot
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -747,7 +811,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 111 | 2,571 | +2216.2% |
 | avg calls/turns | 3.5 | 4.0 | +14.3% |
-| ON images (sum) | — | 62 | — |
+| ON images (sum) | — | 62 | results |
+| ON avg img / call | — | 7.75 | over 8 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0032` | `$0.0034` | +5.1% |
 | F1 (avg) | 0.500 | 0.666 | +33.3% |
@@ -767,6 +832,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `hotpot_runs/results.json` — hotpot
 agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (RECON): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_experiment.py@c1aa5e2 (defaults: all on)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -778,7 +845,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 | · cache-write | 0 | 0 | — |
 | output | 1,575 | 12,029 | +663.7% |
 | avg calls/turns | 3.0 | 3.2 | +6.7% |
-| ON images (sum) | — | 259 | — |
+| ON images (sum) | — | 259 | results |
+| ON avg img / call | — | 8.09 | over 32 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0656` | `$0.0472` | -28.0% |
 | F1 (avg) | 0.757 | 0.879 | +16.1% |
@@ -813,6 +881,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 
 ### `hotpot_verify_runs/opencode_mimo/results_mimo.json` — hotpot
 agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_opencode_experiment.py@cb64fc3_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -824,7 +894,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 | · cache-write | 0 | 0 | — |
 | output | 160 | 145 | -9.4% |
 | avg calls/turns | 3.0 | 3.0 | +0.0% |
-| ON images (sum) | — | 10 | — |
+| ON images (sum) | — | 10 | results |
+| ON avg img / call | — | 3.33 | over 3 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0034` | `$0.0031` | -8.0% |
 | F1 (avg) | 1.000 | 1.000 | +0.0% |
@@ -842,6 +913,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 
 ### `mimo_refix_20260710_160813/mimo_hotpot/results.json` — hotpot
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -853,7 +926,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 2,255 | 5,930 | +163.0% |
 | avg calls/turns | 8.5 | 12.5 | +47.1% |
-| ON images (sum) | — | 187 | — |
+| ON images (sum) | — | 187 | results |
+| ON avg img / call | — | 7.48 | over 25 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0027` | `$0.0036` | +37.3% |
 | F1 (avg) | 0.666 | 0.650 | -2.5% |
@@ -873,6 +947,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `campaign_20260710_180022/codex_hotpot/results.json` — hotpot
 agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -884,7 +960,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 | · cache-write | 0 | 0 | — |
 | output | 1,754 | 1,171 | -33.2% |
 | avg calls/turns | 9.0 | 10.0 | +11.1% |
-| ON images (sum) | — | 16 | — |
+| ON images (sum) | — | 16 | results |
+| ON avg img / call | — | 0.80 | over 20 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0242` | `$0.0178` | -26.2% |
 | F1 (avg) | 0.834 | 0.500 | -40.0% |
@@ -904,6 +981,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 
 ### `campaign_dryrun_20260710_152928/codex_hotpot/results.json` — hotpot
 agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -915,7 +994,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 | · cache-write | 0 | 0 | — |
 | output | 1,391 | 1,100 | -20.9% |
 | avg calls/turns | 5.0 | 4.0 | -20.0% |
-| ON images (sum) | — | 12 | — |
+| ON images (sum) | — | 12 | results |
+| ON avg img / call | — | 1.50 | over 8 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0204` | `$0.0176` | -13.9% |
 | F1 (avg) | 0.834 | 0.500 | -40.0% |
@@ -935,6 +1015,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 
 ### `hotpot_opencode_runs/results_gpt4omini.json` — hotpot
 agent **opencode** · model **gpt-4o-mini** · family **openai** · sim-rate _OpenAI gpt-4o-mini list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_opencode_experiment.py@094debc_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -946,7 +1028,8 @@ agent **opencode** · model **gpt-4o-mini** · family **openai** · sim-rate _Op
 | · cache-write | 0 | 0 | — |
 | output | 409 | 1,255 | +206.8% |
 | avg calls/turns | 3.0 | 10.0 | +233.3% |
-| ON images (sum) | — | 51 | — |
+| ON images (sum) | — | 51 | results |
+| ON avg img / call | — | 5.10 | over 10 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0034` | `$0.2003` | +5776.5% |
 | F1 (avg) | 1.000 | 0.000 | -100.0% |
@@ -964,6 +1047,8 @@ agent **opencode** · model **gpt-4o-mini** · family **openai** · sim-rate _Op
 
 ### `hotpot_verify_runs/codex/results.json` — hotpot
 agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (RECON): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_codex_experiment.py@cb64fc3 (defaults: all on)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -975,7 +1060,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 | · cache-write | 0 | 0 | — |
 | output | 689 | 613 | -11.0% |
 | avg calls/turns | 9.0 | 7.0 | -22.2% |
-| ON images (sum) | — | 6 | — |
+| ON images (sum) | — | 6 | results |
+| ON avg img / call | — | 0.86 | over 7 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0135` | `$0.0078` | -42.2% |
 | F1 (avg) | 1.000 | 1.000 | +0.0% |
@@ -993,6 +1079,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 
 ### `hotpot_verify_runs/opencode_oauth/results_gpt54mini.json` — hotpot
 agent **opencode** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: hotpot_opencode_experiment.py@cb64fc3_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1004,7 +1092,8 @@ agent **opencode** · model **gpt-5.4-mini** · family **openai** · sim-rate _O
 | · cache-write | 0 | 0 | — |
 | output | 153 | 139 | -9.2% |
 | avg calls/turns | 3.0 | 3.0 | +0.0% |
-| ON images (sum) | — | 8 | — |
+| ON images (sum) | — | 8 | results |
+| ON avg img / call | — | 2.67 | over 3 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0287` | `$0.0270` | -5.7% |
 | F1 (avg) | 1.000 | 1.000 | +0.0% |
@@ -1025,6 +1114,8 @@ agent **opencode** · model **gpt-5.4-mini** · family **openai** · sim-rate _O
 
 ### `campaign_20260710_180022/claude_longdoc/results_narrativeqa.json` — narrativeqa
 agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (DATA): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=0  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1036,7 +1127,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 | · cache-write | 100,407 | 56,527 | -43.7% |
 | output | 681 | 3,016 | +342.9% |
 | avg calls/turns | 2.0 | 2.5 | +25.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 30 | ‡events-backfill, shared per-arm log across 2 runs (folder-level, not per-run) |
+| ON avg img / call | — | 3.00 | over 10 imaging calls |
 | **cost REAL** | `$0.7044` | `$0.4939` | -29.9% |
 | **cost SIMULATED** | `$0.4785` | `$0.3667` | -23.4% |
 | F1 (avg) | 0.186 | 0.174 | -6.2% |
@@ -1056,6 +1148,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 
 ### `campaign_dryrun_20260710_152928/claude_longdoc/results_narrativeqa.json` — narrativeqa
 agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (DATA): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1067,7 +1161,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 | · cache-write | 85,081 | 71,648 | -15.8% |
 | output | 1,379 | 8,924 | +547.1% |
 | avg calls/turns | 4.0 | 7.0 | +75.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 84 | ‡events-backfill, shared per-arm log across 2 runs (folder-level, not per-run) |
+| ON avg img / call | — | 3.82 | over 22 imaging calls |
 | **cost REAL** | `$0.6840` | `$0.8583` | +25.5% |
 | **cost SIMULATED** | `$0.4925` | `$0.6971` | +41.5% |
 | F1 (avg) | 0.146 | 0.157 | +6.8% |
@@ -1087,6 +1182,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 
 ### `claude_nqa_hist0_20260710_182803/results_narrativeqa.json` — narrativeqa
 agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (DATA): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=0  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1098,7 +1195,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 | · cache-write | 100,407 | 56,527 | -43.7% |
 | output | 681 | 3,016 | +342.9% |
 | avg calls/turns | 2.0 | 2.5 | +25.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 24 | events-backfill |
+| ON avg img / call | — | 4.80 | over 5 imaging calls |
 | **cost REAL** | `$0.7044` | `$0.4939` | -29.9% |
 | **cost SIMULATED** | `$0.4785` | `$0.3667` | -23.4% |
 | F1 (avg) | 0.186 | 0.174 | -6.2% |
@@ -1118,6 +1216,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 
 ### `longdoc_claude_runs/results_narrativeqa.json` — narrativeqa
 agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_claude_experiment.py@094debc_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1129,7 +1229,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 | · cache-write | 218,890 | 136,785 | -37.5% |
 | output | 1,985 | 4,715 | +137.5% |
 | avg calls/turns | 2.2 | 2.0 | -7.7% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 155 | ‡events-backfill, shared per-arm log across 3 runs (folder-level, not per-run) |
+| ON avg img / call | — | 5.74 | over 27 imaging calls |
 | **cost REAL** | `$1.6367` | `$1.1675` | -28.7% |
 | **cost SIMULATED** | `$1.1442` | `$0.8598` | -24.9% |
 | F1 (avg) | 0.267 | 0.261 | -2.2% |
@@ -1157,6 +1258,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 
 ### `longdoc_opencode_runs_gemini_31_flash_lite/results_narrativeqa.json` — narrativeqa
 agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · sim-rate _Gemini 3.1 flash-lite approx list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_opencode_experiment.py@094debc (junk: provider dropped mid-run)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1168,7 +1271,7 @@ agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · si
 | · cache-write | 0 | 0 | — |
 | output | 0 | 0 | — |
 | avg calls/turns | 0.0 | 0.0 | — |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 0 | results |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0000` | `$0.0000` | — |
 | F1 (avg) | 0.000 | 0.000 | — |
@@ -1190,6 +1293,8 @@ agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · si
 
 ### `campaign_20260710_180022/mimo_longdoc/results_narrativeqa.json` — narrativeqa
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1201,7 +1306,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 982 | 38,614 | +3832.2% |
 | avg calls/turns | 4.0 | 4.5 | +12.5% |
-| ON images (sum) | — | 80 | — |
+| ON images (sum) | — | 80 | results |
+| ON avg img / call | — | 8.89 | over 9 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0096` | `$0.0134` | +39.8% |
 | F1 (avg) | 0.102 | 0.059 | -41.9% |
@@ -1221,6 +1327,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `campaign_dryrun_20260710_152928/mimo_longdoc/results_narrativeqa.json` — narrativeqa
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1232,7 +1340,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 664 | 6,900 | +939.2% |
 | avg calls/turns | 4.5 | 6.0 | +33.3% |
-| ON images (sum) | — | 132 | — |
+| ON images (sum) | — | 132 | results |
+| ON avg img / call | — | 11.00 | over 12 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0075` | `$0.0049` | -35.1% |
 | F1 (avg) | 0.158 | 0.077 | -51.3% |
@@ -1252,6 +1361,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `longdoc_opencode_runs/results_narrativeqa.json` — narrativeqa
 agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_opencode_experiment.py@2327fd7_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1263,7 +1374,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 | · cache-write | 0 | 0 | — |
 | output | 4,332 | 13,249 | +205.8% |
 | avg calls/turns | 4.0 | 4.0 | +0.0% |
-| ON images (sum) | — | 97 | — |
+| ON images (sum) | — | 97 | results |
+| ON avg img / call | — | 4.04 | over 24 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0254` | `$0.0124` | -51.2% |
 | F1 (avg) | 0.294 | 0.212 | -28.0% |
@@ -1291,6 +1403,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 
 ### `mimo_refix_20260710_160813/mimo_longdoc/results_narrativeqa.json` — narrativeqa
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1302,7 +1416,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 3,810 | 46,900 | +1131.0% |
 | avg calls/turns | 9.5 | 14.0 | +47.4% |
-| ON images (sum) | — | 272 | — |
+| ON images (sum) | — | 272 | results |
+| ON avg img / call | — | 9.71 | over 28 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0145` | `$0.0162` | +11.5% |
 | F1 (avg) | 0.253 | 0.000 | -100.0% |
@@ -1322,6 +1437,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `campaign_20260710_180022/codex_longdoc/results_narrativeqa.json` — narrativeqa
 agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1333,7 +1450,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 | · cache-write | 0 | 0 | — |
 | output | 3,209 | 2,695 | -16.0% |
 | avg calls/turns | 11.0 | 13.0 | +18.2% |
-| ON images (sum) | — | 24 | — |
+| ON images (sum) | — | 24 | results |
+| ON avg img / call | — | 0.92 | over 26 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0433` | `$0.0363` | -16.1% |
 | F1 (avg) | 0.571 | 0.624 | +9.5% |
@@ -1353,6 +1471,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 
 ### `campaign_dryrun_20260710_152928/codex_longdoc/results_narrativeqa.json` — narrativeqa
 agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1364,7 +1484,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 | · cache-write | 0 | 0 | — |
 | output | 2,721 | 1,968 | -27.7% |
 | avg calls/turns | 6.0 | 4.5 | -25.0% |
-| ON images (sum) | — | 16 | — |
+| ON images (sum) | — | 16 | results |
+| ON avg img / call | — | 1.78 | over 9 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0338` | `$0.0291` | -13.8% |
 | F1 (avg) | 0.461 | 0.521 | +13.0% |
@@ -1384,6 +1505,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 
 ### `longdoc_opencode_runs/results_narrativeqa_gpt4omini.json` — narrativeqa
 agent **opencode** · model **gpt-4o-mini** · family **openai** · sim-rate _OpenAI gpt-4o-mini list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_opencode_experiment.py@2327fd7_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1395,7 +1518,7 @@ agent **opencode** · model **gpt-4o-mini** · family **openai** · sim-rate _Op
 | · cache-write | 0 | 0 | — |
 | output | 0 | 0 | — |
 | avg calls/turns | 0.0 | 0.0 | — |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 0 | results |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0000` | `$0.0000` | — |
 | F1 (avg) | 0.000 | 0.000 | — |
@@ -1413,6 +1536,8 @@ agent **opencode** · model **gpt-4o-mini** · family **openai** · sim-rate _Op
 
 ### `longdoc_opencode_runs_gpt_54_mini/results_narrativeqa.json` — narrativeqa
 agent **opencode** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (RECON): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: longdoc_opencode_experiment.py@162ccbe_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1424,7 +1549,8 @@ agent **opencode** · model **gpt-5.4-mini** · family **openai** · sim-rate _O
 | · cache-write | 0 | 0 | — |
 | output | 520 | 2,419 | +365.2% |
 | avg calls/turns | 4.0 | 8.0 | +100.0% |
-| ON images (sum) | — | 44 | — |
+| ON images (sum) | — | 44 | results |
+| ON avg img / call | — | 5.50 | over 8 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0406` | `$0.1394` | +243.4% |
 | F1 (avg) | 0.182 | 0.000 | -100.0% |
@@ -1445,6 +1571,8 @@ agent **opencode** · model **gpt-5.4-mini** · family **openai** · sim-rate _O
 
 ### `campaign_20260710_180022/claude_swebench/results.json` — swebench
 agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (DATA): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=0 · HIST=0  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1456,7 +1584,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 | · cache-write | 78,162 | 36,320 | -53.5% |
 | output | 1,594 | 1,319 | -17.3% |
 | avg calls/turns | 4.5 | 4.5 | +0.0% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 0 | events-backfill |
+| ON avg img / call | — | 0.00 | over 9 imaging calls |
 | **cost REAL** | `$0.6615` | `$0.4199` | -36.5% |
 | **cost SIMULATED** | `$0.4856` | `$0.3382` | -30.4% |
 | avg duration s | 22 | 21 | — |
@@ -1474,6 +1603,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 
 ### `campaign_dryrun_20260710_152928/claude_swebench/results.json` — swebench
 agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (DATA): SYS=0 · TOOLS=0 · TOOL_RES=1 · USER=0 · HIST=0  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1485,7 +1616,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 | · cache-write | 37,437 | 35,165 | -6.1% |
 | output | 2,180 | 1,831 | -16.0% |
 | avg calls/turns | 5.5 | 4.0 | -27.3% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 0 | events-backfill |
+| ON avg img / call | — | 0.00 | over 8 imaging calls |
 | **cost REAL** | `$0.4748` | `$0.4021` | -15.3% |
 | **cost SIMULATED** | `$0.3906` | `$0.3230` | -17.3% |
 | avg duration s | 25 | 23 | — |
@@ -1503,6 +1635,8 @@ agent **claude** · model **sonnet** · family **anthropic** · sim-rate _Anthro
 
 ### `swebench_claude_runs/results.json` — swebench
 agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate _Anthropic claude-sonnet list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: swebench_claude_experiment.py@094debc_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1514,7 +1648,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 | · cache-write | 91,980 | 172,572 | +87.6% |
 | output | 7,314 | 5,937 | -18.8% |
 | avg calls/turns | 5.4 | 6.4 | +18.5% |
-| ON images (sum) | — | 0 | — |
+| ON images (sum) | — | 420 | events-backfill |
+| ON avg img / call | — | 13.55 | over 31 imaging calls |
 | **cost REAL** | `$1.1988` | `$1.5167` | +26.5% |
 | **cost SIMULATED** | `$0.9919` | `$1.1285` | +13.8% |
 | avg duration s | 28 | 78 | — |
@@ -1538,6 +1673,8 @@ agent **claude** · model **claude-sonnet** · family **anthropic** · sim-rate 
 
 ### `swebench_opencode_runs_gemini_31_flash_lite/results.json` — swebench
 agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · sim-rate _Gemini 3.1 flash-lite approx list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: swebench_opencode_experiment.py@094debc_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1549,7 +1686,8 @@ agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · si
 | · cache-write | 0 | 0 | — |
 | output | 1,053 | 1,375 | +30.6% |
 | avg calls/turns | 6.5 | 10.5 | +61.5% |
-| ON images (sum) | — | 213 | — |
+| ON images (sum) | — | 213 | results |
+| ON avg img / call | — | 10.14 | over 21 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0242` | `$0.0444` | +83.1% |
 | patches produced | 2/2 | 2/2 | — |
@@ -1568,6 +1706,8 @@ agent **opencode** · model **gemini-3.1-flash-lite** · family **google** · si
 
 ### `campaign_20260710_180022/mimo_swebench/results.json` — swebench
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1579,7 +1719,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 20,711 | 7,682 | -62.9% |
 | avg calls/turns | 28.5 | 19.5 | -31.6% |
-| ON images (sum) | — | 564 | — |
+| ON images (sum) | — | 564 | results |
+| ON avg img / call | — | 14.46 | over 39 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0204` | `$0.0230` | +12.3% |
 | patches produced | 2/2 | 2/2 | — |
@@ -1598,6 +1739,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `campaign_dryrun_20260710_152928/mimo_swebench/results.json` — swebench
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1609,7 +1752,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 19,776 | 11,530 | -41.7% |
 | avg calls/turns | 35.0 | 24.5 | -30.0% |
-| ON images (sum) | — | 573 | — |
+| ON images (sum) | — | 573 | results |
+| ON avg img / call | — | 11.69 | over 49 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0225` | `$0.0184` | -18.2% |
 | patches produced | 2/2 | — | — |
@@ -1627,6 +1771,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `mimo_refix_20260710_160813/mimo_swebench/results.json` — swebench
 agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1638,7 +1784,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 | · cache-write | 0 | 0 | — |
 | output | 1,165 | 2,863 | +145.8% |
 | avg calls/turns | 17.5 | 24.5 | +40.0% |
-| ON images (sum) | — | 455 | — |
+| ON images (sum) | — | 455 | results |
+| ON avg img / call | — | 9.29 | over 49 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0014` | `$0.0062` | +339.9% |
 | patches produced | 1/1 | 2/2 | — |
@@ -1657,6 +1804,8 @@ agent **mimo** · model **opencode/mimo-v2.5-free** · family **mimo** · sim-ra
 
 ### `swebench_opencode_runs/results.json` — swebench
 agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _Xiaomi MiMo-V2.5 first-party list_
+ON imaging regions (RECON): SYS=0 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: swebench_opencode_experiment.py@2327fd7_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1668,7 +1817,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 | · cache-write | 0 | 0 | — |
 | output | 27,902 | 51,588 | +84.9% |
 | avg calls/turns | 15.0 | 13.4 | -10.7% |
-| ON images (sum) | — | 585 | — |
+| ON images (sum) | — | 585 | results |
+| ON avg img / call | — | 8.73 | over 67 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0324` | `$0.0525` | +62.0% |
 | patches produced | 3/5 | 1/4 | — |
@@ -1693,6 +1843,8 @@ agent **opencode** · model **mimo-v2.5-free** · family **mimo** · sim-rate _X
 
 ### `campaign_20260710_180022/codex_swebench/results.json` — swebench
 agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1704,7 +1856,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 | · cache-write | 0 | 0 | — |
 | output | 4,843 | 2,595 | -46.4% |
 | avg calls/turns | 11.0 | 11.0 | +0.0% |
-| ON images (sum) | — | 18 | — |
+| ON images (sum) | — | 18 | results |
+| ON avg img / call | — | 0.82 | over 22 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0406` | `$0.0252` | -37.9% |
 | patches produced | 2/2 | 2/2 | — |
@@ -1723,6 +1876,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 
 ### `campaign_dryrun_20260710_152928/codex_swebench/results.json` — swebench
 agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _OpenAI gpt-5.4-mini list_
+ON imaging regions (DATA): SYS=1 · TOOLS=1 · TOOL_RES=1 · USER=1 · HIST=1  
+_config source: run_meta.on_env (recorded at run time)_ · OFF arm images nothing (IMGCTX_ENABLED=0)
 
 | metric | OFF | ON | Δ |
 |---|---:|---:|---:|
@@ -1734,7 +1889,8 @@ agent **codex** · model **gpt-5.4-mini** · family **openai** · sim-rate _Open
 | · cache-write | 0 | 0 | — |
 | output | 3,770 | 3,549 | -5.9% |
 | avg calls/turns | 6.5 | 5.5 | -15.4% |
-| ON images (sum) | — | 18 | — |
+| ON images (sum) | — | 18 | results |
+| ON avg img / call | — | 1.64 | over 11 imaging calls |
 | **cost REAL** | — | — | — |
 | **cost SIMULATED** | `$0.0322` | `$0.0271` | -15.8% |
 | patches produced | 1/2 | 1/2 | — |

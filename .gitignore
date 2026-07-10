@@ -74,9 +74,7 @@ bench/hotpot_claude_runs/_sonnet_streams/
 bench/hotpot_claude_runs/*.log
 bench/hotpot_claude_runs/proxy_*events*.jsonl
 bench/hotpot_claude_runs/results_*.json
-# but DO track the IMGCTX_TOOLS=0 rerun's aggregate (backs the deep-dive Section 13
-# "measured flip" numbers); heavy per-item streams under off_tools0/on_tools0 stay out.
-!bench/hotpot_claude_runs/results_tools0.json
+# (results_tools0.json was previously excepted here but is now in bench_data.tar.gz)
 bench/hotpot_claude_runs/off_tools0/
 bench/hotpot_claude_runs/on_tools0/
 
@@ -160,4 +158,8 @@ bench/mimo_refix_*/{off,on}/
 bench/mimo_refix_*/**/capture/
 bench/mimo_refix_*/**/*events*.jsonl
 
-tmp-test
+# Data archived in bench_data.tar.gz — no longer tracked individually (July 2026).
+# All files matched below are safely backed up in the archive.
+bench/**/results*.json
+bench/**/run_meta*.json
+bench/**/instances.json
