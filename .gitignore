@@ -172,6 +172,11 @@ bench/combined_claude_report.py
 bench/longdoc_claude_report.py
 bench/hotpot_full_analysis.py
 bench/opencode_cost_breakdown.py
+bench/hotpot_claude_report.py
+bench/swebench_claude_report.py
+bench/_usage_claude_breakdown.py
+bench/make_opencode_report.py
+bench/ab.py
 docs/understanding-tokens-cache-cost.md
 docs/input-tokens-vs-cost.md
 
