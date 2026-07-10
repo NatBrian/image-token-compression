@@ -1,5 +1,9 @@
 # imgctx
 
+<p align="center">
+  <img src="assets/hero.png" alt="imgctx renders bulky agent context into images, cutting input tokens with the same answers" width="900">
+</p>
+
 **A transparent proxy that renders bulky text context into images before it reaches a vision-capable LLM, cutting input tokens without changing your coding-agent CLI.**
 
 `imgctx` sits between a coding-agent CLI and the model provider. It intercepts each request, renders the large text regions (system prompt, tool docs, tool output, old history) into compact PNG pages, and forwards them as image blocks. Tool definitions, tool-call linkage, and multi-turn structure are preserved, so the agent behaves exactly as before while sending far fewer input tokens. It speaks both request shapes coding agents use: the **OpenAI-compatible** Chat Completions API (OpenCode, Codex), and the native **Anthropic Messages API** (Claude Code).
@@ -76,10 +80,10 @@ flowchart LR
     CLI -- "Request<br/>(Chat Completions / Responses / Messages)" --> G
     G -- "No" --> PASS
     G -- "Yes" --> S1
-    
+  
     %% Pipeline Flow
     S1 --> S2 --> S3 --> S4
-    
+  
     %% Output and Return Streams
     PASS --> U
     S4 -- "Rewritten Body" --> U
@@ -105,6 +109,20 @@ flowchart LR
 ```
 
 The proxy only rewrites the request body; the response is streamed back untouched. A request is eligible only if it targets a vision model over POST, and anything else (parse errors, unknown shapes, non-vision models) falls straight through, so imgctx cannot break a run. Eligible requests pass through the pipeline above: each region is imaged only when the profitability gate says the image is cheaper than the text, and settled history turns are frozen into byte-identical PNGs so the provider's automatic prompt cache can reuse them turn after turn.
+
+## What the model actually sees
+
+imgctx images each region **separately** and splices it back in its original place. It never merges regions into one image, that would break tool-call linkage and the byte-identical history caching. Below is one real request with every region turned on. Each row is a separate image block sent inside the request, in its own position.
+
+The images are rendered by the actual proxy. The small red `\n` marks a real newline: imgctx draws it so the model can tell a real line break from a soft wrap, and the dense packing is part of why the token count drops.
+
+| Region                       | What imgctx does with it                                                                                              | The image it sends |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| **System prompt**      | Rendered to its own image in the system slot.                                                                         |                    |
+| **Tool definitions**   | Its own image. The`tools[]` list is kept as structure, so tool calls still validate.                                |                    |
+| **Tool output**        | Its own image, kept attached to the tool call that produced it.                                                       |                    |
+| **Older user message** | Imaged in place. The live, most recent message always stays as text.                                                  |                    |
+| **Settled history**    | Old, closed turns frozen into byte-identical, cacheable images (this request produced two such chunks; one is shown). |                    |
 
 ## Results: ON vs OFF
 
