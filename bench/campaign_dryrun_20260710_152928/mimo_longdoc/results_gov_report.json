@@ -1,0 +1,519 @@
+[
+  {
+    "cond": "off",
+    "qid": "q00",
+    "config": "gov_report",
+    "question": "",
+    "gold": [
+      "Multiyear procurement (MYP) and block buy contracting (BBC) are special contracting mechanisms that Congress permits the Department of Defense (DOD) to use for a limited number of defense acquisition programs. Compared to the standard or default approach of annual contracting, MYP and BBC have the potential for reducing weapon procurement costs by a few or several percent. Under annual contracting, DOD uses one or more contracts for each year's worth of procurement of a given kind of item. Under MYP, DOD instead uses a single contract for two to five years' worth of procurement of a given kind of item without having to exercise a contract option for each year after the first year. DOD needs congressional approval for each use of MYP. There is a permanent statute governing MYP contracting\u201410 U.S.C. 2306b. Under this statute, a program must meet several criteria to qualify for MYP. Compared with estimated costs under annual contracting, estimated savings for programs being proposed for MYP have ranged from less than 5% to more than 15%, depending on the particulars of the program in question, with many estimates falling in the range of 5% to 10%. In practice, actual savings from using MYP rather than annual contracting can be difficult to observe or verify because of cost growth during the execution of the contract due to changes in the program independent of the use of MYP rather than annual contracting. BBC is similar to MYP in that it permits DOD to use a single contract for more than one year's worth of procurement of a given kind of item without having to exercise a contract option for each year after the first year. BBC is also similar to MYP in that DOD needs congressional approval for each use of BBC. BBC differs from MYP in the following ways: There is no permanent statute governing the use of BBC. There is no requirement that BBC be approved in both a DOD appropriations act and an act other than a DOD appropriations act. Programs being considered for BBC do not need to meet any legal criteria to qualify for BBC, because there is no permanent statute governing the use of BBC that establishes such criteria. A BBC contract can cover more than five years of planned procurements. Economic order quantity (EOQ) authority\u2014the authority to bring forward selected key components of the items to be procured under the contract and purchase the components in batch form during the first year or two of the contract\u2014does not come automatically as part of BBC authority because there is no permanent statute governing the use of BBC that includes EOQ authority as an automatic feature. BBC contracts are less likely to include cancellation penalties. Potential issues for Congress concerning MYP and BBC include whether to use MYP and BBC in the future more frequently, less frequently, or about as frequently as they are currently used; whether to create a permanent statute to govern the use of BBC, analogous to the permanent statute that governs the use of MYP; and whether the Coast Guard should begin making use of MYP and BBC."
+    ],
+    "pred": "This is a CRS report for Congress on multiyear procurement (MYP) and block buy contracting (BBC) for DOD acquisition, explaining how these mechanisms work, their potential cost savings, statutory requirements, and key policy issues including whether to expand their use and whether the Coast Guard should adopt them.",
+    "em": 0,
+    "f1": 0.119,
+    "contains": 0,
+    "duration_s": 57.6,
+    "doc_chars": 53488,
+    "usage": {
+      "prompt_tokens": 263285,
+      "cached_tokens": 219200,
+      "cache_write_tokens": 0,
+      "completion_tokens": 1133,
+      "total_tokens": 264418,
+      "reasoning_tokens": 340,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 13,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {},
+        {
+          "prompt_tokens": 22706,
+          "completion_tokens": 80,
+          "total_tokens": 22786,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 1792,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 12,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {
+          "prompt_tokens": 23261,
+          "completion_tokens": 112,
+          "total_tokens": 23373,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 39,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {
+          "prompt_tokens": 23438,
+          "completion_tokens": 110,
+          "total_tokens": 23548,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 39,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34184,
+          "completion_tokens": 66,
+          "total_tokens": 34250,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23424,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 11,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34712,
+          "completion_tokens": 97,
+          "total_tokens": 34809,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34176,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 24,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34870,
+          "completion_tokens": 115,
+          "total_tokens": 34985,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34688,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 27,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 44477,
+          "completion_tokens": 108,
+          "total_tokens": 44585,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34816,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 19,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 45637,
+          "completion_tokens": 445,
+          "total_tokens": 46082,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 44416,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 169,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 44085
+    },
+    "cost_usd": 0.007147,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.006172,
+      "cache_read_usd": 0.000658,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.000317,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q00",
+    "config": "gov_report",
+    "question": "",
+    "gold": [
+      "Multiyear procurement (MYP) and block buy contracting (BBC) are special contracting mechanisms that Congress permits the Department of Defense (DOD) to use for a limited number of defense acquisition programs. Compared to the standard or default approach of annual contracting, MYP and BBC have the potential for reducing weapon procurement costs by a few or several percent. Under annual contracting, DOD uses one or more contracts for each year's worth of procurement of a given kind of item. Under MYP, DOD instead uses a single contract for two to five years' worth of procurement of a given kind of item without having to exercise a contract option for each year after the first year. DOD needs congressional approval for each use of MYP. There is a permanent statute governing MYP contracting\u201410 U.S.C. 2306b. Under this statute, a program must meet several criteria to qualify for MYP. Compared with estimated costs under annual contracting, estimated savings for programs being proposed for MYP have ranged from less than 5% to more than 15%, depending on the particulars of the program in question, with many estimates falling in the range of 5% to 10%. In practice, actual savings from using MYP rather than annual contracting can be difficult to observe or verify because of cost growth during the execution of the contract due to changes in the program independent of the use of MYP rather than annual contracting. BBC is similar to MYP in that it permits DOD to use a single contract for more than one year's worth of procurement of a given kind of item without having to exercise a contract option for each year after the first year. BBC is also similar to MYP in that DOD needs congressional approval for each use of BBC. BBC differs from MYP in the following ways: There is no permanent statute governing the use of BBC. There is no requirement that BBC be approved in both a DOD appropriations act and an act other than a DOD appropriations act. Programs being considered for BBC do not need to meet any legal criteria to qualify for BBC, because there is no permanent statute governing the use of BBC that establishes such criteria. A BBC contract can cover more than five years of planned procurements. Economic order quantity (EOQ) authority\u2014the authority to bring forward selected key components of the items to be procured under the contract and purchase the components in batch form during the first year or two of the contract\u2014does not come automatically as part of BBC authority because there is no permanent statute governing the use of BBC that includes EOQ authority as an automatic feature. BBC contracts are less likely to include cancellation penalties. Potential issues for Congress concerning MYP and BBC include whether to use MYP and BBC in the future more frequently, less frequently, or about as frequently as they are currently used; whether to create a permanent statute to govern the use of BBC, analogous to the permanent statute that governs the use of MYP; and whether the Coast Guard should begin making use of MYP and BBC."
+    ],
+    "pred": "timestamp=2026-07-10T07:30:37.433Z level=INFO run=4f68e998 message=\"disposing instance\" directory=/home/liangsheng/brian/image-token-compression/bench/campaign_dryrun_20260710_152928/mimo_longdoc/on/gov_report-q00",
+    "em": 0,
+    "f1": 0.0,
+    "contains": 0,
+    "duration_s": 10.2,
+    "doc_chars": 53488,
+    "usage": {
+      "prompt_tokens": 0,
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 2,
+      "compressed_calls": 2,
+      "images": 11,
+      "raw": [
+        {},
+        {}
+      ],
+      "fresh_tokens": 0
+    },
+    "cost_usd": 0.0,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.0,
+      "cache_read_usd": 0.0,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.0,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "qid": "q01",
+    "config": "gov_report",
+    "question": "",
+    "gold": [
+      "DOD spends billions of dollars annually to sustain its weapon systems to support current and future operations. The Air Force and Navy are operating many of their fixed-wing aircraft well beyond their original designed service lives and therefore are confronted with sustainment challenges. House Report 114-537 included a provision for GAO to evaluate the sustainment of major weapon systems. This report, among other things, (1) examines the trends in availability and O&S costs for selected Air Force and Navy fixed-wing aircraft since fiscal year 2011, including whether they met availability goals, and (2) assesses the extent that the departments documented sustainment strategies, reviewed sustainment metrics, and implemented plans to improve aircraft availability. GAO selected a nongeneralizable sample of 12 fixed-wing aircraft by considering a variety of factors, such as the type, age, and manufacturer of the aircraft, among other factors, and analyzed condition and availability data, O&S costs, and sustainment challenges from fiscal year 2011 through March 2017 for each aircraft in a \u201cSustainment Quick Look.\u201d GAO also analyzed policies, strategies, and plans, and interviewed Navy and Air Force officials in program offices, squadrons, and maintenance depots. Between fiscal years 2011 and 2016, the Air Force and Navy generally did not meet aircraft availability goals, and operating and support (O&S) cost trends for GAO's selected fixed-wing aircraft varied. Specifically, GAO found that availability declined for 6 of 12 aircraft\u20143 from each service\u2014between fiscal years 2011 and 2016; availability fell short of goals for 9 of 12 aircraft in fiscal year 2016; and O&S costs increased for 5 of the aircraft, and maintenance costs\u2014the largest share\u2014increased for 8 of 12 aircraft. GAO found, and officials agreed, that these aircraft face similar challenges. a Obsolescence means a part is unavailable due to its lack of usefulness or it is no longer current or available for production. b Diminishing manufacturing sources is a loss or impending loss of manufacturers or suppliers. The Air Force and Navy have documented sustainment strategies for some aircraft, regularly reviewed sustainment metrics, and implemented improvement plans. The Air Force has documented sustainment strategies for all aircraft GAO reviewed; however, the Navy has not documented or updated its sustainment strategies for four aircraft. Specifically, the Navy does not have a documented sustainment strategy for the C-2A, and has not updated the strategies for the E2C, EA-18G, and F/A-18A-D since before 2012. The Navy is in the process of documenting its strategies, but Department of Defense (DOD) policy is unclear on whether a sustainment strategy is required and has to be updated every 5 years for weapon systems that are in the operations and support phase of their life cycle (i.e., legacy systems). Also, Navy guidance does not specify a requirement for legacy systems, although Air Force guidance does. Clarifying the requirements to document sustainment strategies for legacy systems, and documenting those strategies, would add additional visibility over the availability and O&S costs of DOD aircraft and any associated sustainment risks. This is a public version of a sensitive report issued in April 2018. Information on aircraft availability and other related information was deemed to be sensitive and has been omitted from this report. GAO is recommending that DOD and the Navy update or issue new policy and guidance clarifying the requirements for documenting sustainment strategies for legacy weapon systems. DOD concurred with the recommendations."
+    ],
+    "pred": "This is a GAO report reviewing sustainment of 12 Air Force and Navy fixed-wing aircraft, finding that 9 of 12 failed to meet availability goals in FY2016, with shared challenges in aging airframes, maintenance delays, and supply shortages, and recommending DOD and Navy clarify sustainment strategy requirements for legacy weapon systems.",
+    "em": 0,
+    "f1": 0.137,
+    "contains": 0,
+    "duration_s": 37.2,
+    "doc_chars": 81966,
+    "usage": {
+      "prompt_tokens": 182282,
+      "cached_tokens": 142656,
+      "cache_write_tokens": 0,
+      "completion_tokens": 595,
+      "total_tokens": 182877,
+      "reasoning_tokens": 109,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 9,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {},
+        {
+          "prompt_tokens": 22722,
+          "completion_tokens": 74,
+          "total_tokens": 22796,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 4096,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 6,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {
+          "prompt_tokens": 23267,
+          "completion_tokens": 127,
+          "total_tokens": 23394,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 36,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23458,
+          "completion_tokens": 116,
+          "total_tokens": 23574,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 32,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34605,
+          "completion_tokens": 90,
+          "total_tokens": 34695,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23424,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 9,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34710,
+          "completion_tokens": 96,
+          "total_tokens": 34806,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34560,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 13,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 43520,
+          "completion_tokens": 92,
+          "total_tokens": 43612,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34688,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 13,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 39626
+    },
+    "cost_usd": 0.006142,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.005548,
+      "cache_read_usd": 0.000428,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.000167,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q01",
+    "config": "gov_report",
+    "question": "",
+    "gold": [
+      "DOD spends billions of dollars annually to sustain its weapon systems to support current and future operations. The Air Force and Navy are operating many of their fixed-wing aircraft well beyond their original designed service lives and therefore are confronted with sustainment challenges. House Report 114-537 included a provision for GAO to evaluate the sustainment of major weapon systems. This report, among other things, (1) examines the trends in availability and O&S costs for selected Air Force and Navy fixed-wing aircraft since fiscal year 2011, including whether they met availability goals, and (2) assesses the extent that the departments documented sustainment strategies, reviewed sustainment metrics, and implemented plans to improve aircraft availability. GAO selected a nongeneralizable sample of 12 fixed-wing aircraft by considering a variety of factors, such as the type, age, and manufacturer of the aircraft, among other factors, and analyzed condition and availability data, O&S costs, and sustainment challenges from fiscal year 2011 through March 2017 for each aircraft in a \u201cSustainment Quick Look.\u201d GAO also analyzed policies, strategies, and plans, and interviewed Navy and Air Force officials in program offices, squadrons, and maintenance depots. Between fiscal years 2011 and 2016, the Air Force and Navy generally did not meet aircraft availability goals, and operating and support (O&S) cost trends for GAO's selected fixed-wing aircraft varied. Specifically, GAO found that availability declined for 6 of 12 aircraft\u20143 from each service\u2014between fiscal years 2011 and 2016; availability fell short of goals for 9 of 12 aircraft in fiscal year 2016; and O&S costs increased for 5 of the aircraft, and maintenance costs\u2014the largest share\u2014increased for 8 of 12 aircraft. GAO found, and officials agreed, that these aircraft face similar challenges. a Obsolescence means a part is unavailable due to its lack of usefulness or it is no longer current or available for production. b Diminishing manufacturing sources is a loss or impending loss of manufacturers or suppliers. The Air Force and Navy have documented sustainment strategies for some aircraft, regularly reviewed sustainment metrics, and implemented improvement plans. The Air Force has documented sustainment strategies for all aircraft GAO reviewed; however, the Navy has not documented or updated its sustainment strategies for four aircraft. Specifically, the Navy does not have a documented sustainment strategy for the C-2A, and has not updated the strategies for the E2C, EA-18G, and F/A-18A-D since before 2012. The Navy is in the process of documenting its strategies, but Department of Defense (DOD) policy is unclear on whether a sustainment strategy is required and has to be updated every 5 years for weapon systems that are in the operations and support phase of their life cycle (i.e., legacy systems). Also, Navy guidance does not specify a requirement for legacy systems, although Air Force guidance does. Clarifying the requirements to document sustainment strategies for legacy systems, and documenting those strategies, would add additional visibility over the availability and O&S costs of DOD aircraft and any associated sustainment risks. This is a public version of a sensitive report issued in April 2018. Information on aircraft availability and other related information was deemed to be sensitive and has been omitted from this report. GAO is recommending that DOD and the Navy update or issue new policy and guidance clarifying the requirements for documenting sustainment strategies for legacy weapon systems. DOD concurred with the recommendations."
+    ],
+    "pred": "This is a GAO report that assessed DOD's sustainment of 12 selected Air Force and Navy fixed-wing aircraft, finding persistent availability shortfalls and recommending that DOD clarify sustainment strategy requirements for legacy weapon systems.",
+    "em": 0,
+    "f1": 0.098,
+    "contains": 0,
+    "duration_s": 149.6,
+    "doc_chars": 81966,
+    "usage": {
+      "prompt_tokens": 74818,
+      "cached_tokens": 67840,
+      "cache_write_tokens": 0,
+      "completion_tokens": 842,
+      "total_tokens": 75660,
+      "reasoning_tokens": 419,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 12,
+      "compressed_calls": 12,
+      "images": 117,
+      "raw": [
+        {},
+        {
+          "prompt_tokens": 13349,
+          "completion_tokens": 92,
+          "total_tokens": 13441,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 24,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {},
+        {
+          "prompt_tokens": 13912,
+          "completion_tokens": 115,
+          "total_tokens": 14027,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 29,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {},
+        {
+          "prompt_tokens": 14121,
+          "completion_tokens": 110,
+          "total_tokens": 14231,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13888,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 37,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14296,
+          "completion_tokens": 95,
+          "total_tokens": 14391,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14080,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 24,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 19140,
+          "completion_tokens": 430,
+          "total_tokens": 19570,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14272,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 305,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 6978
+    },
+    "cost_usd": 0.001416,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.000977,
+      "cache_read_usd": 0.000204,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.000236,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  }
+]

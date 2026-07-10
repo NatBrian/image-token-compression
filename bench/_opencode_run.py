@@ -104,23 +104,62 @@ def stop_proxy(proc: subprocess.Popen, port: int) -> None:
         time.sleep(0.25)
 
 
+# Transient zen/opencode endpoint failures (seen under concurrent load against the
+# free mimo-v2.5-free route): the stream never starts, so no work is done and the
+# turn can be safely retried. "No provider available" is the zen router giving up;
+# the others are generic upstream drops.
+TRANSIENT = re.compile(
+    r"No provider available|stream error|ProviderModelNotFound|"
+    r"\b(429|500|502|503|504)\b|overloaded|rate.?limit", re.IGNORECASE)
+
+
+def looks_transient(out: str) -> bool:
+    """True if the run failed with a retriable endpoint error (no useful output)."""
+    return bool(TRANSIENT.search(out or ""))
+
+
 def run_opencode(cwd: Path, prompt: str, config_path: Path,
-                 timeout: int = 300, model: str = MODEL) -> str:
-    """Run one headless opencode turn against the isolated config. Returns stdout+stderr."""
+                 timeout: int = 300, model: str = MODEL, retries: int = 3) -> str:
+    """Run one headless opencode turn against the isolated config. Returns stdout+stderr.
+
+    Retries up to `retries` times on a TRANSIENT endpoint error (e.g. zen's
+    "No provider available" under concurrent load). Because such errors mean the
+    stream never started, no partial work was done and re-running the same prompt in
+    the same cwd is safe. A [TIMEOUT] is NOT retried (work may be in flight)."""
     env = dict(os.environ)
     env["OPENCODE_CONFIG"] = str(config_path)
-    try:
-        res = subprocess.run(
-            # --print-logs/--log-level DEBUG: opencode's own session/tool-call trace
-            # (permission decisions, streaming steps, session/message ids) lands in
-            # stderr instead of only the shared global opencode.log, so it's captured
-            # per-item in stdout.txt alongside the proxy's raw request/response capture.
-            ["opencode", "run", "--model", model, "--print-logs", "--log-level", "DEBUG", prompt],
-            cwd=str(cwd), env=env, capture_output=True, text=True, timeout=timeout)
-        out = (res.stdout or "") + "\n" + (res.stderr or "")
-    except subprocess.TimeoutExpired as e:
-        out = (e.stdout or "") + "\n[TIMEOUT]"
+    out = ""
+    for attempt in range(retries + 1):
+        try:
+            res = subprocess.run(
+                # --print-logs/--log-level DEBUG: opencode's own session/tool-call trace
+                # (permission decisions, streaming steps, session/message ids) lands in
+                # stderr instead of only the shared global opencode.log, so it's captured
+                # per-item in stdout.txt alongside the proxy's raw request/response capture.
+                ["opencode", "run", "--model", model, "--print-logs", "--log-level", "DEBUG", prompt],
+                cwd=str(cwd), env=env, capture_output=True, text=True, timeout=timeout)
+            out = (res.stdout or "") + "\n" + (res.stderr or "")
+        except subprocess.TimeoutExpired as e:
+            return (e.stdout or "") + "\n[TIMEOUT]"
+        if not looks_transient(out) or attempt == retries:
+            if attempt:
+                out += f"\n[RETRIED x{attempt}]"
+            return out
+        time.sleep(2.0 * (attempt + 1))  # linear backoff: 2s, 4s, 6s
     return out
+
+
+def is_run_error(u: dict, out: str) -> bool:
+    """A run counts as failed if it made no call, timed out, or produced ZERO input
+    tokens (an empty completion -- the failure mode that silently corrupted the OFF
+    baseline in the campaign). We do NOT test looks_transient(out) here: run_opencode
+    already retried transient errors, and a recovered run still carries the original
+    error text in its log -- testing it would false-flag a healthy retried run. A
+    genuinely exhausted-retry failure logs no usage, so the zero-token test catches
+    it anyway."""
+    return (u.get("calls", 0) == 0
+            or (u.get("prompt_tokens", 0) or 0) == 0
+            or "[TIMEOUT]" in out)
 
 
 def parse_final_answer(stdout: str) -> str:

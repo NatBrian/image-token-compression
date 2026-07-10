@@ -28,7 +28,7 @@ Absolute per-class token counts (OFF / ON):
 | --- | ---: | ---: | ---: | ---: |
 | cache write | 86,078 | 155,087 | 128,672 | 84,148 |
 | cache read | 478,520 | 201,585 | 434,855 | 477,985 |
-| real cost | $0.7550 | $1.0876 | $0.9985 | $0.7450 |
+| real cost | `$0.7550` | `$1.0876` | `$0.9985` | `$0.7450` |
 
 **Reading:** the cost follows the cache-**write** class exactly, in both directions. Imaging the warm tool prefix forces new writes (+80.2%) and the bill rises (+44.0%). Not imaging it leaves those writes alone (-34.6%) and the bill falls (-25.4%). **The lever was config (which region we imaged), not the task itself.** This is the mechanism predicted in the deep-dive, Section 9.
 

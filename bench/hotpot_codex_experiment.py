@@ -26,21 +26,21 @@ from pathlib import Path
 
 from bench._opencode_run import parse_final_answer, read_usage, start_proxy, stop_proxy
 from bench.hotpot_experiment import build_documents, contains, em, f1
+from bench._profiles import cost_for, profile_meta, resolve_profile
 
 HERE = Path(__file__).resolve().parent
 RUNS = HERE / "hotpot_codex_runs"
 DATA_SRC = HERE / "hotpot_runs" / "data.json"  # reuse the fetched questions
 PORT = 8819
 MODEL = "gpt-5.4-mini"
+AGENT = "codex"
+BENCHMARK = "hotpot"
 
-# Relay must stay on in both arms; imaging is toggled by IMGCTX_ENABLED in start_proxy.
-# Unlike opencode/claude (where the read-once doc arrives as an imageable tool result),
-# codex's sandboxed shell often can't read files here and HotpotQA docs sit under the
-# tool-result threshold anyway, so the reliably-large imageable region on the codex
-# path is its own ~13k-char system instructions. Leave system imaging ON so the ON arm
-# exercises real compression through the native Responses relay.
+# Relay knobs, present in BOTH arms (not imaging flags): keep the OAuth relay live so
+# OFF is relay-only (IMGCTX_ENABLED=0) and ON adds imaging. The per-region imaging
+# config comes from bench._profiles (codex uses the OpenAI-aggressive profile; on
+# HotpotQA the only imageable region is codex's ~13k-char system prompt).
 RELAY_ENV = {"IMGCTX_CODEX_OAUTH": "1", "IMGCTX_DUMMY_KEY": "x"}
-ON_EXTRA: dict = {}
 
 PROMPT_TEMPLATE = (
     "Read the file at this absolute path: {docs}\n"
@@ -51,10 +51,12 @@ PROMPT_TEMPLATE = (
 )
 
 
-def _proxy_env(enabled: bool) -> dict:
+def _proxy_env(cond: str) -> dict:
+    """Relay knobs (both arms) + the agent's pinned per-region imaging profile."""
     env = dict(RELAY_ENV)
-    if enabled:
-        env.update(ON_EXTRA)
+    prof = resolve_profile(AGENT, BENCHMARK, cond)
+    if prof:
+        env.update(prof)
     return env
 
 
@@ -101,7 +103,7 @@ def run_item(row: dict, qid: str, cond: str, timeout: int) -> dict:
     enabled = cond == "on"
 
     t0 = time.time()
-    proc = start_proxy(enabled, PORT, log_path, extra_env=_proxy_env(enabled))
+    proc = start_proxy(enabled, PORT, log_path, extra_env=_proxy_env(cond))
     try:
         out = run_codex(qdir, prompt, timeout=timeout)
     finally:
@@ -111,6 +113,7 @@ def run_item(row: dict, qid: str, cond: str, timeout: int) -> dict:
     pred = parse_final_answer(out)
     gold = row["answer"]
     u = read_usage(log_path)
+    cost = cost_for(AGENT, u)  # codex: simulated @ OpenAI gpt-5.4-mini list
     return {
         "cond": cond, "qid": qid, "question": row["question"],
         "gold": gold, "pred": pred,
@@ -119,7 +122,7 @@ def run_item(row: dict, qid: str, cond: str, timeout: int) -> dict:
         "duration_s": round(time.time() - t0, 1),
         "doc_chars": len((qdir / "documents.md").read_text()),
         "usage": u,
-        "cost_usd": u["cost_usd"],
+        **cost,
         "is_error": u["calls"] == 0 or "[TIMEOUT]" in out,
     }
 
@@ -131,12 +134,20 @@ def main() -> None:
     ap.add_argument("--tag", default="")
     ap.add_argument("--runs-dir", default=None,
                     help="override output folder (default hotpot_codex_runs)")
+    ap.add_argument("--port", type=int, default=8819,
+                    help="proxy port (override for parallel runs so ports never collide)")
     args = ap.parse_args()
 
-    global RUNS
+    global RUNS, PORT
+    PORT = args.port
     if args.runs_dir:
         RUNS = HERE / args.runs_dir
     RUNS.mkdir(parents=True, exist_ok=True)
+
+    # Log the exact resolved profile + rate table so this run is reproducible/auditable.
+    meta = profile_meta(AGENT, BENCHMARK)
+    meta["model"] = MODEL
+    (RUNS / f"run_meta{args.tag}.json").write_text(json.dumps(meta, indent=2))
 
     rows = load_questions(args.n)
     print(f"{len(rows)} HotpotQA questions; codex model={MODEL}", flush=True)

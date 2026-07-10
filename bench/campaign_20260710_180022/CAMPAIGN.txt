@@ -1,0 +1,8 @@
+CAMPAIGN=campaign_20260710_180022  N: hotpot=2 swe=2 nqa=2 gov=2
+[prewarm] selecting + checking out 2 swebench instances (serial)...
+lanes launched: mimo=866623 codex=866624 claude=866625
+mimo lane exit=0
+codex lane exit=0
+claude lane exit=0
+CAMPAIGN COMPLETE -> bench/campaign_20260710_180022
+report: .venv/bin/python -m bench.campaign_report 'bench/campaign_20260710_180022/**/results*.json'

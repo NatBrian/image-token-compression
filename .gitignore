@@ -123,4 +123,41 @@ bench/swebench_claude_runs/*.log
 bench/swebench_claude_runs/proxy_*events*.jsonl
 bench/swebench_claude_runs/results_*.json
 
+# Timestamped campaign folders (bench/campaign_*/, plus ad-hoc reruns like
+# mimo_refix_*/ and claude_nqa_hist0_*/). Each cell keeps its aggregate
+# results*.json + run_meta*.json + instances.json and the per-run REPORT.md;
+# the heavy/transient per-item off/on dirs, repo checkouts, and log dirs stay out.
+# (capture_*/ and *.log are already ignored globally above.)
+bench/campaign_*/**/off/
+bench/campaign_*/**/on/
+bench/campaign_*/**/_repos_cache/
+bench/campaign_*/logs/
+bench/campaign_*/**/data_*.json
+bench/mimo_refix_*/**/off/
+bench/mimo_refix_*/**/on/
+bench/mimo_refix_*/**/_repos_cache/
+bench/claude_nqa_hist0_*/off/
+bench/claude_nqa_hist0_*/on/
+bench/claude_nqa_hist0_*/data_*.json
+
+# Campaign runs (timestamped, multi-cell orchestrations). Track REPORT.md + results*.json
+# + run_meta*.json (reproducible config); ignore per-cell per-arm dirs (off/on + captures).
+bench/campaign_*/off/
+bench/campaign_*/on/
+bench/campaign_*/**/off/
+bench/campaign_*/**/on/
+bench/campaign_*/**/capture/
+bench/campaign_*/**/capture_*/
+bench/campaign_**/*.log
+bench/campaign_**/proxy_*events*.jsonl
+
+# Single-cell reruns (claude HISTORY=0 fix, mimo sequential refix, etc.).
+# Same pattern: track results + REPORT; ignore per-arm + captures + logs.
+bench/claude_nqa_hist0_*/off/
+bench/claude_nqa_hist0_*/on/
+bench/claude_nqa_hist0_*/**/*events*.jsonl
+bench/mimo_refix_*/{off,on}/
+bench/mimo_refix_*/**/capture/
+bench/mimo_refix_*/**/*events*.jsonl
+
 tmp-test

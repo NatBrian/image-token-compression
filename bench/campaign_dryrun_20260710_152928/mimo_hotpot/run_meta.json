@@ -1,0 +1,25 @@
+{
+  "agent": "mimo",
+  "benchmark": "hotpot",
+  "family": "mimo",
+  "on_env": {
+    "IMGCTX_ENABLED": "1",
+    "IMGCTX_SYSTEM": "1",
+    "IMGCTX_TOOLS": "1",
+    "IMGCTX_TOOL_RESULTS": "1",
+    "IMGCTX_USER_TEXT": "1",
+    "IMGCTX_HISTORY": "1"
+  },
+  "off_env": {
+    "IMGCTX_ENABLED": "0"
+  },
+  "rate_table": {
+    "input": 0.14,
+    "cache_write": 0.0,
+    "cache_read": 0.003,
+    "output": 0.28,
+    "cost_basis": "simulated",
+    "source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M"
+  },
+  "model": "opencode/mimo-v2.5-free"
+}

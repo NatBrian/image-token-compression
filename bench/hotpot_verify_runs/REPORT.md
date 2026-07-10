@@ -9,7 +9,7 @@ recorded with **full raw request+response captured on disk** (no rerun needed).
 
 | CLI | input off | input on | saved | cmp calls | images | F1 off/on | cost off→on |
 |---|---|---|---|---|---|---|---|
-| claude sonnet | 119,504 | 77,954 | −41,550 (35%) | — | — | 1.0/1.0 | $0.3994→$0.2686 (**−33%**) |
+| claude sonnet | 119,504 | 77,954 | −41,550 (35%) | — | — | 1.0/1.0 | `$0.3994`→`$0.2686` (**−33%**) |
 | codex gpt-5.4-mini | 38,315 | 24,832 | −13,483 (35%) | 3 | 6 | 1.0/1.0 | n/a (ChatGPT subscription) |
 | opencode mimo-2.5 | 46,879 | 41,231 | −5,648 (12%) | 2 | 10 | 1.0/1.0 | n/a (free) |
 | opencode-oauth gpt-5.4-mini | 37,304 | 35,217 | −2,087 (6%) | 2 | 8 | 1.0/1.0 | n/a (ChatGPT subscription) |

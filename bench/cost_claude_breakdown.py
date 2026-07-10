@@ -110,17 +110,17 @@ def pct(n: float, o: float) -> float:
 
 BENCHES = [
     ("SWE-bench (re-read loop)",
-     HERE / "swebench_runs" / "results.json",
-     lambda c, i: HERE / "swebench_runs" / c / f"{i}.stream.jsonl"),
+     HERE / "swebench_claude_runs" / "results.json",
+     lambda c, i: HERE / "swebench_claude_runs" / c / f"{i}.stream.jsonl"),
     ("HotpotQA (re-read, short)",
      HERE / "hotpot_claude_runs" / "results.json",
      lambda c, i: HERE / "hotpot_claude_runs" / c / i / "stream.jsonl"),
     ("narrativeqa (read once)",
-     HERE / "longdoc_runs" / "results_narrativeqa.json",
-     lambda c, i: HERE / "longdoc_runs" / c / i / "stream.jsonl"),
+     HERE / "longdoc_claude_runs" / "results_narrativeqa.json",
+     lambda c, i: HERE / "longdoc_claude_runs" / c / i / "stream.jsonl"),
     ("gov_report (read once)",
-     HERE / "longdoc_runs" / "results_gov_report.json",
-     lambda c, i: HERE / "longdoc_runs" / c / i / "stream.jsonl"),
+     HERE / "longdoc_claude_runs" / "results_gov_report.json",
+     lambda c, i: HERE / "longdoc_claude_runs" / c / i / "stream.jsonl"),
 ]
 
 

@@ -25,8 +25,10 @@ import time
 from pathlib import Path
 
 from bench._opencode_run import (
-    parse_final_answer, read_usage, run_opencode, start_proxy, stop_proxy, write_config,
+    is_run_error, parse_final_answer, read_usage, run_opencode, start_proxy,
+    stop_proxy, write_config,
 )
+from bench._profiles import cost_for, profile_meta, resolve_profile
 # Reuse the exact data + scoring from the Claude longdoc harness so the instrument
 # matches; only the runner (opencode vs claude) and cost basis differ.
 from bench.longdoc_claude_experiment import (
@@ -36,9 +38,7 @@ from bench.longdoc_claude_experiment import (
 HERE = Path(__file__).resolve().parent
 RUNS = HERE / "longdoc_opencode_runs"
 PORT = 8811  # distinct from the Claude longdoc ports and the hotpot opencode port
-
-# ON images only the unique doc; system+tools stay text (mirror the Claude arm).
-ON_ENV = {"IMGCTX_SYSTEM": "0", "IMGCTX_TOOLS": "0"}
+AGENT = "mimo"  # imaging/pricing profile family; BENCHMARK key is the --config
 
 # Set from CLI in main(). Defaults keep the mimo/zen behaviour.
 MODEL = "opencode/mimo-v2.5-free"
@@ -48,8 +48,9 @@ API_KEY = None
 IMGCTX_MODELS = None
 
 
-def _proxy_env(enabled: bool) -> dict:
-    env = dict(ON_ENV) if enabled else {}
+def _proxy_env(config: str, cond: str) -> dict:
+    """Per-region imaging profile for (mimo, config) + non-imaging upstream knobs."""
+    env = dict(resolve_profile(AGENT, config, cond) or {})
     if UPSTREAM:
         env["IMGCTX_UPSTREAM_BASE"] = UPSTREAM
     if IMGCTX_MODELS:
@@ -86,7 +87,7 @@ def run_item(row: dict, qid: str, cond: str, config: str, timeout: int) -> dict:
     enabled = cond == "on"
 
     t0 = time.time()
-    proc = start_proxy(enabled, PORT, log_path, extra_env=_proxy_env(enabled))
+    proc = start_proxy(enabled, PORT, log_path, extra_env=_proxy_env(config, cond))
     try:
         out = run_opencode(qdir, prompt, cfg_path, timeout=timeout, model=MODEL)
     finally:
@@ -97,6 +98,7 @@ def run_item(row: dict, qid: str, cond: str, config: str, timeout: int) -> dict:
     golds = gold_answers(row)
     e, ff, c = best_score(pred, golds)
     u = read_usage(log_path)
+    cost = cost_for(AGENT, u)  # mimo: simulated @ Xiaomi MiMo-V2.5 list
     return {
         "cond": cond, "qid": qid, "config": config,
         "question": question, "gold": golds, "pred": pred,
@@ -104,8 +106,8 @@ def run_item(row: dict, qid: str, cond: str, config: str, timeout: int) -> dict:
         "duration_s": round(time.time() - t0, 1),
         "doc_chars": len(str(row["context"])),
         "usage": u,
-        "cost_usd": u["cost_usd"],  # real, provider-billed if the endpoint reports usage.cost
-        "is_error": u["calls"] == 0 or "[TIMEOUT]" in out,
+        **cost,
+        "is_error": is_run_error(u, out),
     }
 
 
@@ -128,15 +130,21 @@ def main() -> None:
     ap.add_argument("--runs-dir", default=None,
                     help="override the output folder name (default longdoc_opencode_runs), "
                          "so a different model/provider never clobbers a prior run")
+    ap.add_argument("--port", type=int, default=8811,
+                    help="proxy port (override for parallel runs so ports never collide)")
     args = ap.parse_args()
 
-    global MODEL, PROVIDER, UPSTREAM, API_KEY, IMGCTX_MODELS, RUNS
+    global MODEL, PROVIDER, UPSTREAM, API_KEY, IMGCTX_MODELS, RUNS, PORT
+    PORT = args.port
     MODEL, PROVIDER, UPSTREAM = args.model, args.provider, args.upstream
     API_KEY, IMGCTX_MODELS = args.api_key, args.imgctx_models
     if args.runs_dir:
         RUNS = HERE / args.runs_dir
 
     RUNS.mkdir(parents=True, exist_ok=True)
+    meta = profile_meta(AGENT, args.config)
+    meta["model"] = MODEL
+    (RUNS / f"run_meta_{args.config}{args.tag}.json").write_text(json.dumps(meta, indent=2))
     rows = load_items(args.config, args.n, args.max_chars)
     print(f"{len(rows)} {args.config} items loaded "
           f"(avg doc {sum(len(str(r['context'])) for r in rows)//max(len(rows),1):,} chars)",

@@ -1,0 +1,543 @@
+[
+  {
+    "cond": "off",
+    "qid": "q00",
+    "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+    "gold": "yes",
+    "pred": "Yes",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 63.1,
+    "doc_chars": 4677,
+    "usage": {
+      "prompt_tokens": 141376,
+      "cached_tokens": 134592,
+      "cache_write_tokens": 0,
+      "completion_tokens": 1907,
+      "total_tokens": 143283,
+      "reasoning_tokens": 1680,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 14,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {
+          "prompt_tokens": 22723,
+          "completion_tokens": 89,
+          "total_tokens": 22812,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 20480,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 25,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {},
+        {
+          "prompt_tokens": 645,
+          "completion_tokens": 1471,
+          "total_tokens": 2116,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 512,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 1460,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 24196,
+          "completion_tokens": 70,
+          "total_tokens": 24266,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22720,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 62,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {
+          "prompt_tokens": 22723,
+          "completion_tokens": 81,
+          "total_tokens": 22804,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22720,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 17,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {
+          "prompt_tokens": 24188,
+          "completion_tokens": 92,
+          "total_tokens": 24280,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22720,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 84,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 22723,
+          "completion_tokens": 71,
+          "total_tokens": 22794,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22720,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 7,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 24178,
+          "completion_tokens": 33,
+          "total_tokens": 24211,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22720,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 25,
+            "image_tokens": 0
+          }
+        },
+        {}
+      ],
+      "fresh_tokens": 6784
+    },
+    "cost_usd": 0.001887,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.00095,
+      "cache_read_usd": 0.000404,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.000534,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q00",
+    "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+    "gold": "yes",
+    "pred": "Yes",
+    "em": 1,
+    "f1": 1.0,
+    "contains": 1,
+    "duration_s": 195.2,
+    "doc_chars": 4677,
+    "usage": {
+      "prompt_tokens": 113578,
+      "cached_tokens": 105472,
+      "cache_write_tokens": 0,
+      "completion_tokens": 4987,
+      "total_tokens": 118565,
+      "reasoning_tokens": 4522,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 18,
+      "compressed_calls": 18,
+      "images": 144,
+      "raw": [
+        {},
+        {},
+        {},
+        {
+          "prompt_tokens": 422,
+          "completion_tokens": 3194,
+          "total_tokens": 3616,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 3183,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13366,
+          "completion_tokens": 170,
+          "total_tokens": 13536,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 106,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {},
+        {
+          "prompt_tokens": 14920,
+          "completion_tokens": 317,
+          "total_tokens": 15237,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 253,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {
+          "prompt_tokens": 13366,
+          "completion_tokens": 159,
+          "total_tokens": 13525,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 95,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14909,
+          "completion_tokens": 158,
+          "total_tokens": 15067,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 150,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {
+          "prompt_tokens": 13366,
+          "completion_tokens": 153,
+          "total_tokens": 13519,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 89,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14903,
+          "completion_tokens": 299,
+          "total_tokens": 15202,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 218,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {
+          "prompt_tokens": 13366,
+          "completion_tokens": 210,
+          "total_tokens": 13576,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 146,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14960,
+          "completion_tokens": 327,
+          "total_tokens": 15287,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 282,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 8106
+    },
+    "cost_usd": 0.002848,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.001135,
+      "cache_read_usd": 0.000316,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.001396,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "qid": "q01",
+    "question": "What government position was held by the woman who portrayed Corliss Archer in the film Kiss and Tell?",
+    "gold": "Chief of Protocol",
+    "pred": "United States ambassador to Ghana and to Czechoslovakia and Chief of Protocol of the United States",
+    "em": 0,
+    "f1": 0.333,
+    "contains": 1,
+    "duration_s": 13.1,
+    "doc_chars": 5032,
+    "usage": {
+      "prompt_tokens": 47056,
+      "cached_tokens": 43200,
+      "cache_write_tokens": 0,
+      "completion_tokens": 348,
+      "total_tokens": 47404,
+      "reasoning_tokens": 193,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 3,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {
+          "prompt_tokens": 22732,
+          "completion_tokens": 74,
+          "total_tokens": 22806,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 20480,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 24324,
+          "completion_tokens": 274,
+          "total_tokens": 24598,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22720,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 183,
+            "image_tokens": 0
+          }
+        },
+        {}
+      ],
+      "fresh_tokens": 3856
+    },
+    "cost_usd": 0.000767,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.00054,
+      "cache_read_usd": 0.00013,
+      "cache_write_usd": 0.0,
+      "output_usd": 9.7e-05,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q01",
+    "question": "What government position was held by the woman who portrayed Corliss Archer in the film Kiss and Tell?",
+    "gold": "Chief of Protocol",
+    "pred": "United States ambassador to Ghana, United States ambassador to Czechoslovakia, and Chief of Protocol of the United States",
+    "em": 0,
+    "f1": 0.3,
+    "contains": 1,
+    "duration_s": 55.1,
+    "doc_chars": 5032,
+    "usage": {
+      "prompt_tokens": 28862,
+      "cached_tokens": 25600,
+      "cache_write_tokens": 0,
+      "completion_tokens": 943,
+      "total_tokens": 29805,
+      "reasoning_tokens": 836,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 7,
+      "compressed_calls": 7,
+      "images": 43,
+      "raw": [
+        {},
+        {},
+        {},
+        {},
+        {
+          "prompt_tokens": 431,
+          "completion_tokens": 119,
+          "total_tokens": 550,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 106,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13375,
+          "completion_tokens": 163,
+          "total_tokens": 13538,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 99,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 15056,
+          "completion_tokens": 661,
+          "total_tokens": 15717,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 631,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 3262
+    },
+    "cost_usd": 0.000798,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.000457,
+      "cache_read_usd": 7.7e-05,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.000264,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  }
+]

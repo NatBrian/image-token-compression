@@ -44,10 +44,12 @@ from bench.hotpot_claude_experiment import (
     em, f1, contains, parse_answer, _sum_usage, total_input_side,
     CLEAR_ENV,
 )
+from bench._profiles import cost_for, profile_meta, resolve_profile
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 RUNS = HERE / "longdoc_claude_runs"
+AGENT = "claude"
 
 # ON images ONLY the read-once doc (tool_result/history/user_text). System+tools
 # stay text so they cache-read at 0.1x exactly like OFF (no slab-cache penalty).
@@ -143,7 +145,10 @@ def start_proxies() -> dict[str, subprocess.Popen]:
             log.unlink()
         env = dict(os.environ)
         env.update({"IMGCTX_PORT": str(cfg["port"]), "IMGCTX_ENABLED": cfg["enabled"],
-                    "IMGCTX_LOG_PATH": str(log)})
+                    "IMGCTX_LOG_PATH": str(log),
+                    # Full raw request/response capture per arm (capture gap fix):
+                    # regenerate token/cost/cache + imaged bytes without a paid rerun.
+                    "IMGCTX_CAPTURE_DIR": str(RUNS / f"capture_{cond}")})
         env.update(cfg.get("env", {}))
         out = open(RUNS / f"proxy_{cond}.log", "w")
         procs[cond] = subprocess.Popen(
@@ -224,6 +229,7 @@ def run_agent(row: dict, qid: str, cond: str, config: str, model: str,
     is_error = bool(result_evt.get("is_error")) if result_evt else (err is not None)
     # Claude Code's OWN billed cost. Ground truth. None if no result event.
     real_cost = (result_evt or {}).get("total_cost_usd")
+    cost = cost_for(AGENT, usage, real_cost=real_cost)  # cost_basis=real_provider
 
     return {
         "cond": cond, "qid": qid, "config": config,
@@ -232,7 +238,7 @@ def run_agent(row: dict, qid: str, cond: str, config: str, model: str,
         "duration_s": round(time.time() - t0, 1),
         "num_turns": (result_evt or {}).get("num_turns"),
         "usage": usage,
-        "cost_usd": real_cost,
+        **cost,
         "doc_chars": len(str(row["context"])),
         "is_error": is_error, "harness_error": err,
     }
@@ -250,9 +256,31 @@ def main() -> None:
     ap.add_argument("--timeout", type=int, default=360)
     ap.add_argument("--max-chars", type=int, default=90000,
                     help="cap doc length so a single Read ingests it all")
+    ap.add_argument("--tag", default="",
+                    help="suffix for results/run_meta files so runs don't clobber")
+    ap.add_argument("--runs-dir", default=None,
+                    help="override output folder (default longdoc_claude_runs), e.g. a "
+                         "timestamped dir so a new run never replaces an old one")
+    ap.add_argument("--port-base", type=int, default=8799,
+                    help="on-arm proxy port (off-arm = base+1); override for parallel runs")
     args = ap.parse_args()
 
+    PROXIES["on"]["port"] = args.port_base
+    PROXIES["off"]["port"] = args.port_base + 1
+
+    global RUNS
+    if args.runs_dir:
+        RUNS = HERE / args.runs_dir
+    # Per-config imaging profile (both longdoc configs map to the Anthropic-doc
+    # profile: image the read-once doc, keep system+tools as text).
+    PROXIES["on"]["env"] = {k: v for k, v in
+                            (resolve_profile(AGENT, args.config, "on") or {}).items()
+                            if k != "IMGCTX_ENABLED"}
+
     RUNS.mkdir(parents=True, exist_ok=True)
+    meta = profile_meta(AGENT, args.config)
+    meta["model"] = args.model
+    (RUNS / f"run_meta_{args.config}{args.tag}.json").write_text(json.dumps(meta, indent=2))
     rows = load_items(args.config, args.n, args.max_chars)
     print(f"{len(rows)} {args.config} items loaded "
           f"(avg doc {sum(len(str(r['context'])) for r in rows)//max(len(rows),1):,} chars)",
@@ -260,6 +288,8 @@ def main() -> None:
 
     procs = start_proxies()
     print(f"proxies up: on={PROXIES['on']['port']} off={PROXIES['off']['port']}", flush=True)
+    # Per-config results file so narrativeqa and gov_report never clobber each other.
+    results_path = RUNS / f"results_{args.config}{args.tag}.json"
     results: list[dict] = []
     try:
         for i, row in enumerate(rows):
@@ -279,11 +309,11 @@ def main() -> None:
                       f"f1={r.get('f1')} ct={r.get('contains')} "
                       f"err={r.get('is_error')}", flush=True)
                 results.append(r)
-                (RUNS / "results.json").write_text(json.dumps(results, indent=2))
+                results_path.write_text(json.dumps(results, indent=2))
     finally:
         stop_proxies(procs)
 
-    print(f"\nDONE. results -> {RUNS/'results.json'}", flush=True)
+    print(f"\nDONE. results -> {results_path}", flush=True)
 
 
 if __name__ == "__main__":

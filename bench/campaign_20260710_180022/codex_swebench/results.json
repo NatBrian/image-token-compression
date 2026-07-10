@@ -1,0 +1,412 @@
+[
+  {
+    "cond": "off",
+    "instance_id": "psf__requests-1963",
+    "repo": "psf/requests",
+    "duration_s": 55.5,
+    "patch_chars": 461,
+    "produced_patch": true,
+    "usage": {
+      "prompt_tokens": 40515,
+      "cached_tokens": 34304,
+      "cache_write_tokens": 0,
+      "completion_tokens": 2702,
+      "total_tokens": 43217,
+      "reasoning_tokens": 1971,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 10,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {},
+        {},
+        {},
+        {
+          "input_tokens": 9183,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 4480
+          },
+          "output_tokens": 251,
+          "output_tokens_details": {
+            "reasoning_tokens": 8
+          },
+          "total_tokens": 9434
+        },
+        {},
+        {
+          "input_tokens": 9573,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 9088
+          },
+          "output_tokens": 251,
+          "output_tokens_details": {
+            "reasoning_tokens": 29
+          },
+          "total_tokens": 9824
+        },
+        {},
+        {
+          "input_tokens": 9965,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 9600
+          },
+          "output_tokens": 1726,
+          "output_tokens_details": {
+            "reasoning_tokens": 1581
+          },
+          "total_tokens": 11691
+        },
+        {},
+        {
+          "input_tokens": 11794,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 11136
+          },
+          "output_tokens": 474,
+          "output_tokens_details": {
+            "reasoning_tokens": 353
+          },
+          "total_tokens": 12268
+        }
+      ],
+      "fresh_tokens": 6211
+    },
+    "cost_usd": 0.01939,
+    "cost_basis": "simulated",
+    "cost_source": "OpenAI list price gpt-5.4-mini (developers.openai.com/api/docs/pricing)",
+    "cost_breakdown": {
+      "fresh_usd": 0.004658,
+      "cache_read_usd": 0.002573,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.012159,
+      "rates_per_1m": {
+        "input": 0.75,
+        "cache_write": 0.0,
+        "cache_read": 0.075,
+        "output": 4.5
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "instance_id": "psf__requests-1963",
+    "repo": "psf/requests",
+    "duration_s": 45.2,
+    "patch_chars": 461,
+    "produced_patch": true,
+    "usage": {
+      "prompt_tokens": 44201,
+      "cached_tokens": 38272,
+      "cache_write_tokens": 0,
+      "completion_tokens": 1573,
+      "total_tokens": 45774,
+      "reasoning_tokens": 1007,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 12,
+      "compressed_calls": 5,
+      "images": 10,
+      "raw": [
+        {},
+        {},
+        {},
+        {
+          "input_tokens": 8028,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 4480
+          },
+          "output_tokens": 113,
+          "output_tokens_details": {
+            "reasoning_tokens": 8
+          },
+          "total_tokens": 8141
+        },
+        {},
+        {
+          "input_tokens": 8210,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 7552
+          },
+          "output_tokens": 740,
+          "output_tokens_details": {
+            "reasoning_tokens": 625
+          },
+          "total_tokens": 8950
+        },
+        {},
+        {
+          "input_tokens": 9022,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 8576
+          },
+          "output_tokens": 137,
+          "output_tokens_details": {
+            "reasoning_tokens": 52
+          },
+          "total_tokens": 9159
+        },
+        {},
+        {
+          "input_tokens": 9262,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 8576
+          },
+          "output_tokens": 385,
+          "output_tokens_details": {
+            "reasoning_tokens": 287
+          },
+          "total_tokens": 9647
+        },
+        {},
+        {
+          "input_tokens": 9679,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 9088
+          },
+          "output_tokens": 198,
+          "output_tokens_details": {
+            "reasoning_tokens": 35
+          },
+          "total_tokens": 9877
+        }
+      ],
+      "fresh_tokens": 5929
+    },
+    "cost_usd": 0.014396,
+    "cost_basis": "simulated",
+    "cost_source": "OpenAI list price gpt-5.4-mini (developers.openai.com/api/docs/pricing)",
+    "cost_breakdown": {
+      "fresh_usd": 0.004447,
+      "cache_read_usd": 0.00287,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.007078,
+      "rates_per_1m": {
+        "input": 0.75,
+        "cache_write": 0.0,
+        "cache_read": 0.075,
+        "output": 4.5
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "instance_id": "pallets__flask-4045",
+    "repo": "pallets/flask",
+    "duration_s": 54.2,
+    "patch_chars": 525,
+    "produced_patch": true,
+    "usage": {
+      "prompt_tokens": 54938,
+      "cached_tokens": 43904,
+      "cache_write_tokens": 0,
+      "completion_tokens": 2141,
+      "total_tokens": 57079,
+      "reasoning_tokens": 1135,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 12,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {},
+        {},
+        {},
+        {
+          "input_tokens": 9068,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 4480
+          },
+          "output_tokens": 266,
+          "output_tokens_details": {
+            "reasoning_tokens": 8
+          },
+          "total_tokens": 9334
+        },
+        {},
+        {
+          "input_tokens": 9476,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 9088
+          },
+          "output_tokens": 275,
+          "output_tokens_details": {
+            "reasoning_tokens": 66
+          },
+          "total_tokens": 9751
+        },
+        {},
+        {
+          "input_tokens": 9893,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 9600
+          },
+          "output_tokens": 391,
+          "output_tokens_details": {
+            "reasoning_tokens": 195
+          },
+          "total_tokens": 10284
+        },
+        {},
+        {
+          "input_tokens": 10393,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 10112
+          },
+          "output_tokens": 591,
+          "output_tokens_details": {
+            "reasoning_tokens": 405
+          },
+          "total_tokens": 10984
+        },
+        {},
+        {
+          "input_tokens": 16108,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 10624
+          },
+          "output_tokens": 618,
+          "output_tokens_details": {
+            "reasoning_tokens": 461
+          },
+          "total_tokens": 16726
+        }
+      ],
+      "fresh_tokens": 11034
+    },
+    "cost_usd": 0.021203,
+    "cost_basis": "simulated",
+    "cost_source": "OpenAI list price gpt-5.4-mini (developers.openai.com/api/docs/pricing)",
+    "cost_breakdown": {
+      "fresh_usd": 0.008275,
+      "cache_read_usd": 0.003293,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.009635,
+      "rates_per_1m": {
+        "input": 0.75,
+        "cache_write": 0.0,
+        "cache_read": 0.075,
+        "output": 4.5
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "instance_id": "pallets__flask-4045",
+    "repo": "pallets/flask",
+    "duration_s": 36.2,
+    "patch_chars": 525,
+    "produced_patch": true,
+    "usage": {
+      "prompt_tokens": 33142,
+      "cached_tokens": 27648,
+      "cache_write_tokens": 0,
+      "completion_tokens": 1022,
+      "total_tokens": 34164,
+      "reasoning_tokens": 587,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 10,
+      "compressed_calls": 4,
+      "images": 8,
+      "raw": [
+        {},
+        {},
+        {},
+        {
+          "input_tokens": 7913,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 4480
+          },
+          "output_tokens": 124,
+          "output_tokens_details": {
+            "reasoning_tokens": 9
+          },
+          "total_tokens": 8037
+        },
+        {},
+        {
+          "input_tokens": 8105,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 7552
+          },
+          "output_tokens": 136,
+          "output_tokens_details": {
+            "reasoning_tokens": 31
+          },
+          "total_tokens": 8241
+        },
+        {},
+        {
+          "input_tokens": 8314,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 7552
+          },
+          "output_tokens": 387,
+          "output_tokens_details": {
+            "reasoning_tokens": 307
+          },
+          "total_tokens": 8701
+        },
+        {},
+        {
+          "input_tokens": 8810,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 8064
+          },
+          "output_tokens": 375,
+          "output_tokens_details": {
+            "reasoning_tokens": 240
+          },
+          "total_tokens": 9185
+        }
+      ],
+      "fresh_tokens": 5494
+    },
+    "cost_usd": 0.010793,
+    "cost_basis": "simulated",
+    "cost_source": "OpenAI list price gpt-5.4-mini (developers.openai.com/api/docs/pricing)",
+    "cost_breakdown": {
+      "fresh_usd": 0.004121,
+      "cache_read_usd": 0.002074,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.004599,
+      "rates_per_1m": {
+        "input": 0.75,
+        "cache_write": 0.0,
+        "cache_read": 0.075,
+        "output": 4.5
+      }
+    },
+    "is_error": false
+  }
+]

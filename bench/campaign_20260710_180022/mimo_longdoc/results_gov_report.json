@@ -1,0 +1,1833 @@
+[
+  {
+    "cond": "off",
+    "qid": "q00",
+    "config": "gov_report",
+    "question": "",
+    "gold": [
+      "Multiyear procurement (MYP) and block buy contracting (BBC) are special contracting mechanisms that Congress permits the Department of Defense (DOD) to use for a limited number of defense acquisition programs. Compared to the standard or default approach of annual contracting, MYP and BBC have the potential for reducing weapon procurement costs by a few or several percent. Under annual contracting, DOD uses one or more contracts for each year's worth of procurement of a given kind of item. Under MYP, DOD instead uses a single contract for two to five years' worth of procurement of a given kind of item without having to exercise a contract option for each year after the first year. DOD needs congressional approval for each use of MYP. There is a permanent statute governing MYP contracting\u201410 U.S.C. 2306b. Under this statute, a program must meet several criteria to qualify for MYP. Compared with estimated costs under annual contracting, estimated savings for programs being proposed for MYP have ranged from less than 5% to more than 15%, depending on the particulars of the program in question, with many estimates falling in the range of 5% to 10%. In practice, actual savings from using MYP rather than annual contracting can be difficult to observe or verify because of cost growth during the execution of the contract due to changes in the program independent of the use of MYP rather than annual contracting. BBC is similar to MYP in that it permits DOD to use a single contract for more than one year's worth of procurement of a given kind of item without having to exercise a contract option for each year after the first year. BBC is also similar to MYP in that DOD needs congressional approval for each use of BBC. BBC differs from MYP in the following ways: There is no permanent statute governing the use of BBC. There is no requirement that BBC be approved in both a DOD appropriations act and an act other than a DOD appropriations act. Programs being considered for BBC do not need to meet any legal criteria to qualify for BBC, because there is no permanent statute governing the use of BBC that establishes such criteria. A BBC contract can cover more than five years of planned procurements. Economic order quantity (EOQ) authority\u2014the authority to bring forward selected key components of the items to be procured under the contract and purchase the components in batch form during the first year or two of the contract\u2014does not come automatically as part of BBC authority because there is no permanent statute governing the use of BBC that includes EOQ authority as an automatic feature. BBC contracts are less likely to include cancellation penalties. Potential issues for Congress concerning MYP and BBC include whether to use MYP and BBC in the future more frequently, less frequently, or about as frequently as they are currently used; whether to create a permanent statute to govern the use of BBC, analogous to the permanent statute that governs the use of MYP; and whether the Coast Guard should begin making use of MYP and BBC."
+    ],
+    "pred": "This is a Congressional Research Service report explaining multiyear procurement (MYP) and block buy contracting (BBC) mechanisms used by the Department of Defense, covering how they differ from annual contracting, their potential cost savings, statutory requirements, frequency of use, and policy issues for Congress including whether to expand their use and whether the Coast Guard should adopt them.",
+    "em": 0,
+    "f1": 0.143,
+    "contains": 0,
+    "duration_s": 167.6,
+    "doc_chars": 53488,
+    "usage": {
+      "prompt_tokens": 964755,
+      "cached_tokens": 899456,
+      "cache_write_tokens": 0,
+      "completion_tokens": 8112,
+      "total_tokens": 972867,
+      "reasoning_tokens": 5301,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 37,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {
+          "prompt_tokens": 22703,
+          "completion_tokens": 87,
+          "total_tokens": 22790,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 20480,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 22,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23262,
+          "completion_tokens": 158,
+          "total_tokens": 23420,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 64,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23482,
+          "completion_tokens": 102,
+          "total_tokens": 23584,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 21,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34219,
+          "completion_tokens": 74,
+          "total_tokens": 34293,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23424,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 15,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34340,
+          "completion_tokens": 89,
+          "total_tokens": 34429,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34176,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 13,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 36408,
+          "completion_tokens": 109,
+          "total_tokens": 36517,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34304,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 17,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 36989,
+          "completion_tokens": 111,
+          "total_tokens": 37100,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 36352,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 57,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 625,
+          "completion_tokens": 2838,
+          "total_tokens": 3463,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 512,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 2829,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 37561,
+          "completion_tokens": 146,
+          "total_tokens": 37707,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 36928,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 63,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 48057,
+          "completion_tokens": 312,
+          "total_tokens": 48369,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 37504,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 37,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 22703,
+          "completion_tokens": 74,
+          "total_tokens": 22777,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 9,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23249,
+          "completion_tokens": 138,
+          "total_tokens": 23387,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 30,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23859,
+          "completion_tokens": 100,
+          "total_tokens": 23959,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 30,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 24021,
+          "completion_tokens": 104,
+          "total_tokens": 24125,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23808,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 34,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 625,
+          "completion_tokens": 1464,
+          "total_tokens": 2089,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 512,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 1456,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 24183,
+          "completion_tokens": 145,
+          "total_tokens": 24328,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 24000,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 44,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 25321,
+          "completion_tokens": 90,
+          "total_tokens": 25411,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 24128,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 26420,
+          "completion_tokens": 91,
+          "total_tokens": 26511,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 25280,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 27610,
+          "completion_tokens": 91,
+          "total_tokens": 27701,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 26368,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 28764,
+          "completion_tokens": 90,
+          "total_tokens": 28854,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 27584,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 9,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 29966,
+          "completion_tokens": 90,
+          "total_tokens": 30056,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 28736,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 9,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 31095,
+          "completion_tokens": 91,
+          "total_tokens": 31186,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 29952,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 32281,
+          "completion_tokens": 91,
+          "total_tokens": 32372,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 31040,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 33406,
+          "completion_tokens": 91,
+          "total_tokens": 33497,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 32256,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34500,
+          "completion_tokens": 91,
+          "total_tokens": 34591,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 33344,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 35558,
+          "completion_tokens": 91,
+          "total_tokens": 35649,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34496,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 36378,
+          "completion_tokens": 298,
+          "total_tokens": 36676,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 35520,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 191,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 22703,
+          "completion_tokens": 74,
+          "total_tokens": 22777,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 9,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23249,
+          "completion_tokens": 118,
+          "total_tokens": 23367,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 48,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23429,
+          "completion_tokens": 118,
+          "total_tokens": 23547,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 50,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34181,
+          "completion_tokens": 111,
+          "total_tokens": 34292,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 33,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {
+          "prompt_tokens": 22703,
+          "completion_tokens": 86,
+          "total_tokens": 22789,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 21,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23261,
+          "completion_tokens": 133,
+          "total_tokens": 23394,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 39,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23456,
+          "completion_tokens": 95,
+          "total_tokens": 23551,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 27,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34188,
+          "completion_tokens": 121,
+          "total_tokens": 34309,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23424,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 44,
+            "image_tokens": 0
+          }
+        },
+        {}
+      ],
+      "fresh_tokens": 65299
+    },
+    "cost_usd": 0.014112,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.009142,
+      "cache_read_usd": 0.002698,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.002271,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q00",
+    "config": "gov_report",
+    "question": "",
+    "gold": [
+      "Multiyear procurement (MYP) and block buy contracting (BBC) are special contracting mechanisms that Congress permits the Department of Defense (DOD) to use for a limited number of defense acquisition programs. Compared to the standard or default approach of annual contracting, MYP and BBC have the potential for reducing weapon procurement costs by a few or several percent. Under annual contracting, DOD uses one or more contracts for each year's worth of procurement of a given kind of item. Under MYP, DOD instead uses a single contract for two to five years' worth of procurement of a given kind of item without having to exercise a contract option for each year after the first year. DOD needs congressional approval for each use of MYP. There is a permanent statute governing MYP contracting\u201410 U.S.C. 2306b. Under this statute, a program must meet several criteria to qualify for MYP. Compared with estimated costs under annual contracting, estimated savings for programs being proposed for MYP have ranged from less than 5% to more than 15%, depending on the particulars of the program in question, with many estimates falling in the range of 5% to 10%. In practice, actual savings from using MYP rather than annual contracting can be difficult to observe or verify because of cost growth during the execution of the contract due to changes in the program independent of the use of MYP rather than annual contracting. BBC is similar to MYP in that it permits DOD to use a single contract for more than one year's worth of procurement of a given kind of item without having to exercise a contract option for each year after the first year. BBC is also similar to MYP in that DOD needs congressional approval for each use of BBC. BBC differs from MYP in the following ways: There is no permanent statute governing the use of BBC. There is no requirement that BBC be approved in both a DOD appropriations act and an act other than a DOD appropriations act. Programs being considered for BBC do not need to meet any legal criteria to qualify for BBC, because there is no permanent statute governing the use of BBC that establishes such criteria. A BBC contract can cover more than five years of planned procurements. Economic order quantity (EOQ) authority\u2014the authority to bring forward selected key components of the items to be procured under the contract and purchase the components in batch form during the first year or two of the contract\u2014does not come automatically as part of BBC authority because there is no permanent statute governing the use of BBC that includes EOQ authority as an automatic feature. BBC contracts are less likely to include cancellation penalties. Potential issues for Congress concerning MYP and BBC include whether to use MYP and BBC in the future more frequently, less frequently, or about as frequently as they are currently used; whether to create a permanent statute to govern the use of BBC, analogous to the permanent statute that governs the use of MYP; and whether the Coast Guard should begin making use of MYP and BBC."
+    ],
+    "pred": "This report provides background information and issues for Congress on multiyear procurement (MYP) and block buy contracting (BBC), two special contracting mechanisms the Department of Defense uses to reduce weapon procurement costs for a limited number of defense acquisition programs.",
+    "em": 0,
+    "f1": 0.128,
+    "contains": 0,
+    "duration_s": 339.5,
+    "doc_chars": 53488,
+    "usage": {
+      "prompt_tokens": 322043,
+      "cached_tokens": 272960,
+      "cache_write_tokens": 0,
+      "completion_tokens": 5627,
+      "total_tokens": 327670,
+      "reasoning_tokens": 3826,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 23,
+      "compressed_calls": 23,
+      "images": 253,
+      "raw": [
+        {
+          "prompt_tokens": 402,
+          "completion_tokens": 619,
+          "total_tokens": 1021,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 609,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13386,
+          "completion_tokens": 165,
+          "total_tokens": 13551,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 8192,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 100,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14023,
+          "completion_tokens": 302,
+          "total_tokens": 14325,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13376,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 183,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14434,
+          "completion_tokens": 320,
+          "total_tokens": 14754,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14016,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 252,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 19367,
+          "completion_tokens": 736,
+          "total_tokens": 20103,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14400,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 627,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 402,
+          "completion_tokens": 225,
+          "total_tokens": 627,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 384,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 214,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13346,
+          "completion_tokens": 77,
+          "total_tokens": 13423,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 12,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13895,
+          "completion_tokens": 140,
+          "total_tokens": 14035,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 63,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14507,
+          "completion_tokens": 144,
+          "total_tokens": 14651,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13888,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 39,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14712,
+          "completion_tokens": 98,
+          "total_tokens": 14810,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14464,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 20,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 15782,
+          "completion_tokens": 321,
+          "total_tokens": 16103,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 243,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 17979,
+          "completion_tokens": 98,
+          "total_tokens": 18077,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 15744,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 19149,
+          "completion_tokens": 98,
+          "total_tokens": 19247,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 10,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 20349,
+          "completion_tokens": 140,
+          "total_tokens": 20489,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 62,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 20798,
+          "completion_tokens": 276,
+          "total_tokens": 21074,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14336,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 42,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13346,
+          "completion_tokens": 221,
+          "total_tokens": 13567,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 144,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14039,
+          "completion_tokens": 361,
+          "total_tokens": 14400,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 278,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14872,
+          "completion_tokens": 171,
+          "total_tokens": 15043,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14016,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 101,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 15105,
+          "completion_tokens": 448,
+          "total_tokens": 15553,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14848,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 373,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 16546,
+          "completion_tokens": 145,
+          "total_tokens": 16691,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 15040,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 61,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 17700,
+          "completion_tokens": 295,
+          "total_tokens": 17995,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 16512,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 210,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 17904,
+          "completion_tokens": 227,
+          "total_tokens": 18131,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 173,
+            "image_tokens": 0
+          }
+        },
+        {}
+      ],
+      "fresh_tokens": 49083
+    },
+    "cost_usd": 0.009266,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.006872,
+      "cache_read_usd": 0.000819,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.001576,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "qid": "q01",
+    "config": "gov_report",
+    "question": "",
+    "gold": [
+      "DOD spends billions of dollars annually to sustain its weapon systems to support current and future operations. The Air Force and Navy are operating many of their fixed-wing aircraft well beyond their original designed service lives and therefore are confronted with sustainment challenges. House Report 114-537 included a provision for GAO to evaluate the sustainment of major weapon systems. This report, among other things, (1) examines the trends in availability and O&S costs for selected Air Force and Navy fixed-wing aircraft since fiscal year 2011, including whether they met availability goals, and (2) assesses the extent that the departments documented sustainment strategies, reviewed sustainment metrics, and implemented plans to improve aircraft availability. GAO selected a nongeneralizable sample of 12 fixed-wing aircraft by considering a variety of factors, such as the type, age, and manufacturer of the aircraft, among other factors, and analyzed condition and availability data, O&S costs, and sustainment challenges from fiscal year 2011 through March 2017 for each aircraft in a \u201cSustainment Quick Look.\u201d GAO also analyzed policies, strategies, and plans, and interviewed Navy and Air Force officials in program offices, squadrons, and maintenance depots. Between fiscal years 2011 and 2016, the Air Force and Navy generally did not meet aircraft availability goals, and operating and support (O&S) cost trends for GAO's selected fixed-wing aircraft varied. Specifically, GAO found that availability declined for 6 of 12 aircraft\u20143 from each service\u2014between fiscal years 2011 and 2016; availability fell short of goals for 9 of 12 aircraft in fiscal year 2016; and O&S costs increased for 5 of the aircraft, and maintenance costs\u2014the largest share\u2014increased for 8 of 12 aircraft. GAO found, and officials agreed, that these aircraft face similar challenges. a Obsolescence means a part is unavailable due to its lack of usefulness or it is no longer current or available for production. b Diminishing manufacturing sources is a loss or impending loss of manufacturers or suppliers. The Air Force and Navy have documented sustainment strategies for some aircraft, regularly reviewed sustainment metrics, and implemented improvement plans. The Air Force has documented sustainment strategies for all aircraft GAO reviewed; however, the Navy has not documented or updated its sustainment strategies for four aircraft. Specifically, the Navy does not have a documented sustainment strategy for the C-2A, and has not updated the strategies for the E2C, EA-18G, and F/A-18A-D since before 2012. The Navy is in the process of documenting its strategies, but Department of Defense (DOD) policy is unclear on whether a sustainment strategy is required and has to be updated every 5 years for weapon systems that are in the operations and support phase of their life cycle (i.e., legacy systems). Also, Navy guidance does not specify a requirement for legacy systems, although Air Force guidance does. Clarifying the requirements to document sustainment strategies for legacy systems, and documenting those strategies, would add additional visibility over the availability and O&S costs of DOD aircraft and any associated sustainment risks. This is a public version of a sensitive report issued in April 2018. Information on aircraft availability and other related information was deemed to be sensitive and has been omitted from this report. GAO is recommending that DOD and the Navy update or issue new policy and guidance clarifying the requirements for documenting sustainment strategies for legacy weapon systems. DOD concurred with the recommendations."
+    ],
+    "pred": "This is a GAO report examining 12 Air Force and Navy fixed-wing aircraft (totaling 2,823 aircraft costing ~$20B/year to sustain), finding that 9 of 12 missed availability goals in FY2016 due to aging, maintenance delays, and supply shortages, while DOD policy and Navy guidance remain unclear about whether legacy systems must maintain updated sustainment strategies.",
+    "em": 0,
+    "f1": 0.129,
+    "contains": 0,
+    "duration_s": 150.3,
+    "doc_chars": 81966,
+    "usage": {
+      "prompt_tokens": 815620,
+      "cached_tokens": 737024,
+      "cache_write_tokens": 0,
+      "completion_tokens": 9430,
+      "total_tokens": 825050,
+      "reasoning_tokens": 7224,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 30,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {
+          "prompt_tokens": 22703,
+          "completion_tokens": 137,
+          "total_tokens": 22840,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 72,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23308,
+          "completion_tokens": 109,
+          "total_tokens": 23417,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 39,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 625,
+          "completion_tokens": 1146,
+          "total_tokens": 1771,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 512,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 1136,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23479,
+          "completion_tokens": 137,
+          "total_tokens": 23616,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23296,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 47,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34096,
+          "completion_tokens": 165,
+          "total_tokens": 34261,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23424,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 20,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 44868,
+          "completion_tokens": 80,
+          "total_tokens": 44948,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34048,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 24,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 45416,
+          "completion_tokens": 87,
+          "total_tokens": 45503,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 44864,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 22,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 45962,
+          "completion_tokens": 108,
+          "total_tokens": 46070,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 45376,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 46,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 46084,
+          "completion_tokens": 336,
+          "total_tokens": 46420,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 45952,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 218,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 22703,
+          "completion_tokens": 84,
+          "total_tokens": 22787,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 19,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23255,
+          "completion_tokens": 101,
+          "total_tokens": 23356,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 31,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23418,
+          "completion_tokens": 106,
+          "total_tokens": 23524,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 25,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 625,
+          "completion_tokens": 1431,
+          "total_tokens": 2056,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 512,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 1419,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34133,
+          "completion_tokens": 74,
+          "total_tokens": 34207,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23360,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 16,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34668,
+          "completion_tokens": 111,
+          "total_tokens": 34779,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34112,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 19,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 45384,
+          "completion_tokens": 154,
+          "total_tokens": 45538,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 34624,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 41,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 46443,
+          "completion_tokens": 306,
+          "total_tokens": 46749,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 45376,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 169,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 22703,
+          "completion_tokens": 72,
+          "total_tokens": 22775,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 7,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23243,
+          "completion_tokens": 91,
+          "total_tokens": 23334,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 17,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23802,
+          "completion_tokens": 95,
+          "total_tokens": 23897,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 25,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23959,
+          "completion_tokens": 89,
+          "total_tokens": 24048,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23744,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 21,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 625,
+          "completion_tokens": 1508,
+          "total_tokens": 2133,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 576,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 1500,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34654,
+          "completion_tokens": 128,
+          "total_tokens": 34782,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23936,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 18,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 22703,
+          "completion_tokens": 76,
+          "total_tokens": 22779,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 11,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23247,
+          "completion_tokens": 118,
+          "total_tokens": 23365,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 35,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 23833,
+          "completion_tokens": 122,
+          "total_tokens": 23955,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23232,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 26,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 24017,
+          "completion_tokens": 101,
+          "total_tokens": 24118,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 23808,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 23,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 34011,
+          "completion_tokens": 87,
+          "total_tokens": 34098,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 24000,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 9,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 625,
+          "completion_tokens": 1805,
+          "total_tokens": 2430,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 576,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 1795,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 41028,
+          "completion_tokens": 466,
+          "total_tokens": 41494,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 33984,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 374,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 78596
+    },
+    "cost_usd": 0.015855,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.011003,
+      "cache_read_usd": 0.002211,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.00264,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q01",
+    "config": "gov_report",
+    "question": "",
+    "gold": [
+      "DOD spends billions of dollars annually to sustain its weapon systems to support current and future operations. The Air Force and Navy are operating many of their fixed-wing aircraft well beyond their original designed service lives and therefore are confronted with sustainment challenges. House Report 114-537 included a provision for GAO to evaluate the sustainment of major weapon systems. This report, among other things, (1) examines the trends in availability and O&S costs for selected Air Force and Navy fixed-wing aircraft since fiscal year 2011, including whether they met availability goals, and (2) assesses the extent that the departments documented sustainment strategies, reviewed sustainment metrics, and implemented plans to improve aircraft availability. GAO selected a nongeneralizable sample of 12 fixed-wing aircraft by considering a variety of factors, such as the type, age, and manufacturer of the aircraft, among other factors, and analyzed condition and availability data, O&S costs, and sustainment challenges from fiscal year 2011 through March 2017 for each aircraft in a \u201cSustainment Quick Look.\u201d GAO also analyzed policies, strategies, and plans, and interviewed Navy and Air Force officials in program offices, squadrons, and maintenance depots. Between fiscal years 2011 and 2016, the Air Force and Navy generally did not meet aircraft availability goals, and operating and support (O&S) cost trends for GAO's selected fixed-wing aircraft varied. Specifically, GAO found that availability declined for 6 of 12 aircraft\u20143 from each service\u2014between fiscal years 2011 and 2016; availability fell short of goals for 9 of 12 aircraft in fiscal year 2016; and O&S costs increased for 5 of the aircraft, and maintenance costs\u2014the largest share\u2014increased for 8 of 12 aircraft. GAO found, and officials agreed, that these aircraft face similar challenges. a Obsolescence means a part is unavailable due to its lack of usefulness or it is no longer current or available for production. b Diminishing manufacturing sources is a loss or impending loss of manufacturers or suppliers. The Air Force and Navy have documented sustainment strategies for some aircraft, regularly reviewed sustainment metrics, and implemented improvement plans. The Air Force has documented sustainment strategies for all aircraft GAO reviewed; however, the Navy has not documented or updated its sustainment strategies for four aircraft. Specifically, the Navy does not have a documented sustainment strategy for the C-2A, and has not updated the strategies for the E2C, EA-18G, and F/A-18A-D since before 2012. The Navy is in the process of documenting its strategies, but Department of Defense (DOD) policy is unclear on whether a sustainment strategy is required and has to be updated every 5 years for weapon systems that are in the operations and support phase of their life cycle (i.e., legacy systems). Also, Navy guidance does not specify a requirement for legacy systems, although Air Force guidance does. Clarifying the requirements to document sustainment strategies for legacy systems, and documenting those strategies, would add additional visibility over the availability and O&S costs of DOD aircraft and any associated sustainment risks. This is a public version of a sensitive report issued in April 2018. Information on aircraft availability and other related information was deemed to be sensitive and has been omitted from this report. GAO is recommending that DOD and the Navy update or issue new policy and guidance clarifying the requirements for documenting sustainment strategies for legacy weapon systems. DOD concurred with the recommendations."
+    ],
+    "pred": "The GAO review of 12 Air Force and Navy fixed-wing aircraft found that although these fleets face significant sustainment challenges such as aging, maintenance backlogs, and supply shortages, the Department of Defense and the Navy frequently fail to maintain updated and documented sustainment strategies as required by policy, contributing to aircraft availability often falling below goals and annual operating costs exceeding $20 billion.",
+    "em": 0,
+    "f1": 0.142,
+    "contains": 0,
+    "duration_s": 222.5,
+    "doc_chars": 81966,
+    "usage": {
+      "prompt_tokens": 205419,
+      "cached_tokens": 182272,
+      "cache_write_tokens": 0,
+      "completion_tokens": 5561,
+      "total_tokens": 210980,
+      "reasoning_tokens": 3491,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 15,
+      "compressed_calls": 15,
+      "images": 146,
+      "raw": [
+        {
+          "prompt_tokens": 402,
+          "completion_tokens": 137,
+          "total_tokens": 539,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 128,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13346,
+          "completion_tokens": 192,
+          "total_tokens": 13538,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 127,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14006,
+          "completion_tokens": 745,
+          "total_tokens": 14751,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 613,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 15702,
+          "completion_tokens": 188,
+          "total_tokens": 15890,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13952,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 118,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 15977,
+          "completion_tokens": 135,
+          "total_tokens": 16112,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 15680,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 67,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 20857,
+          "completion_tokens": 462,
+          "total_tokens": 21319,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 15936,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 403,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 402,
+          "completion_tokens": 928,
+          "total_tokens": 1330,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 384,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 14,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13346,
+          "completion_tokens": 234,
+          "total_tokens": 13580,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 169,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14048,
+          "completion_tokens": 413,
+          "total_tokens": 14461,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 294,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14570,
+          "completion_tokens": 210,
+          "total_tokens": 14780,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14016,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 133,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 15161,
+          "completion_tokens": 395,
+          "total_tokens": 15556,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14528,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 313,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 15926,
+          "completion_tokens": 294,
+          "total_tokens": 16220,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 15104,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 212,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 16936,
+          "completion_tokens": 182,
+          "total_tokens": 17118,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 15872,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 99,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 16659,
+          "completion_tokens": 461,
+          "total_tokens": 17120,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 377,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 18081,
+          "completion_tokens": 585,
+          "total_tokens": 18666,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 424,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 23147
+    },
+    "cost_usd": 0.005344,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.003241,
+      "cache_read_usd": 0.000547,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.001557,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  }
+]

@@ -9,8 +9,8 @@ One parallel run of two benchmarks through the real Claude Code CLI, each instan
 
 | benchmark | input tokens OFF→ON | Δ tokens | real cost OFF→ON | Δ cost |
 | --- | --- | ---: | --- | ---: |
-| SWE-bench (claude-sonnet-5) | 1,627,877 → 1,225,093 | **-24.7%** | $1.1988 → $1.5167 | **+26.5%** |
-| HotpotQA (claude-sonnet-5) | 592,748 → 384,822 | **-35.1%** | $0.7550 → $1.0876 | **+44.0%** |
+| SWE-bench (claude-sonnet-5) | 1,627,877 → 1,225,093 | **-24.7%** | `$1.1988` → `$1.5167` | **+26.5%** |
+| HotpotQA (claude-sonnet-5) | 592,748 → 384,822 | **-35.1%** | `$0.7550` → `$1.0876` | **+44.0%** |
 
 ## Verdict
 

@@ -1,0 +1,25 @@
+{
+  "agent": "claude",
+  "benchmark": "swebench",
+  "family": "anthropic",
+  "on_env": {
+    "IMGCTX_ENABLED": "1",
+    "IMGCTX_SYSTEM": "0",
+    "IMGCTX_TOOLS": "0",
+    "IMGCTX_TOOL_RESULTS": "1",
+    "IMGCTX_USER_TEXT": "0",
+    "IMGCTX_HISTORY": "0"
+  },
+  "off_env": {
+    "IMGCTX_ENABLED": "0"
+  },
+  "rate_table": {
+    "input": 3.0,
+    "cache_write": 3.75,
+    "cache_read": 0.3,
+    "output": 15.0,
+    "cost_basis": "real_provider",
+    "source": "empirical (40 real items) + Anthropic list; 5-min TTL"
+  },
+  "model": "sonnet"
+}

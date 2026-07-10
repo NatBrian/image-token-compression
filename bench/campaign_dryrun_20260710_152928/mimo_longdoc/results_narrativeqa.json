@@ -1,0 +1,399 @@
+[
+  {
+    "cond": "off",
+    "qid": "q00",
+    "config": "narrativeqa",
+    "question": "What is Saltram's living situation?",
+    "gold": [
+      "He is a guest in the home of the Mulvilles."
+    ],
+    "pred": "He was staying with the Mulvilles at their house in Wimbledon for the winter.",
+    "em": 0,
+    "f1": 0.316,
+    "contains": 0,
+    "duration_s": 31.5,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 113774,
+      "cached_tokens": 63040,
+      "cache_write_tokens": 0,
+      "completion_tokens": 664,
+      "total_tokens": 114438,
+      "reasoning_tokens": 491,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 7,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {},
+        {
+          "prompt_tokens": 22735,
+          "completion_tokens": 107,
+          "total_tokens": 22842,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 1792,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 38,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {
+          "prompt_tokens": 38601,
+          "completion_tokens": 121,
+          "total_tokens": 38722,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 22656,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 41,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {
+          "prompt_tokens": 52438,
+          "completion_tokens": 436,
+          "total_tokens": 52874,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 38592,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 412,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 50734
+    },
+    "cost_usd": 0.007478,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.007103,
+      "cache_read_usd": 0.000189,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.000186,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q00",
+    "config": "narrativeqa",
+    "question": "What is Saltram's living situation?",
+    "gold": [
+      "He is a guest in the home of the Mulvilles."
+    ],
+    "pred": "He was to stay all the winter.",
+    "em": 0,
+    "f1": 0.154,
+    "contains": 0,
+    "duration_s": 97.7,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 32412,
+      "cached_tokens": 25600,
+      "cache_write_tokens": 0,
+      "completion_tokens": 3519,
+      "total_tokens": 35931,
+      "reasoning_tokens": 3364,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 5,
+      "compressed_calls": 5,
+      "images": 59,
+      "raw": [
+        {
+          "prompt_tokens": 434,
+          "completion_tokens": 626,
+          "total_tokens": 1060,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 618,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13378,
+          "completion_tokens": 221,
+          "total_tokens": 13599,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 12288,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 152,
+            "image_tokens": 0
+          }
+        },
+        {},
+        {},
+        {
+          "prompt_tokens": 18600,
+          "completion_tokens": 2672,
+          "total_tokens": 21272,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13312,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 2594,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 6812
+    },
+    "cost_usd": 0.002016,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.000954,
+      "cache_read_usd": 7.7e-05,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.000985,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "off",
+    "qid": "q01",
+    "config": "narrativeqa",
+    "question": "Why does Ann not return Mary's feelings of affection?",
+    "gold": [
+      "Because she is in unrequited love with someone else"
+    ],
+    "pred": "timestamp=2026-07-10T07:31:44.206Z level=INFO run=427fd027 message=\"disposing instance\" directory=/home/liangsheng/brian/image-token-compression/bench/campaign_dryrun_20260710_152928/mimo_longdoc/off/narrativeqa-q01",
+    "em": 0,
+    "f1": 0.0,
+    "contains": 0,
+    "duration_s": 4.4,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 0,
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 2,
+      "compressed_calls": 0,
+      "images": 0,
+      "raw": [
+        {},
+        {}
+      ],
+      "fresh_tokens": 0
+    },
+    "cost_usd": 0.0,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.0,
+      "cache_read_usd": 0.0,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.0,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  },
+  {
+    "cond": "on",
+    "qid": "q01",
+    "config": "narrativeqa",
+    "question": "Why does Ann not return Mary's feelings of affection?",
+    "gold": [
+      "Because she is in unrequited love with someone else"
+    ],
+    "pred": "Ann's heart was entirely engrossed by another object (a young gentleman from her past), making Mary's friendship an insufficient substitute.",
+    "em": 0,
+    "f1": 0.0,
+    "contains": 0,
+    "duration_s": 107.7,
+    "doc_chars": 90040,
+    "usage": {
+      "prompt_tokens": 82280,
+      "cached_tokens": 70272,
+      "cache_write_tokens": 0,
+      "completion_tokens": 3381,
+      "total_tokens": 85661,
+      "reasoning_tokens": 2906,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "cost_usd": null,
+      "has_cost": false,
+      "calls": 7,
+      "compressed_calls": 7,
+      "images": 73,
+      "raw": [
+        {},
+        {
+          "prompt_tokens": 437,
+          "completion_tokens": 629,
+          "total_tokens": 1066,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 0,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 619,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 13380,
+          "completion_tokens": 183,
+          "total_tokens": 13563,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 8192,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 103,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 14841,
+          "completion_tokens": 133,
+          "total_tokens": 14974,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 13376,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 42,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 16261,
+          "completion_tokens": 253,
+          "total_tokens": 16514,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 14784,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 162,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 17693,
+          "completion_tokens": 811,
+          "total_tokens": 18504,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 16256,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 720,
+            "image_tokens": 0
+          }
+        },
+        {
+          "prompt_tokens": 19668,
+          "completion_tokens": 1372,
+          "total_tokens": 21040,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 17664,
+            "video_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "completion_tokens_details": {
+            "audio_tokens": 0,
+            "reasoning_tokens": 1260,
+            "image_tokens": 0
+          }
+        }
+      ],
+      "fresh_tokens": 12008
+    },
+    "cost_usd": 0.002839,
+    "cost_basis": "simulated",
+    "cost_source": "Xiaomi MiMo-V2.5 first-party list (mimo.mi.com/docs/price): fresh $0.14, cache-read $0.003, output $0.28 /1M",
+    "cost_breakdown": {
+      "fresh_usd": 0.001681,
+      "cache_read_usd": 0.000211,
+      "cache_write_usd": 0.0,
+      "output_usd": 0.000947,
+      "rates_per_1m": {
+        "input": 0.14,
+        "cache_write": 0.0,
+        "cache_read": 0.003,
+        "output": 0.28
+      }
+    },
+    "is_error": false
+  }
+]

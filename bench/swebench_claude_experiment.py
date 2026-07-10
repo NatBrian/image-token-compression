@@ -26,11 +26,15 @@ import time
 import urllib.request
 from pathlib import Path
 
+from bench._profiles import cost_for, profile_meta, resolve_profile
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 RUNS = HERE / "swebench_claude_runs"
 REPOS = RUNS / "_repos_cache"
 SEL_PATH = RUNS / "instances.json"
+AGENT = "claude"
+BENCHMARK = "swebench"
 
 # NO manual pricing. Dollars come ONLY from Claude Code's own reported total_cost_usd
 # (result event). We never convert tokens to dollars with an assumed rate table.
@@ -38,13 +42,16 @@ SEL_PATH = RUNS / "instances.json"
 # Small / fast-cloning repos so a shallow single-commit fetch stays light.
 PREFERRED_REPOS = ["psf/requests", "pallets/flask", "pylint-dev/pylint", "pytest-dev/pytest"]
 
-# The ON arm keeps the system prompt as TEXT (IMGCTX_SYSTEM=0): it is already
-# cache-read at 0.1x under Anthropic caching, and imaging it mis-orients the agent
-# (it carries the exact cwd/env/tool-use rules). Tools + tool results + older user
-# text are the safe, high-value regions that get imaged.
+# ON arm = the Anthropic-loop cost-aware profile from bench._profiles: keep the
+# STATIC prefix (system + tool DOCS) as TEXT so Anthropic native caching reads it at
+# 0.1x -- imaging the static tool-doc slab was the verified +26% cost driver (it
+# inflates the one-time cache-WRITE). Only first-appearance huge tool_results image;
+# no churning history-collapse. (Corrected from the earlier IMGCTX_TOOLS=1 config.)
+_ON_REGION = {k: v for k, v in (resolve_profile(AGENT, BENCHMARK, "on") or {}).items()
+              if k != "IMGCTX_ENABLED"}
 PROXIES = {
     "off": {"port": 8788, "enabled": "0", "env": {}},
-    "on": {"port": 8787, "enabled": "1", "env": {"IMGCTX_SYSTEM": "0"}},
+    "on": {"port": 8787, "enabled": "1", "env": _ON_REGION},
 }
 
 PROMPT_TEMPLATE = (
@@ -144,6 +151,9 @@ def start_proxies() -> dict[str, subprocess.Popen]:
             "IMGCTX_PORT": str(cfg["port"]),
             "IMGCTX_ENABLED": cfg["enabled"],
             "IMGCTX_LOG_PATH": str(log),
+            # Full raw request/response capture per arm, so token/cost/cache and the
+            # imaged bytes can be regenerated without a paid rerun (capture gap fix).
+            "IMGCTX_CAPTURE_DIR": str(RUNS / f"capture_{cond}"),
         })
         env.update(cfg.get("env", {}))
         out = open(RUNS / f"proxy_{cond}.log", "w")
@@ -227,6 +237,7 @@ def run_agent(inst: dict, cond: str, model: str, timeout: int) -> dict:
     # Claude Code's OWN billed cost (real model + cache TTL). Authoritative.
     # None if the run produced no result event (crash/timeout).
     real_cost = (result_evt or {}).get("total_cost_usd")
+    cost = cost_for(AGENT, usage, real_cost=real_cost)  # cost_basis=real_provider
 
     return {
         "instance_id": inst["instance_id"],
@@ -235,7 +246,7 @@ def run_agent(inst: dict, cond: str, model: str, timeout: int) -> dict:
         "duration_s": round(time.time() - t0, 1),
         "num_turns": (result_evt or {}).get("num_turns"),
         "usage": usage,
-        "cost_usd": real_cost,                          # Claude-reported total_cost_usd
+        **cost,                                         # cost_usd (real) + cost_basis
         "patch_len": len(diff) if rc == 0 else 0,
         "answer_tail": (answer or "")[-200:],
         "is_error": is_error,
@@ -280,10 +291,28 @@ def main() -> None:
     ap.add_argument("--select-only", action="store_true")
     ap.add_argument("--instances", nargs="*", default=None,
                     help="explicit instance_ids to run (subset of the saved selection)")
+    ap.add_argument("--tag", default="",
+                    help="suffix for results/run_meta files so runs don't clobber")
+    ap.add_argument("--runs-dir", default=None,
+                    help="override output folder (default swebench_claude_runs), e.g. a "
+                         "timestamped dir so a new run never replaces an old one")
+    ap.add_argument("--port-base", type=int, default=8787,
+                    help="on-arm proxy port (off-arm = base+1); override for parallel runs")
     args = ap.parse_args()
 
+    PROXIES["on"]["port"] = args.port_base
+    PROXIES["off"]["port"] = args.port_base + 1
+
+    global RUNS, REPOS, SEL_PATH
+    if args.runs_dir:
+        RUNS = HERE / args.runs_dir
+        REPOS = HERE / "swebench_claude_runs" / "_repos_cache"  # share the repo cache
+        SEL_PATH = RUNS / "instances.json"
     RUNS.mkdir(parents=True, exist_ok=True)
     REPOS.mkdir(parents=True, exist_ok=True)
+    meta = profile_meta(AGENT, BENCHMARK)
+    meta["model"] = args.model
+    (RUNS / f"run_meta{args.tag}.json").write_text(json.dumps(meta, indent=2))
 
     if SEL_PATH.exists() and not args.select_only:
         instances = json.loads(SEL_PATH.read_text())
@@ -303,6 +332,7 @@ def main() -> None:
     procs = start_proxies()
     print(f"proxies up: on=8787 off=8788")
     results: list[dict] = []
+    results_path = RUNS / f"results{args.tag}.json"
     try:
         for k, inst in enumerate(instances, 1):
             for cond in ("off", "on"):
@@ -318,11 +348,11 @@ def main() -> None:
                       f"out={u.get('output_tokens')} cost(claude)=${r.get('cost_usd')} "
                       f"patch={r.get('patch_len')}B err={r.get('is_error')}", flush=True)
                 results.append(r)
-                (RUNS / "results.json").write_text(json.dumps(results, indent=2))
+                results_path.write_text(json.dumps(results, indent=2))
     finally:
         stop_proxies(procs)
 
-    print(f"\nDONE. results -> {RUNS/'results.json'}")
+    print(f"\nDONE. results -> {results_path}")
 
 
 if __name__ == "__main__":

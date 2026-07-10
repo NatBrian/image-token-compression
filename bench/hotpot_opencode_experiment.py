@@ -20,18 +20,21 @@ import time
 from pathlib import Path
 
 from bench._opencode_run import (
-    parse_final_answer, read_usage, run_opencode, start_proxy, stop_proxy, write_config,
+    is_run_error, parse_final_answer, read_usage, run_opencode, start_proxy,
+    stop_proxy, write_config,
 )
 from bench.hotpot_experiment import build_documents, contains, em, f1
+from bench._profiles import cost_for, profile_meta, resolve_profile
 
 HERE = Path(__file__).resolve().parent
 RUNS = HERE / "hotpot_opencode_runs"
 DATA_SRC = HERE / "hotpot_runs" / "data.json"  # reuse the fetched questions
 PORT = 8813
-
-# Match the Claude HotpotQA ON arm: image tools + tool results + history, keep the
-# system prompt as text.
-ON_ENV = {"IMGCTX_SYSTEM": "0"}
+BENCHMARK = "hotpot"
+# Which pricing/imaging profile to use. mimo (default) uses the OpenAI-aggressive
+# profile at Xiaomi rates; the --oauth path (out of the 3-agent campaign) is
+# gpt-5.4-mini -> treat as the codex/openai family for correct rates + profile.
+AGENT = "mimo"
 
 PROMPT_TEMPLATE = (
     "Read the file at this absolute path: {docs}\n"
@@ -50,10 +53,11 @@ IMGCTX_MODELS = None
 OAUTH = False  # ChatGPT OAuth relay (opencode -> imgctx -> chatgpt.com codex backend)
 
 
-def _proxy_env(enabled: bool) -> dict | None:
-    env = dict(ON_ENV) if enabled else {}
-    # The OAuth relay must stay ON in BOTH arms -- OFF disables imaging, not the relay,
-    # so the OFF arm is "relay only" (no compression) and ON is "relay + compression".
+def _proxy_env(cond: str) -> dict | None:
+    """Per-region imaging profile (from bench._profiles) + relay knobs (both arms).
+    The OAuth/upstream/models knobs are NOT imaging flags -- they stay in both arms;
+    OFF disables imaging, not the relay."""
+    env = dict(resolve_profile(AGENT, BENCHMARK, cond) or {})
     if OAUTH:
         env["IMGCTX_OPENAI_OAUTH"] = "1"
     if UPSTREAM:
@@ -93,7 +97,7 @@ def run_item(row: dict, qid: str, cond: str, timeout: int) -> dict:
     enabled = cond == "on"
 
     t0 = time.time()
-    proc = start_proxy(enabled, PORT, log_path, extra_env=_proxy_env(enabled))
+    proc = start_proxy(enabled, PORT, log_path, extra_env=_proxy_env(cond))
     try:
         out = run_opencode(qdir, prompt, cfg_path, timeout=timeout, model=MODEL)
     finally:
@@ -103,6 +107,7 @@ def run_item(row: dict, qid: str, cond: str, timeout: int) -> dict:
     pred = parse_final_answer(out)
     gold = row["answer"]
     u = read_usage(log_path)
+    cost = cost_for(AGENT, u)  # mimo: simulated @ Xiaomi MiMo-V2.5 list (free tier => no provider cost)
     return {
         "cond": cond, "qid": qid, "question": row["question"],
         "gold": gold, "pred": pred,
@@ -111,8 +116,8 @@ def run_item(row: dict, qid: str, cond: str, timeout: int) -> dict:
         "duration_s": round(time.time() - t0, 1),
         "doc_chars": len((qdir / "documents.md").read_text()),
         "usage": u,
-        "cost_usd": u["cost_usd"],  # real, provider-billed if the endpoint reports usage.cost
-        "is_error": u["calls"] == 0 or "[TIMEOUT]" in out,
+        **cost,
+        "is_error": is_run_error(u, out),
     }
 
 
@@ -134,13 +139,17 @@ def main() -> None:
     ap.add_argument("--runs-dir", default=None,
                     help="override the output folder name (default hotpot_opencode_runs), "
                          "so a different model/provider never clobbers a prior run")
+    ap.add_argument("--port", type=int, default=8813,
+                    help="proxy port (override for parallel runs so ports never collide)")
     args = ap.parse_args()
 
-    global MODEL, PROVIDER, UPSTREAM, API_KEY, IMGCTX_MODELS, RUNS, OAUTH
+    global MODEL, PROVIDER, UPSTREAM, API_KEY, IMGCTX_MODELS, RUNS, OAUTH, AGENT, PORT
+    PORT = args.port
     MODEL, PROVIDER, UPSTREAM = args.model, args.provider, args.upstream
     API_KEY, IMGCTX_MODELS = args.api_key, args.imgctx_models
     if args.oauth:
         OAUTH = True
+        AGENT = "codex"  # opencode-oauth is gpt-5.4-mini -> openai family (rates+profile)
         if args.provider == "opencode":
             PROVIDER = "imgctx-openai"
         if args.model == "opencode/mimo-v2.5-free":
@@ -151,6 +160,9 @@ def main() -> None:
         RUNS = HERE / args.runs_dir
 
     RUNS.mkdir(parents=True, exist_ok=True)
+    meta = profile_meta(AGENT, BENCHMARK)
+    meta["model"] = MODEL
+    (RUNS / f"run_meta{args.tag}.json").write_text(json.dumps(meta, indent=2))
     rows = load_questions(args.n)
     print(f"{len(rows)} HotpotQA questions; model={MODEL} provider={PROVIDER}", flush=True)
 

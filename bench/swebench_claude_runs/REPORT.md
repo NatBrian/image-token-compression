@@ -12,7 +12,7 @@ ON config: system prompt kept as text (`IMGCTX_SYSTEM=0`); tools + tool_results 
 | metric | OFF | ON | change |
 | --- | ---: | ---: | ---: |
 | total input tokens | 1,627,877 | 1,225,093 | **-24.7%** |
-| total cost (USD), real total_cost_usd, n=5 | $1.1988 | $1.5167 | **+26.5%** |
+| total cost (USD), real total_cost_usd, n=5 | `$1.1988` | `$1.5167` | **+26.5%** |
 | median input-token change / instance | | | **-16.7%** |
 
 ### By token class (real per-field usage)
@@ -45,11 +45,11 @@ _(Per-call dollars are intentionally omitted: Claude reports `total_cost_usd` on
 
 | instance | repo | in tok OFF | in tok ON | Δ tok | $ OFF | $ ON | turns O/N | patch O/N | err |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | :--: | :--: | :--: |
-| psf__requests-1963 | requests | 238,224 | 198,542 | -16.7% | $0.1998 | $0.2745 | 4/5 | Y/Y | - |
-| pallets__flask-4045 | flask | 235,669 | 154,001 | -34.7% | $0.1930 | $0.2486 | 4/4 | Y/Y | - |
-| pylint-dev__pylint-5859 | pylint | 359,529 | 153,286 | -57.4% | $0.2666 | $0.2499 | 6/4 | Y/Y | - |
-| pytest-dev__pytest-11143 | pytest | 245,003 | 247,059 | +0.8% | $0.2150 | $0.3066 | 4/6 | Y/Y | - |
-| psf__requests-2148 | requests | 549,452 | 472,205 | -14.1% | $0.3244 | $0.4371 | 9/13 | Y/Y | - |
+| psf__requests-1963 | requests | 238,224 | 198,542 | -16.7% | `$0.1998` | `$0.2745` | 4/5 | Y/Y | - |
+| pallets__flask-4045 | flask | 235,669 | 154,001 | -34.7% | `$0.1930` | `$0.2486` | 4/4 | Y/Y | - |
+| pylint-dev__pylint-5859 | pylint | 359,529 | 153,286 | -57.4% | `$0.2666` | `$0.2499` | 6/4 | Y/Y | - |
+| pytest-dev__pytest-11143 | pytest | 245,003 | 247,059 | +0.8% | `$0.2150` | `$0.3066` | 4/6 | Y/Y | - |
+| psf__requests-2148 | requests | 549,452 | 472,205 | -14.1% | `$0.3244` | `$0.4371` | 9/13 | Y/Y | - |
 
 ## Why: Anthropic prompt-cache interaction
 
