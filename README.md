@@ -54,49 +54,54 @@ The payoff is largest exactly where agents are most expensive: long sessions wit
 
 ```mermaid
 flowchart LR
-    %% Node Definitions
-    CLI["Coding-agent CLI<br/>(OpenCode / Codex / Claude Code)"]
+    %% Core Endpoints
+    CLI["Your CLI Application"]
     U["Model Provider"]
 
-    subgraph PROXY["imgctx proxy (Rewrites Request Body Only)"]
-        direction LR
+    %% Main Proxy Boundary
+    subgraph PROXY["imgctx Proxy (Rewrites Request Body Only)"]
         G{"Eligible?<br/>(Vision Model & POST)"}
         PASS["Passthrough (Unchanged)<br/>[Fail-Open]"]
 
+        %% Sequential Pipeline (Inherits LR layout safely)
         subgraph PIPE["Transform Pipeline"]
-            direction TB
             S1["1. Split into Regions<br/>(System / Tools / Tool-Results / User / History)"]
             S2["2. Profitability Gate<br/>(Image if cheaper than text & above size floor)"]
             S3["3. Render Text to PNG<br/>(Freeze history to byte-identical pages + text factsheet)"]
             S4["4. Splice Image Blocks<br/>(Preserve tool schemas & tool-call linkage)"]
-
-            S1 --> S2 --> S3 --> S4
         end
     end
 
-    %% Edge Connections
+    %% Edge Routings
     CLI -- "Request<br/>(Chat Completions / Responses / Messages)" --> G
     G -- "No" --> PASS
     G -- "Yes" --> S1
+    
+    %% Pipeline Flow
+    S1 --> S2 --> S3 --> S4
+    
+    %% Output and Return Streams
     PASS --> U
     S4 -- "Rewritten Body" --> U
-    U -. "Streamed Reply<br/>(Byte for Byte)" .-> CLI
+    U -. "Streamed Reply<br/>(Byte-for-byte)" .-> CLI
 
-    %% Structural Layout Styling
+    %% Structural Container Styling
     style PROXY fill:#f8fafc,stroke:#cbd5e1,stroke-width:2px,stroke-dasharray: 5 5
     style PIPE fill:#f0fdf4,stroke:#bbf7d0,stroke-width:2px
 
-    %% Class Definitions for Theme Uniformity
-    classDef endpoint fill:#e0e7ff,color:#1e1b4b,stroke:#4f46e5,stroke-width:2px;
+    %% GitHub Light/Dark Mode Safe Theme Classes
+    classDef client fill:#f1f5f9,color:#0f172a,stroke:#64748b,stroke-width:2px;
     classDef decision fill:#fef3c7,color:#451a03,stroke:#d97706,stroke-width:2px;
     classDef bypass fill:#ffe4e6,color:#4c0519,stroke:#e11d48,stroke-width:2px;
     classDef step fill:#ccfbf1,color:#042f2e,stroke:#0d9488,stroke-width:2px;
+    classDef provider fill:#e0e7ff,color:#1e1b4b,stroke:#4f46e5,stroke-width:2px;
 
-    %% Apply Classes
-    class CLI,U endpoint;
+    %% Class Assignments
+    class CLI client;
     class G decision;
     class PASS bypass;
     class S1,S2,S3,S4 step;
+    class U provider;
 ```
 
 The proxy only rewrites the request body; the response is streamed back untouched. A request is eligible only if it targets a vision model over POST, and anything else (parse errors, unknown shapes, non-vision models) falls straight through, so imgctx cannot break a run. Eligible requests pass through the pipeline above: each region is imaged only when the profitability gate says the image is cheaper than the text, and settled history turns are frozen into byte-identical PNGs so the provider's automatic prompt cache can reuse them turn after turn.
